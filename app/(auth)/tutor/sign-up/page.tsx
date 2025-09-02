@@ -1,14 +1,12 @@
-import Image from "next/image";
-import React from "react";
-import abc from "@/public/evolve-logo.png";
-import PageTag from "@/components/reusable/PageTag";
-import StudentSignIn from "@/components/auth/StudentSignIn";
-import BookIcon from "@/components/icons/BookIcon";
-import AuthTitle from "@/components/reusable/AuthTitle";
-import Link from "next/link";
-import ArrowIcon from "@/components/icons/ArrowIcon";
-import CapIcon from "@/components/icons/CapIcon";
-import TutorSignIn from "@/components/auth/TutorSignIn";
+
+import TutorSignUp from '@/components/auth/TutorSignUp'
+import ArrowIcon from '@/components/icons/ArrowIcon'
+import CapIcon from '@/components/icons/CapIcon'
+import AuthTitle from '@/components/reusable/AuthTitle'
+import PageTag from '@/components/reusable/PageTag'
+import Image from 'next/image'
+import Link from 'next/link'
+import React from 'react'
 
 export default function page() {
   return (
@@ -33,15 +31,14 @@ export default function page() {
         />
 
         {/* sign in form  */}
-        <TutorSignIn />
+        <TutorSignUp/>
 
         <div className=" gap-2  mt-[26px]">
           {/* already have or new comers */}
           <div className="mb-[30px]">
             <p className="leading-6  text-gray-300">
               New to teaching with us?{" "}
-              <Link
-                href={"/tutor/sign-up"}
+              <Link href={"/tutor/sign-in"}
                 className="font-semibold leading-6 text-teal-400"
               >
                 Apply to teach
@@ -60,5 +57,5 @@ export default function page() {
         </div>
       </div>
     </div>
-  );
+  )
 }

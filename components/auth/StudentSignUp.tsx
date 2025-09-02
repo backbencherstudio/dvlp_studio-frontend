@@ -108,6 +108,8 @@ export default function StudentSignUp() {
               <ErrorMessage error={errors.lastName} />
             </div>
           </div>
+
+          
           {/* Email */}
           <div>
             <label
