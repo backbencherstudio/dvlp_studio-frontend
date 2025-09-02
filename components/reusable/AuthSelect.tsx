@@ -21,6 +21,7 @@ interface AuthSelectProps {
   error?: { message?: string };
   value?: string; // controlled value
   onValueChange?: (value: string) => void; // controlled change
+  isInvalid?: boolean;
 }
 
 export function AuthSelect({
