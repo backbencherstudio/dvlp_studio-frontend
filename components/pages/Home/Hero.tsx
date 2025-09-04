@@ -30,7 +30,7 @@ export default function Hero() {
 
       {/* Content */}
       <div className="mx-auto max-w-7xl px-4 pt-16 pb-20 text-center text-white">
-        <h1 className="mt-4 text-4xl shrink-0 text-white text-center font-black leading-[96px] md:text-8xl [font-family:Arial] mb-1.5">
+        <h1 className="mt-4 text-4xl shrink-0 text-white text-center font-black leading-[96px] md:text-8xl  mb-1.5 ">
           Transform Your
           <br />
           <span className="bg-gradient-to-r from-orange-500 via-cyan-500 to-blue-600 bg-clip-text text-transparent">
