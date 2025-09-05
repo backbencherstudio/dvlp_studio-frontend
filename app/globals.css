@@ -123,10 +123,16 @@
   }
 }
 
-
-
-
 .font-arial {
   font-family: var(--font-arial);
 }
 
+@layer components {
+  .swiper-pagination-bullet {
+    @apply !bg-white !opacity-30 !w-3 !h-3;
+  }
+
+  .swiper-pagination-bullet-active {
+    @apply !bg-white !opacity-100 !w-3 !h-3;
+  }
+}

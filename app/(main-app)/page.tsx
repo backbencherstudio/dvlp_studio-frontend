@@ -5,6 +5,7 @@ import WhyChoose from "@/components/pages/Home/WhyChoose";
 import SubjectMastery from "@/components/pages/Home/SubjectMastery";
 import LearnAnywhere from "@/components/pages/Home/LearnAnywhere";
 import WhyTeach from "@/components/pages/Home/WhyTeach";
+import SuccessStory from "@/components/pages/Home/SuccessStory";
 
 const Homepage = () => {
   return (
@@ -14,6 +15,7 @@ const Homepage = () => {
       <SubjectMastery/>
       <LearnAnywhere/>
       <WhyTeach/>
+      <SuccessStory/>
     </div>
   );
 };
