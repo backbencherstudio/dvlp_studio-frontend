@@ -6,6 +6,7 @@ import SubjectMastery from "@/components/pages/Home/SubjectMastery";
 import LearnAnywhere from "@/components/pages/Home/LearnAnywhere";
 import WhyTeach from "@/components/pages/Home/WhyTeach";
 import SuccessStory from "@/components/pages/Home/SuccessStory";
+import ReadyToTransform from "@/components/pages/Home/ReadyToTransform";
 
 const Homepage = () => {
   return (
@@ -16,6 +17,7 @@ const Homepage = () => {
       <LearnAnywhere/>
       <WhyTeach/>
       <SuccessStory/>
+      <ReadyToTransform/>
     </div>
   );
 };

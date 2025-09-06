@@ -8,7 +8,15 @@ import "swiper/css";
 import "swiper/css/pagination";
 import StarIcon from "@/components/icons/StarIcon";
 
-const testimonials = [
+type TestmonialProps = {
+  id: string | number;
+  text: string;
+  name: string;
+  role: string;
+  grade: string;
+};
+
+const testimonials: TestmonialProps[] = [
   {
     id: 1,
     text: "My tutor made math fun and engaging. Now I actually look forward to solving problems!",
@@ -90,19 +98,21 @@ export default function SuccessStory() {
   );
 }
 
-const TestimonialCard = ({ text, name, role, grade }) => {
+const TestimonialCard = ({ text, name, role, grade }: TestmonialProps) => {
   return (
     <div className="w-auto h-[367px] shrink-0 border [background:rgba(255,255,255,0.10)] backdrop-blur-[2px] rounded-3xl border-solid border-[rgba(255,255,255,0.20)] p-12">
       <div className="flex items-center justify-center mb-[30px]">
         <div className="flex gap-1 ">
           {[...Array(5)].map((_, i) => (
             <span key={i} className="text-[#FACC15]">
-              <StarIcon/>
+              <StarIcon />
             </span>
           ))}
         </div>
       </div>
-      <p className="text-2xl font-normal leading-[39px] mb-[38px] text-white">"{text}"</p>
+      <p className="text-2xl font-normal leading-[39px] mb-[38px] text-white">
+        "{text}"
+      </p>
       <div className="flex items-center gap-3">
         <div className="w-16 h-16 rounded-full border border-gray-500 flex items-center justify-center">
           {/* Avatar Placeholder */}
@@ -125,7 +135,7 @@ const TestimonialsSlider = () => {
       slidesPerView={2}
       pagination={{ clickable: true }}
       loop={true}
-      autoplay={{delay: 3000, disableOnInteraction: false}}
+      autoplay={{ delay: 3000, disableOnInteraction: false }}
       breakpoints={{
         1024: { slidesPerView: 2 },
         0: { slidesPerView: 1 },
