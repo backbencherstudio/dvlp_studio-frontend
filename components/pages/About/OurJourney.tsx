@@ -1,10 +1,29 @@
+import BookIcon from "@/components/icons/BookIcon";
 import React from "react";
 
 export default function OurJourney() {
   return (
-    <div>
+    <section className="lg:py-[128px] md:py-25 sm:py-20 py-15">
+      {/* title */}
+      <div className="mb-[74px]  space-y-[17.33px] flex flex-col items-center  ">
+        <div className="inline-flex items-center gap-2 [background:linear-gradient(90deg,#DBEAFE_0%,#CFFAFE_100%)] px-6 py-3 rounded-full">
+          <span className="w-4 h-4 text-[#2563EB]">
+            <BookIcon />
+          </span>
+          <span className="text-sm font-semibold leading-5 text-[#1E40AF]">Our Journey</span>
+        </div>
+
+        <h2 className="max-w-[598.213px] text-center text-6xl font-black text-[#1E293B]">
+          <span>Key Milestones in </span>
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2563EB] to-[#0891B2]">
+            Our Mission
+          </span>
+        </h2>
+      </div>
+
+      {/* Timeline */}
       <Timeline />
-    </div>
+    </section>
   );
 }
 
@@ -47,7 +66,7 @@ const milestones = [
 
 const Timeline = () => {
   return (
-    <div className="flex flex-col items-center py-12">
+    <div className="flex flex-col items-center">
       <div className="w-full max-w-[1280px] px-8 ">
         <div className="relative">
           <div className="absolute left-1/2 top-0 bottom-0 w-0.5 shrink-0 [background:linear-gradient(180deg,#C7D2FE_0%,#E9D5FF_50%,#C7D2FE_100%)] transform -translate-x-1/2 " />
@@ -61,7 +80,7 @@ const Timeline = () => {
               {/* indicator */}
               <div
                 className={`absolute left-1/2 w-6 h-6 shrink-0 [background:linear-gradient(90deg,#6366F1_0%,#A855F7_100%)] shadow-lg rounded-full border-4 border-white transform -translate-x-1/2 z-10 lg:bottom-auto  -bottom-11 ${
-                  index === 4 && "hidden md:block" 
+                  index === 4 && "hidden md:block"
                 }`}
               />
 
