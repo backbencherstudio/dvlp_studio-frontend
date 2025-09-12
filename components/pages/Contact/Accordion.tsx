@@ -15,13 +15,13 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ question, answer }) => {
 
   return (
     <div
-      className="border border-gray-100 rounded-2xl shadow-xs py-6 px-8 cursor-pointer"
+      className="border border-gray-100 rounded-2xl shadow-xs py-6 px-4 md:px-8 cursor-pointer"
       onClick={() => setIsOpen(!isOpen)}
     >
-      <button className="w-full text-left text-lg font-semibold focus:outline-none flex items-center justify-between cursor-pointer">
+      <button className="w-full text-left text-lg font-semibold focus:outline-none flex items-center justify-between cursor-pointer shrink-0 gap-2 ">
         {question}
         <ChevronDown
-          className={`transition-transform duration-300 ${
+          className={`transition-transform duration-300 shrink-0 ${
             isOpen ? "rotate-180" : "rotate-0"
           }`}
         />

@@ -1,60 +1,150 @@
-// components/Navbar.tsx
-"use client";
+// components/Navbar.tsx 
+"use client"; 
+ 
+import Image from "next/image"; 
+import Link from "next/link"; 
+import { useEffect, useState } from "react"; 
+import logo from "@/public/evolve-logo.png"; 
+ 
+import { usePathname } from "next/navigation"; 
+ 
+const links = [ 
+  { href: "/", label: "Home" }, 
+  { href: "/about", label: "About" }, 
+  { href: "/find-tutors", label: "Find Tutors" }, 
+  { href: "/contact", label: "Contact" }, 
+  { href: "/student", label: "Student Portal" }, 
+  { href: "/tutor", label: "Tutor Portal" }, 
+]; 
+ 
+export default function Navbar() { 
+  const [solid, setSolid] = useState(false); 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+ 
+  // Optional: turn solid after scrolling past the hero (nice UX) 
+  useEffect(() => { 
+    const onScroll = () => setSolid(window.scrollY > 64); // ~hero padding 
+    onScroll(); 
+    window.addEventListener("scroll", onScroll); 
+    return () => window.removeEventListener("scroll", onScroll); 
+  }, []); 
 
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import logo from "@/public/evolve-logo.png";
-
-import { usePathname } from "next/navigation";
-
-const links = [
-  { href: "/", label: "Home" },
-  { href: "/about", label: "About" },
-  { href: "/find-tutors", label: "Find Tutors" },
-  { href: "/contact", label: "Contact" },
-  { href: "/student", label: "Student Portal" },
-  { href: "/tutor", label: "Tutor Portal" },
-];
-
-export default function Navbar() {
-  const [solid, setSolid] = useState(false);
-
-  // Optional: turn solid after scrolling past the hero (nice UX)
+  // Close mobile menu when clicking outside
   useEffect(() => {
-    const onScroll = () => setSolid(window.scrollY > 64); // ~hero padding
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('nav') && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    };
 
-  const pathname = usePathname();
-  return (
-    <header className={`fixed inset-x-0 top-0 z-40 transition-colors shrink-0 [background:rgba(0,0,0,0.16)] `}>
-      <nav className="mx-auto container px-4 sm:px-6  ">
-        <div className="flex items-center justify-between h-[103px]">
-          <Link href="/">
-            <Image
-              className="w-[225px] h-[100px]"
-              src={logo}
-              alt=""
-              width={225}
-              height={100}
-            />
-          </Link>
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [mobileMenuOpen]);
+ 
+  const pathname = usePathname(); 
+  
+  return ( 
+    <header className={`fixed inset-x-0 top-0 z-40 transition-colors shrink-0 [background:rgba(0,0,0,0.16)] `}> 
+      <nav className="mx-auto container px-4 sm:px-6"> 
+        <div className="flex items-center justify-between h-[103px]"> 
+          <Link href="/"> 
+            <Image 
+              className="w-[180px] h-[80px] sm:w-[225px] sm:h-[100px]" 
+              src={logo} 
+              alt="Evolve Logo" 
+              width={225} 
+              height={100} 
+            /> 
+          </Link> 
+ 
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center gap-10"> 
+            {/* Links */} 
+            <ul className="flex items-center gap-6 text-sm"> 
+              {links.map((l) => ( 
+                <li key={l.href}> 
+                  <Link 
+                    href={l.href} 
+                    className={ 
+                      "transition hover:text-purple-400 text-lg " + 
+                      (pathname === l.href 
+                        ? "text-purple-500 [background:rgba(147,51,234,0.21)] rounded-[5px] px-1.5 py-1" 
+                        : "text-gray-100") 
+                    } 
+                  > 
+                    {l.label} 
+                  </Link> 
+                </li> 
+              ))} 
+            </ul> 
+ 
+            <a 
+              href="#" 
+              className="rounded-lg [background:#F97316] px-6.5 py-2 text-lg font-normal text-white leading-5 hover:bg-orange-600 transition-colors" 
+            > 
+              Book Session 
+            </a> 
+          </div>
 
-          <div className="flex items-center gap-10">
-            {/* Links */}
-            <ul className="hidden md:flex items-center gap-6 text-sm">
-              {links.map((l) => (
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden flex items-center gap-4">
+            <a 
+              href="#" 
+              className="rounded-lg [background:#F97316] px-4 py-2 text-sm font-normal text-white leading-5 hover:bg-orange-600 transition-colors" 
+            > 
+              Book Session 
+            </a>
+            
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="text-white hover:text-purple-400 transition-colors"
+              aria-label="Toggle mobile menu"
+            >
+              <svg 
+                className="w-6 h-6" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                {mobileMenuOpen ? (
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M6 18L18 6M6 6l12 12" 
+                  />
+                ) : (
+                  <path 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round" 
+                    strokeWidth={2} 
+                    d="M4 6h16M4 12h16M4 18h16" 
+                  />
+                )}
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu Dropdown */}
+        <div className={`lg:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+          mobileMenuOpen 
+            ? 'max-h-96 opacity-100 pb-6' 
+            : 'max-h-0 opacity-0'
+        }`}>
+          <div className="bg-black/40 backdrop-blur-md rounded-lg mt-4 border border-white/10">
+            <ul className="py-4">
+              {links.map((l, index) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}
+                    onClick={() => setMobileMenuOpen(false)}
                     className={
-                      "transition hover:text-purple-400 text-lg " +
+                      "block px-6 py-3 text-lg transition-colors border-b border-white/10 last:border-b-0 " +
                       (pathname === l.href
-                        ? "text-purple-500 [background:rgba(147,51,234,0.21)] rounded-[5px] px-1.5 py-1"
-                        : "text-gray-100")
+                        ? "text-purple-500 bg-purple-500/10"
+                        : "text-gray-100 hover:text-purple-400 hover:bg-white/5")
                     }
                   >
                     {l.label}
@@ -62,16 +152,9 @@ export default function Navbar() {
                 </li>
               ))}
             </ul>
-
-            <a
-              href="#"
-              className="rounded-lg [background:#F97316] px-6.5 py-2 text-lg font-normal text-white leading-5 hover:bg-orange-600"
-            >
-              Book Session
-            </a>
           </div>
         </div>
-      </nav>
-    </header>
-  );
+      </nav> 
+    </header> 
+  ); 
 }

@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const ReadyToTransform = () => {
   return (
-    <section className=" max-h-[713px] shrink-0 bg-gradient-to-r from-[#C55528]  via-[#DB2777] to-[#9333EA] relative pt-[128px] pb-[138px]">
+    <section className=" md:max-h-[713px] shrink-0 bg-gradient-to-r from-[#C55528]  via-[#DB2777] to-[#9333EA] relative pt-[128px] pb-[138px]">
       {/* content */}
       <div className="flex items-center justify-center ">
         {/* heading */}
@@ -21,7 +21,7 @@ const ReadyToTransform = () => {
             </div>
           </div>
 
-          <h2 className="max-w-[770.56px] mx-auto  text-center text-7xl font-black leading-tight text-white mb-[20px]">
+          <h2 className="max-w-[770.56px] mx-auto  text-center text-5xl md:text-7xl font-black leading-tight text-white mb-[20px]">
             Your Success Story Starts Today
           </h2>
 
@@ -30,9 +30,9 @@ const ReadyToTransform = () => {
             journey. Your perfect tutor is just one click away.
           </p>
 
-          <div className="flex items-center justify-center gap-5 mt-[51px]">
+          <div className="flex items-center justify-center gap-5 mt-[51px] px-4 md:px-0">
             <Link href={"/"}>
-              <button className="flex gap-3 items-center py-[21px] px-[40px] bg-white text-[#003466] text-lg leading-7 rounded-2xl">
+              <button className="flex md:gap-3 items-center py-4 md:py-[21px] px-5 md:px-[40px] bg-white text-[#003466] text-lg leading-7 rounded-2xl">
                 <span>
                   <CurosrIcon />
                 </span>
@@ -43,7 +43,7 @@ const ReadyToTransform = () => {
               </button>
             </Link>
             <Link href={"/"}>
-              <button className="flex gap-3 items-center py-[21px] px-[40px] text-white text-lg leading-7 rounded-2xl bg-white/20 border border-white/30 ">
+              <button className="flex gap-3 items-center py-4 md:py-[21px] px-5 md:px-[40px] text-white text-lg leading-7 rounded-2xl bg-white/20 border border-white/30 ">
                 <span>
                   <StackIcon className="w-5 h-5" />
                 </span>

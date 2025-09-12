@@ -15,15 +15,15 @@ export default function ContactUsContent() {
                 <LightIcon className="text-[#003466]" />
               </span>
               <span className="text-purple-800 text-center font-arial text-sm font-bold leading-5">
-                Why Choose Evolve
+                Contact Us
               </span>
             </div>
           </div>
 
-          <h2 className=" max-w-[729.34px] mx-auto flex flex-col justify-center items-center text-center text-6xl font-black leading-tight text-[#1E293B] mb-[15px]">
-            The Future of{" "}
+          <h2 className=" max-w-[729.34px] mx-auto flex flex-col justify-center items-center text-center md:text-6xl text-[40px] font-black leading-tight text-[#1E293B] mb-[15px]">
+            We're Here to
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#9333EA] to-[#DB2777]">
-              Personalized Learning
+              Help You Succeed
             </span>
           </h2>
         </div>

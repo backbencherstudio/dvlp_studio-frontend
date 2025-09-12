@@ -30,13 +30,13 @@ const deviceFeatures = [
 
 export default function LearnAnywhere() {
   return (
-    <section className="[background:linear-gradient(90deg,#111827_0%,#1E293B_100%)] px-[197px] py-20 font-arial">
+    <section className="[background:linear-gradient(90deg,#111827_0%,#1E293B_100%)] px-6 md:px-[197px] py-20 font-arial">
       <div className=" max-w-[1524px] mx-auto">
         <div className="mb-12 md:mb-16 text-center">
-          <h3 className="text-4xl font-bold leading-10 text-white mb-4">
+          <h3 className="text-3xl md:text-4xl font-bold leading-10 text-white mb-4">
             Learn Anywhere, Anytime
           </h3>
-          <p className="text-xl font-normal leading-7 text-[#D1D5DB]">
+          <p className="text-lg md:text-xl font-normal leading-7 text-[#D1D5DB]">
             Our platform works seamlessly across all your devices
           </p>
         </div>

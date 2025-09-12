@@ -39,13 +39,13 @@ const featureData = [
 
 export default function WhyTeach() {
   return (
-    <section className="max-w-[1280px] mx-auto py-12 md:py-20">
+    <section className="max-w-[1280px] mx-auto py-12 md:py-20 px-4 md:px-0">
       {/* title and info */}
       <div className="mb-[67px]">
         <h2 className="text-4xl font-bold leading-10 text-center mb-[19px]">
           Why Teach with Evolve?
         </h2>
-        <p className="text-xl leading-7 max-w-[712.93px] text-center mx-auto">
+        <p className="text-xl leading-7  max-w-[712.93px] text-center mx-auto">
           We're committed to providing exceptional educational experiences that
           drive real results
         </p>
@@ -69,7 +69,7 @@ export default function WhyTeach() {
               {feature.title}
             </h2>
 
-            <p className=" text-gray-600 text-center  leading-6">
+            <p className=" text-gray-600 text-center  leading-6 w-4/5 md:w-full">
               {feature.description}
             </p>
           </div>
