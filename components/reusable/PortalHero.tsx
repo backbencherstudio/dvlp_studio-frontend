@@ -15,7 +15,7 @@ const PortalHero: React.FC<HeaderCardProps> = ({
 }) => {
   return (
     <div className="h-[495px] shrink-0 [background:linear-gradient(135deg,rgba(49,46,129,0.95)_0%,rgba(88,28,135,0.95)_50%,rgba(131,24,67,0.95)_100%)] relative">
-      <div className="max-w-[1216px] mx-auto relative flex items-center justify-between pt-[182px] z-50">
+      <div className="max-w-[1216px] mx-auto relative flex items-center justify-between pt-[182px] z-20">
         <div className="flex flex-col items-start">
           <div className="px-6 py-3 border border-white/20 bg-white/10 flex items-center justify-center gap-2 rounded-full mb-4">
             <span>
