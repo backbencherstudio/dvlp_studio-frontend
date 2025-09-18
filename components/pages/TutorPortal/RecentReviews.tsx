@@ -33,7 +33,7 @@ const reviews = [
 export default function RecentReviews() {
   return (
     <section className=" divide-y divide-[#E5E7EB] rounded-2xl border bg-white overflow-hidden">
-      <div className="p-8 ">
+      <div className="p-4 md:p-8 ">
         <h3 className="text-2xl font-semibold leading-8">Recent Reviews</h3>
       </div>
 
@@ -64,7 +64,7 @@ const ReviewCard = ({ name, review, date, rating }: ReviewCardProps) => {
   const stars = Array(rating).fill("⭐");
 
   return (
-    <div className="flex  justify-between bg-white p-8  ">
+    <div className="flex  justify-between bg-white p-4 md:p-8  ">
       <div className="flex  space-x-3 ">
         {/* Avatar/Initial */}
         <div className="w-12 h-12 bg-gray-300 rounded-xl flex items-center justify-center text-white font-semibold shrink-0">
@@ -78,7 +78,7 @@ const ReviewCard = ({ name, review, date, rating }: ReviewCardProps) => {
             <div>
               <div className="flex space-x-1 text-yellow-400">
                 {stars.map((star, index) => (
-                  <StarIcon key={index} className="w-5 h-5" />
+                  <StarIcon key={index} className="md:w-5 md:h-5 w-3 h-3" />
                 ))}
               </div>
             </div>

@@ -17,7 +17,7 @@ export default function OurMission() {
             </span>
           </div>
           {/* title */}
-          <h2 className="max-w-[580px] text-6xl font-black leading-[60px] text-[#1F2937] mb-[21.33px] ">
+          <h2 className="max-w-[580px] text-[40px] md:text-6xl font-black leading-[60px] text-[#1F2937] mb-[21.33px] ">
             Unlocking Every{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#4F46E5] to-[#9333EA]">
               Student's Potential

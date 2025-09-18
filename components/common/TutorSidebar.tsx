@@ -38,7 +38,7 @@ export default function TutorSidebar() {
   const pathName = usePathname();
   console.log(pathName);
   return (
-    <div className="w-70 bg-white/80 shadow-sm h-auto p-[25px] flex flex-col gap-3 rounded-3xl backdrop-blur-[2px] border">
+    <div className="md:w-70 bg-white/80 shadow-sm h-auto p-[25px] flex flex-col gap-3 rounded-3xl backdrop-blur-[2px] border">
       {sidebarLinks.map((item) => (
         <Link
           key={item.id}
@@ -50,7 +50,7 @@ export default function TutorSidebar() {
           }`}
         >
           <span>{item.icon}</span>
-          <span> {item.lable}</span>
+          <span className="text-nowrap"> {item.lable}</span>
         </Link>
       ))}
     </div>

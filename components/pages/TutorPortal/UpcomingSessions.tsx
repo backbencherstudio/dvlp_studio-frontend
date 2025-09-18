@@ -46,17 +46,16 @@ const onEdit = () => {
 
 export default function UpcomingSessions() {
   return (
-    <section className=" divide-y divide-[#E5E7EB] rounded-2xl border bg-white">
-      <div className="px-8 py-6 flex items-center justify-between">
+    <section className="divide-y divide-[#E5E7EB] rounded-2xl border bg-white">
+      <div className="px-8 py-6 flex items-center justify-between flex-wrap">
         <h3 className="text-2xl font-semibold leading-8">Upcoming Sessions</h3>
 
-        <button className="px-[17px] py-3 rounded-xl bg-[#F97316] text-white font-semibold leading-6">
+        <button className="px-[17px] py-3 rounded-xl bg-[#F97316] text-white font-semibold leading-6 mt-4 sm:mt-0">
           + Create Session
         </button>
       </div>
 
       {/* class cards */}
-
       {fakeSessions.map((session) => (
         <SessionCard
           key={session.id}
@@ -72,7 +71,6 @@ export default function UpcomingSessions() {
 }
 
 // ======================== session card ===========================
-
 const SessionCard: React.FC<SessionCardProps> = ({
   icon: Icon,
   title,
@@ -86,24 +84,22 @@ const SessionCard: React.FC<SessionCardProps> = ({
   const closeModal = () => setIsModalOpen(false);
 
   return (
-    <div className="p-6 flex items-center justify-between bg-white">
+    <div className="p-4 md:p-6 flex items-center justify-between bg-white flex-wrap gap-6">
       {/* Left */}
-      <div className="flex items-center gap-9">
+      <div className="flex items-center gap-6 flex-wrap sm:flex-nowrap">
         <div className="p-4 rounded-[11px] text-white bg-gradient-to-r from-[#6366F1] to-[#A855F7]">
           <Icon className="w-8 h-8" />
         </div>
 
         <div>
-          <p className="text-xl text-slate-800 font-semibold leading-7">
-            {title}
-          </p>
+          <p className="text-xl text-slate-800 font-semibold leading-7">{title}</p>
           <p className="text-gray-600">{studentsCount}</p>
           <p className="text-gray-500">{sessionDetails}</p>
         </div>
       </div>
 
       {/* Right */}
-      <div className="space-x-3">
+      <div className="space-x-3 flex flex-wrap gap-4 justify-center sm:justify-end">
         <button
           onClick={onStartSession}
           className="bg-gradient-to-r from-[#6366F1] to-[#A855F7] px-5 py-3 text-center rounded-xl text-white cursor-pointer"

@@ -22,7 +22,7 @@ export default function ContactUsContent() {
 
           <h2 className=" max-w-[729.34px] mx-auto flex flex-col justify-center items-center text-center md:text-6xl text-[40px] font-black leading-tight text-[#1E293B] mb-[15px]">
             We're Here to
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#9333EA] to-[#DB2777]">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#9333EA] to-[#DB2777] text-nowrap">
               Help You Succeed
             </span>
           </h2>

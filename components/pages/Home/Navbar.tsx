@@ -14,7 +14,7 @@ const links = [
   { href: "/find-tutors", label: "Find Tutors" },
   { href: "/contact", label: "Contact" },
   { href: "/student-portal", label: "Student Portal" },
-  { href: "/tutor-portal/calender-stats", label: "Tutor Portal" },
+  { href: "/tutor-portal", label: "Tutor Portal" },
 ];
 
 export default function Navbar() {
@@ -46,10 +46,10 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-100 transition-colors shrink-0 [background:rgba(0,0,0,0.16)] `}
+      className={`fixed inset-x-0 top-0 z-100 transition-colors shrink-0 [background:rgba(0,0,0,0.16)] ${solid && "bg-gray-900"}`}
     >
       <nav className="mx-auto container px-4 sm:px-6">
-        <div className="flex items-center justify-between h-[103px]">
+        <div className="flex items-center justify-between md:h-[103px]">
           <Link href="/">
             <Image
               className="w-[180px] h-[80px] sm:w-[225px] sm:h-[100px]"

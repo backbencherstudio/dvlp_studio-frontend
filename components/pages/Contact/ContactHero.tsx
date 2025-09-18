@@ -23,7 +23,7 @@ export default function ContactHero() {
           </span>
         </div>
 
-        <h1 className="mt-4 text-4xl shrink-0 text-white text-center font-black lg:leading-[96px] md:leading-[60px]  leading-12 lg:text-8xl mb-1.5  sm:text-[40px] md:text-5xl ">
+        <h1 className="mt-4 text-[40px] shrink-0 text-white text-center font-black lg:leading-[96px] md:leading-[60px]  leading-12 lg:text-8xl mb-1.5  sm:text-[40px] md:text-5xl ">
           <span className=""> Let's Start Your </span>
           <br />
           <span className="bg-gradient-to-r from-[#FACC15] via-[#F472B6] to-[#60A5FA] bg-clip-text text-transparent">

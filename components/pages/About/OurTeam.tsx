@@ -44,7 +44,7 @@ export default function OurTeam() {
             </span>
           </div>
 
-          <h2 className="max-w-[880px] text-center text-6xl font-black text-[#1E293B] flex flex-col">
+          <h2 className="max-w-[880px] text-center text-[40px] md:text-6xl font-black text-[#1E293B] flex flex-col">
             <span>Meet the Passion </span>
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#16A34A] to-[#059669]">
               Leaders Behind Our Mission

@@ -1,8 +1,18 @@
-"use client"
+"use client";
 
-import { FieldValues, UseFormRegister, Controller, Control, Path } from "react-hook-form";
+import {
+  FieldValues,
+  UseFormRegister,
+  Controller,
+  Control,
+  Path,
+} from "react-hook-form";
 import { Calendar } from "@/components/ui/calendar"; // Assuming shadcn/ui calendar component
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
@@ -12,11 +22,12 @@ import { useState } from "react"; // Import useState for controlling popover sta
 
 // Define types for the props
 interface DatePickerFieldProps<T extends FieldValues = FieldValues> {
-  label: string;
+  label?: string;
   name: Path<T>;
   register: UseFormRegister<T> | any;
   control: Control<T>;
   required?: boolean; // Optional required field
+  placeholder?: string;
 }
 
 const DatePickerField = <T extends FieldValues = FieldValues>({
@@ -25,23 +36,26 @@ const DatePickerField = <T extends FieldValues = FieldValues>({
   register,
   control,
   required = false,
+  placeholder = "Pick a date",
 }: DatePickerFieldProps<T>) => {
   // State to control the popover visibility
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   return (
     <div>
-      <label
-        htmlFor={name}
-        className="block text-sm font-medium text-[#374151]"
-      >
-        {label} {required && <span className="text-red-500/80">*</span>}
-      </label>
+      {label && (
+        <label
+          htmlFor={name}
+          className="block text-sm font-medium text-[#374151]"
+        >
+          {label} {required && <span className="text-red-500/80">*</span>}
+        </label>
+      )}
       <Controller
         name={name}
         control={control}
         rules={{
-          required: required ? `${label} is required` : false,
+          required: required ? `${name} is required` : false,
         }}
         render={({ field, fieldState }) => (
           <>
@@ -57,7 +71,7 @@ const DatePickerField = <T extends FieldValues = FieldValues>({
                   {field.value ? (
                     format(new Date(field.value), "PPP")
                   ) : (
-                    <span>Pick a date</span>
+                    <span>{placeholder}</span>
                   )}
                   <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                 </Button>

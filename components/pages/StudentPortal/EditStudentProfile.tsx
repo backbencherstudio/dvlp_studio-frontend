@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { ArrowLeft, Save, Upload } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type ProfileFormValues = {
   name: string;
@@ -19,6 +20,7 @@ export const EditStudentProfile = ({
 }: {
   initialData: Omit<ProfileFormValues, "image"> & { image?: string };
 }) => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -80,9 +82,9 @@ export const EditStudentProfile = ({
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-6">
         <div className="flex items-center gap-3">
-          <Link href="/student-portal/profile">
+          <button onClick={() => router.back()}>
             <ArrowLeft className="w-6 h-6 cursor-pointer" />
-          </Link>
+          </button>
           <h2 className="text-xl font-semibold">Edit Profile</h2>
         </div>
         <button

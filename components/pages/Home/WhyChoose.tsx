@@ -65,7 +65,7 @@ export default function WhyChoose() {
 
           <h2 className=" max-w-[729.34px] mx-auto flex flex-col justify-center items-center text-center md:text-6xl text-4xl font-black leading-tight text-[#1E293B] mb-[15px]">
             The Future of{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#9333EA] to-[#DB2777]">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#9333EA] to-[#DB2777] text-nowrap">
               Personalized Learning
             </span>
           </h2>
@@ -119,7 +119,7 @@ const FeatureCard: React.FC<FeatureProps> = ({
         <h3 className=" mb-5 text-2xl font-bold leading-8 text-[#1E293B]">
           {title}
         </h3>
-        <p className=" text-lg font-normal leading-[29.25px] mb-[30px] text-[#4B5563]">
+        <p className=" md:text-lg font-normal leading-[29.25px] mb-[30px] text-[#4B5563]">
           {description}
         </p>
         <a

@@ -30,7 +30,7 @@ export default function Hero() {
 
       {/* Content */}
       <div className="mx-auto max-w-7xl px-4 pt-16 pb-20 text-center text-white">
-        <h1 className="mt-4 text-6xl shrink-0 text-white text-center font-black leading-[70px] md:leading-[96px] md:text-8xl  mb-1.5 ">
+        <h1 className="mt-4 text-[42px] md:text-6xl shrink-0 text-white text-center font-black leading-[50px] md:leading-[96px] lg:text-8xl  mb-1.5 ">
           Transform Your
           <br />
           <span className="bg-gradient-to-r from-orange-500 via-cyan-500 to-blue-600 bg-clip-text text-transparent">
@@ -38,7 +38,7 @@ export default function Hero() {
           </span>
         </h1>
 
-        <p className="flex max-w-[830.52px] mx-auto flex-col justify-center shrink-0 text-gray-300 text-center [font-family:Arial] text-lg md:text-2xl font-normal md:leading-8 mt-3.5">
+        <p className="flex max-w-[830.52px] mx-auto flex-col justify-center shrink-0 text-gray-300 text-center [font-family:Arial] md:text-lg lg:text-2xl font-normal md:leading-8 mt-3.5">
           Connect with world-class tutors who don't just teach—they inspire.
           Experience personalized learning that adapts to your unique style and
           accelerates your success.

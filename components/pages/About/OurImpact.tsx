@@ -38,7 +38,7 @@ export default function OurImpact() {
             </span>
           </div>
 
-          <h2 className="max-w-[600px]  text-center text-6xl font-black text-white ">
+          <h2 className="max-w-[600px]  text-center text-[40px] md:text-6xl font-black text-white ">
             Transforming Lives Through Education
           </h2>
         </div>

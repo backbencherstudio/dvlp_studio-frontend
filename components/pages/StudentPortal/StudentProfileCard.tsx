@@ -23,7 +23,7 @@ const profile: Profile = {
   about:
     "Michael has over 12 years of experience teaching physics and mathematics to high school and college students. He specializes in making complex concepts easy to understand and enjoys helping students achieve their academic goals.",
   sessionGrade: "High School (Grades 9—12)",
-  profilePicture: "https://img.freepik.com/premium-photo/indian-male-model_928503-1122.jpg?w=2000", // Replace with a valid URL for profile picture
+  profilePicture: "https://img.freepik.com/premium-photo/indian-male-model_928503-1122.jpg?w=2000", 
 };
 
 const ProfileCard = () => {

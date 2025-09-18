@@ -4,8 +4,7 @@ import React from "react";
 
 export default function StatsCard() {
   return (
-    <div className="flex space-x-6">
-      {/* Total Sessions Card */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {/* Total Sessions Card */}
       <InfoCard
         title="Total Sessions"
@@ -21,7 +20,7 @@ export default function StatsCard() {
         number="$18,750"
         gradientStart="#34D399"
         gradientEnd="#10B981"
-        Icon={StarIcon }
+        Icon={StarIcon}
       />
 
       {/* Average Rating Card */}
@@ -52,7 +51,7 @@ const InfoCard: React.FC<InfoCardProps> = ({
   Icon,
 }) => {
   return (
-    <div className="flex items-center justify-between p-6 bg-white/80 border rounded-3xl shadow-xs ">
+    <div className="flex items-center justify-between p-6 bg-white/80 border rounded-3xl shadow-xs">
       <div className="flex items-start space-x-4">
         {/* Icon */}
         <div

@@ -13,7 +13,7 @@ export default function OurJourney() {
           <span className="text-sm font-semibold leading-5 text-[#1E40AF]">Our Journey</span>
         </div>
 
-        <h2 className="max-w-[598.213px] text-center text-6xl font-black text-[#1E293B]">
+        <h2 className="max-w-[598.213px] text-center text-[40px] md:text-6xl font-black text-[#1E293B]">
           <span>Key Milestones in </span>
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2563EB] to-[#0891B2]">
             Our Mission

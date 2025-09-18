@@ -66,7 +66,7 @@ export default function SubjectMastery() {
           </div>
         </div>
 
-        <h2 className=" max-w-[729.34px] mx-auto flex flex-col justify-center items-center text-center md:text-6xl text-5xl font-black leading-tight text-[#1E293B] mb-[15px]">
+        <h2 className=" max-w-[729.34px] mx-auto flex flex-col justify-center items-center text-center md:text-6xl text-4xl font-black leading-tight text-[#1E293B] mb-[15px]">
           Master Any Subject{" "}
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2563EB] to-[#0891B2]">
             With Expert Guidance

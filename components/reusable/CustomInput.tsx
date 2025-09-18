@@ -3,7 +3,7 @@ import ErrorMessage from "./ErrorMessage";
 
 // Define types for the props
 interface InputFieldProps {
-  label: string;
+  label?: string;
   name: string;
   placeholder: string;
   register: UseFormRegister<FieldValues> | any;
@@ -21,12 +21,14 @@ const CustomInputField: React.FC<InputFieldProps> = ({
 }) => {
   return (
     <div>
-      <label
-        htmlFor={name}
-        className="block text-sm font-medium text-[#374151]"
-      >
-        {label} {required && <span className="text-red-500/80">*</span>}
-      </label>
+      {label && (
+        <label
+          htmlFor={name}
+          className="block text-sm font-medium text-[#374151]"
+        >
+          {label} {required && <span className="text-red-500/80">*</span>}
+        </label>
+      )}
       <input
         id={name}
         placeholder={placeholder}
