@@ -32,12 +32,12 @@ export default function StudentSidebar() {
   const pathName = usePathname();
   console.log(pathName);
   return (
-    <div className="w-70 bg-white/80 shadow-sm h-auto p-[25px] flex flex-col gap-3 rounded-3xl backdrop-blur-[2px] border">
+    <div className=" bg-white/80 shadow-sm h-auto p-5 md:p-[25px] flex flex-col gap-3 rounded-3xl backdrop-blur-[2px] border">
       {sidebarLinks.map((item) => (
         <Link
           key={item.id}
           href={item.slug}
-          className={`px-5 py-4 rounded-2xl    flex gap-3 ${
+          className={`px-5 py-4 rounded-2xl  flex gap-3 ${
             pathName === item.slug || pathName.startsWith(item.slug + "/")
               ? "bg-gradient-to-l to-[#6366F1] from-[#A855F7] text-white font-semibold "
               : "text-gray-700 "

@@ -100,11 +100,13 @@ const BookingFlow = ({ tutor }: any) => {
   };
 
   return (
-    <div className="flex justify-center items-center bg-gray-100">
+    <div className="w-full">
       {/* Button to open booking modal */}
+    
+
       <button
         onClick={() => setIsBookingModalOpen(true)}
-        className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition duration-300"
+        className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white px-5 py-3.5 rounded-xl hover:opacity-80 w-full cursor-pointer border  "
       >
         Book Session
       </button>
