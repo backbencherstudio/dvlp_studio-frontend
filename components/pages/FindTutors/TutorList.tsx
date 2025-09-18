@@ -374,11 +374,10 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
       </div>
 
       <div className="mt-5 flex justify-between gap-3">
-        {/* <button className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white px-5 py-2 rounded-xl hover:opacity-80 w-[60%] cursor-pointer">
-          Book Session
-        </button> */}
+
         <BookingFlow tutor={tutor}/>
-        <button className="border border-gray-300 text-gray-700 px-5 py-3.5 rounded-xl font-medium hover:opacity-80 w-[40%] cursor-pointer">
+        {/* <div className="border w-full"> hi</div> */}
+        <button className="border border-gray-300 text-gray-700 px-5 py-3.5 rounded-xl font-medium hover:opacity-80 text-nowrap cursor-pointer ">
           View Profile
         </button>
       </div>

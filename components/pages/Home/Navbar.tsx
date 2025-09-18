@@ -13,7 +13,7 @@ const links = [
   { href: "/about", label: "About" },
   { href: "/find-tutors", label: "Find Tutors" },
   { href: "/contact", label: "Contact" },
-  { href: "/student-portal", label: "Student Portal" },
+  { href: "/student-portal", label: "Student Login" },
   { href: "/tutor-portal", label: "Tutor Portal" },
 ];
 
@@ -46,7 +46,9 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-100 transition-colors shrink-0 [background:rgba(0,0,0,0.16)] ${solid && "bg-gray-900"}`}
+      className={`fixed inset-x-0 top-0 z-100 transition-all duration-300 ease-in-out ${
+        solid ? "bg-gradient-to-r from-[#2a0261]/90 via-[#2c0f54]/90 to-[#0f172a]/90 backdrop-blur-sm" : "bg-[rgba(0,0,0,0.16)]"
+      }`}
     >
       <nav className="mx-auto container px-4 sm:px-6">
         <div className="flex items-center justify-between md:h-[103px]">
@@ -104,7 +106,7 @@ export default function Navbar() {
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-white hover:text-purple-400 transition-colors"
+              className="text-white hover:text-purple-400 transition-colors cursor-pointer"
               aria-label="Toggle mobile menu"
             >
               <svg
