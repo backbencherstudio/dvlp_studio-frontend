@@ -55,7 +55,7 @@ export default function OurValue() {
             </span>
           </div>
 
-          <h2 className="max-w-[740px] text-center text-6xl font-black text-[#1E293B] ">
+          <h2 className="max-w-[740px] text-center text-[40px] md:text-6xl font-black text-[#1E293B] ">
             <span>The Principles That </span>
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2563EB] to-[#0891B2]">
               Guide Everything We Do

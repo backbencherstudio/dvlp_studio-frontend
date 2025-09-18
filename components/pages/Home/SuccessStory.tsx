@@ -77,7 +77,7 @@ export default function SuccessStory() {
             </div>
           </div>
 
-          <h2 className="max-w-[729.34px] mx-auto flex flex-col justify-center items-center text-center text-6xl font-black leading-tight text-white mb-[68px]">
+          <h2 className="max-w-[729.34px] mx-auto flex flex-col justify-center items-center text-center text-4xl md:text-6xl font-black leading-tight text-white mb-[68px]">
             Real Results,{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#F472B6] to-[#C084FC]">
               Real Impact
@@ -100,7 +100,7 @@ export default function SuccessStory() {
 
 const TestimonialCard = ({ text, name, role, grade }: TestmonialProps) => {
   return (
-    <div className="w-auto h-[367px] shrink-0 border [background:rgba(255,255,255,0.10)] backdrop-blur-[2px] rounded-3xl border-solid border-[rgba(255,255,255,0.20)] p-12">
+    <div className="w-auto md:h-[367px] shrink-0 border [background:rgba(255,255,255,0.10)] backdrop-blur-[2px] rounded-3xl border-solid border-[rgba(255,255,255,0.20)] p-5 md:p-12">
       <div className="flex items-center justify-center mb-[30px]">
         <div className="flex gap-1 ">
           {[...Array(5)].map((_, i) => (
@@ -110,7 +110,7 @@ const TestimonialCard = ({ text, name, role, grade }: TestmonialProps) => {
           ))}
         </div>
       </div>
-      <p className="text-2xl font-normal leading-[39px] mb-[38px] text-white">
+      <p className="md:text-2xl font-normal md:leading-[39px] mb-[38px] text-white">
         "{text}"
       </p>
       <div className="flex items-center gap-3">

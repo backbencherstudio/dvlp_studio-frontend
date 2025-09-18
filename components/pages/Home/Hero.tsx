@@ -4,7 +4,7 @@ import Link from "next/link";
 // components/Hero.tsx
 export default function Hero() {
   return (
-    <section className="relative isolate overflow-hidden pt-24 pb-20 text-center h-[1372px]">
+    <section className="relative isolate overflow-hidden pt-24 pb-20 text-center max-h-[1372px]">
       {/* Gradient + glows (only inside Hero) */}
       <div
         className="
@@ -30,7 +30,7 @@ export default function Hero() {
 
       {/* Content */}
       <div className="mx-auto max-w-7xl px-4 pt-16 pb-20 text-center text-white">
-        <h1 className="mt-4 text-4xl shrink-0 text-white text-center font-black leading-[96px] md:text-8xl  mb-1.5 ">
+        <h1 className="mt-4 text-[42px] md:text-6xl shrink-0 text-white text-center font-black leading-[50px] md:leading-[96px] lg:text-8xl  mb-1.5 ">
           Transform Your
           <br />
           <span className="bg-gradient-to-r from-orange-500 via-cyan-500 to-blue-600 bg-clip-text text-transparent">
@@ -38,16 +38,16 @@ export default function Hero() {
           </span>
         </h1>
 
-        <p className="flex max-w-[830.52px] mx-auto flex-col justify-center shrink-0 text-gray-300 text-center [font-family:Arial] text-2xl font-normal leading-8 mt-3.5">
+        <p className="flex max-w-[830.52px] mx-auto flex-col justify-center shrink-0 text-gray-300 text-center [font-family:Arial] md:text-lg lg:text-2xl font-normal md:leading-8 mt-3.5">
           Connect with world-class tutors who don't just teach—they inspire.
           Experience personalized learning that adapts to your unique style and
           accelerates your success.
         </p>
 
         {/*  CTA buttons */}
-        <div className=" flex items-center justify-center gap-4 mt-[38px]">
+        <div className=" flex flex-col md:flex-row items-center justify-center gap-4 mt-[38px]">
           <Link href="/tutors">
-            <button className="px-[46px] py-5 shrink-0 [background:linear-gradient(90deg,#A855F7_0%,#EC4899_100%)] flex rounded-2xl gap-[19px] items-center text-lg font-bold">
+            <button className=" px-[46px] py-5 shrink-0 [background:linear-gradient(90deg,#A855F7_0%,#EC4899_100%)] flex rounded-2xl gap-[19px] items-center text-lg font-bold">
               <span>Find a Tutor</span>
               <span>
                 <ArrowIcon className="h-5 w-5" />
@@ -66,25 +66,24 @@ export default function Hero() {
         </div>
 
         {/* video */}
-        <div className="relative mt-14 max-w-[1056px] h-[608px] mx-auto z-10">
-  {/* Blurred Gradient Background */}
-  <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 blur-md" />
+        <div className="relative mt-14 max-w-[1056px] h-auto md:h-[608px] mx-auto z-10">
+          {/* Blurred Gradient Background */}
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 blur-md" />
 
-  {/* Video wrapper */}
-  <div className="relative z-20 p-[17px]">
-    <div className="flex justify-center ">
-      <iframe
-        className="rounded-2xl shadow-lg w-full  aspect-video"
-        src="https://www.youtube.com/embed/AvqQVYiEIlA?si=WMyL4Q4l7QnSqI9h"
-        title="Learning Journey Video"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
-      />
-    </div>
-  </div>
-</div>
-
+          {/* Video wrapper */}
+          <div className="relative z-20 p-[17px]">
+            <div className="flex justify-center ">
+              <iframe
+                className="rounded-2xl shadow-lg w-full  aspect-video"
+                src="https://www.youtube.com/embed/AvqQVYiEIlA?si=WMyL4Q4l7QnSqI9h"
+                title="Learning Journey Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

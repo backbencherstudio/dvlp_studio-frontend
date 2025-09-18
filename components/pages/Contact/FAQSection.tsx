@@ -35,9 +35,7 @@ const faqItems = [
 export default function FAQSection() {
   return (
     <section className="lg:py-[128px] md:py-25 sm:py-20 py-15">
-      <div
-        className="max-w-[896px] md:px-8 px-4 mx-auto "
-      >
+      <div className="max-w-[896px] md:px-8 px-4 mx-auto ">
         {/* title */}
         <div className="mb-[80px]  space-y-4.5 flex flex-col items-center  ">
           <div className="inline-flex items-center gap-2 [background:linear-gradient(90deg,#DBEAFE_0%,#CFFAFE_100%)] px-6 py-3 rounded-full">
@@ -49,7 +47,7 @@ export default function FAQSection() {
             </span>
           </div>
 
-          <h2 className="max-w-[598.213px] text-center text-6xl font-black text-[#1E293B]">
+          <h2 className="max-w-[598.213px] text-center text-4xl md:text-6xl font-black text-[#1E293B] leading-12 md:leading-20">
             <span>Frequently Asked </span>
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#2563EB] to-[#0891B2]">
               Questions

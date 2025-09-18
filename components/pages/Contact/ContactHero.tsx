@@ -23,22 +23,22 @@ export default function ContactHero() {
           </span>
         </div>
 
-        <h1 className="mt-4 text-4xl shrink-0 text-white text-center font-black lg:leading-[96px] md:leading-[60px]  leading-12 lg:text-8xl mb-1.5  sm:text-3xl md:text-5xl ">
+        <h1 className="mt-4 text-[40px] shrink-0 text-white text-center font-black lg:leading-[96px] md:leading-[60px]  leading-12 lg:text-8xl mb-1.5  sm:text-[40px] md:text-5xl ">
           <span className=""> Let's Start Your </span>
           <br />
           <span className="bg-gradient-to-r from-[#FACC15] via-[#F472B6] to-[#60A5FA] bg-clip-text text-transparent">
             Learning Journey
           </span>
         </h1>
-        <p className="text-xl font-normal leading-8 max-w-[854.84px] text-gray-300 text-center sm:text-lg md:text-2xl mb-8 mt-4">
+        <p className=" font-normal leading-8 max-w-[854.84px] text-gray-300 text-center sm:text-lg md:text-2xl mb-8 mt-4 px-4 md:px-0">
           Have questions about our tutoring services? Ready to get started?
           We're here to help you on your learning journey.
         </p>
 
         {/*  CTA buttons */}
-        <div className=" flex items-center justify-center gap-4 ">
+        <div className=" flex flex-col md:flex-row-reverse items-center justify-center gap-4 ">
           <Link href="/tutors">
-            <button className="px-[40px] py-5 shrink-0 bg-gradient-to-r from-[#6366F1] to-[#A855F7] flex rounded-2xl gap-3 items-center text-lg font-bold text-white">
+            <button className="px-[40px] py-5 shrink-0 bg-gradient-to-r from-[#6366F1] to-[#A855F7] flex rounded-2xl gap-3 items-center text-lg font-bold text-white w-[260px] justify-center">
               <span>Send Message</span>
               <span>
                 <ArrowIcon className="h-5 w-5" />
@@ -47,7 +47,7 @@ export default function ContactHero() {
           </Link>
 
           <a href="/adfadf">
-            <button className="py-5 px-[30px] flex rounded-2xl gap-3 border border-[rgba(255,255,255,0.20)] items-center text-lg font-bold bg-white/10 text-white ">
+            <button className="py-5 px-[30px] flex rounded-2xl gap-3 border border-[rgba(255,255,255,0.20)] items-center text-lg font-bold bg-white/10 text-white w-[260px] justify-center">
               <span> View FAQ</span>
               <span>
                 <ArrowIcon className="h-5 w-5" />
