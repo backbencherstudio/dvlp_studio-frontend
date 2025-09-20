@@ -42,7 +42,7 @@ export default function DashboardLayout({
 
       <div className="flex">
         {/* Desktop Sidebar */}
-        <div className="hidden lg:block w-70 bg-white shadow-lg fixed top-0 left-0 h-screen overflow-y-auto">
+        <div className="hidden lg:block w-70  shadow-xs fixed top-0 left-0 h-screen overflow-y-auto border border-l">
           <Sidebar
             sidebarItems={sidebarItems}
             setMobileMenuOpen={setMobileMenuOpen}

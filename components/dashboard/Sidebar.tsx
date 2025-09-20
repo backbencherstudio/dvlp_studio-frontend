@@ -11,9 +11,9 @@ export default function Sidebar({
   setMobileMenuOpen: (val: boolean) => void;
 }) {
   return (
-    <>
+    <div className="">
       {/* sidebar logo */}
-      <div className="flex items-center justify-between md:py-[19px] px-4 lg:px-6   ">
+      <div className="flex items-center justify-between md:py-[19px] px-4 lg:px-6">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-br from-purple-500 via-purple-600 to-blue-600 rounded-lg flex items-center justify-center shadow-md">
             <span className="text-white font-bold text-lg">E</span>
@@ -55,6 +55,6 @@ export default function Sidebar({
           ))}
         </div>
       </nav>
-    </>
+    </div>
   );
 }

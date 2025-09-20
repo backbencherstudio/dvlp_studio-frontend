@@ -22,11 +22,9 @@ export default function NavLink({
 }: NavLinkProps) {
   const pathname = usePathname();
 
-//   const isActive = pathname === href || pathname.startsWith(href + "/");
-
-  const isActive = pathname === href ;
-
-  console.log(pathname, isActive, href)
+    // const isActive = pathname === href || pathname.startsWith(href + "/" );
+  const isActive = pathname === href;
+  // console.log(pathname, isActive, href)
   return (
     <Link
       href={href}

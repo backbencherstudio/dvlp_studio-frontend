@@ -30,7 +30,6 @@ const sidebarLinks = [
 
 export default function StudentSidebar() {
   const pathName = usePathname();
-  console.log(pathName);
   return (
     <div className=" bg-white/80 shadow-sm h-auto p-5 md:p-[25px] flex flex-col gap-3 rounded-3xl backdrop-blur-[2px] border">
       {sidebarLinks.map((item) => (

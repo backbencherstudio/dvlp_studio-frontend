@@ -36,7 +36,6 @@ const sidebarLinks = [
 
 export default function TutorSidebar() {
   const pathName = usePathname();
-  console.log(pathName);
   return (
     <div className="md:w-70 bg-white/80 shadow-sm h-auto p-[25px] flex flex-col gap-3 rounded-3xl backdrop-blur-[2px] border">
       {sidebarLinks.map((item) => (
