@@ -10,6 +10,7 @@ import EyeIcon from "../icons/EyeIcon";
 import { EyeClosed, LockIcon } from "lucide-react";
 import ErrorMessage from "../reusable/ErrorMessage";
 import ArrowIcon from "../icons/ArrowIcon";
+import { useAuth } from "@/context/AuthContext";
 
 type FormValues = {
   email: string;
@@ -19,6 +20,7 @@ type FormValues = {
 };
 
 export default function AdminSignIn() {
+  const { login, error } = useAuth();
   const {
     register,
     handleSubmit,
@@ -26,14 +28,20 @@ export default function AdminSignIn() {
     setValue,
     watch,
   } = useForm<FormValues>({
-    defaultValues: { email: "", password: "", remember: false },
+    defaultValues: {
+      email: "soysov@gmail.com",
+      password: "12345678",
+      remember: false,
+    },
   });
 
   // ✅ watch a "virtual" value (not part of form schema)
   const showPassword = watch("showPassword", false);
 
-  const onSubmit = (data: FormValues) => {
-    console.log("payload:", data);
+  const onSubmit = async (data: FormValues) => {
+    // console.log("payload:", data);
+    const { email, password } = data;
+    await login(email, password);
   };
 
   return (
@@ -132,6 +140,14 @@ export default function AdminSignIn() {
           </button>
         </div>
       </form>
+      {error && (
+        <p
+          className="mt-5 text-center text-orange-400 font-semibold text-sm"
+          aria-live="assertive"
+        >
+          {error}
+        </p>
+      )}
     </div>
   );
 }

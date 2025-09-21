@@ -7,19 +7,23 @@ import { useEffect, useState } from "react";
 import logo from "@/public/evolve-logo.png";
 
 import { usePathname } from "next/navigation";
+import { useAuth, User } from "@/context/AuthContext";
 
 const links = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/find-tutors", label: "Find Tutors" },
   { href: "/contact", label: "Contact" },
-  { href: "/student-portal", label: "Student Login" },
-  { href: "/tutor-portal", label: "Tutor Portal" },
+  // { href: "/student-portal", label: "Student Login" },
+  // { href: "/tutor-portal", label: "Tutor Portal" },
 ];
 
 export default function Navbar() {
   const [solid, setSolid] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, logout, loading } = useAuth();
+
+  console.log(user?.type);
 
   // Optional: turn solid after scrolling past the hero (nice UX)
   useEffect(() => {
@@ -47,7 +51,9 @@ export default function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-100 transition-all duration-300 ease-in-out ${
-        solid ? "bg-gradient-to-r from-[#2a0261]/90 via-[#2c0f54]/90 to-[#0f172a]/90 backdrop-blur-sm" : "bg-[rgba(0,0,0,0.16)]"
+        solid
+          ? "bg-gradient-to-r from-[#2a0261]/90 via-[#2c0f54]/90 to-[#0f172a]/90 backdrop-blur-sm"
+          : "bg-[rgba(0,0,0,0.16)]"
       }`}
     >
       <nav className="mx-auto container px-4 sm:px-6">
@@ -85,14 +91,29 @@ export default function Navbar() {
                   </li>
                 );
               })}
+              {/*  */}
+
+              {renderUser(user)}
             </ul>
 
-            <a
-              href="#"
-              className="rounded-lg [background:#F97316] px-6.5 py-2 text-lg font-normal text-white leading-5 hover:bg-orange-600 transition-colors"
-            >
-              Book Session
-            </a>
+            {/* Conditional Link for Tutor/Student */}
+
+            <div className="flex gap-2 items-center">
+              <a
+                href="#"
+                className="rounded-lg [background:#F97316] px-6.5 py-2 text-lg font-normal text-white leading-5 hover:bg-orange-600 transition-colors"
+              >
+                Book Session
+              </a>
+              {user && (
+                <button
+                  onClick={logout}
+                  className="rounded-lg [background:#F97316] px-6.5 py-2 text-lg font-normal text-white leading-5 hover:bg-orange-600 transition-colors"
+                >
+                  Logout
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -165,4 +186,37 @@ export default function Navbar() {
       </nav>
     </header>
   );
+}
+
+// Login private router
+function renderUser(user: User | null) {
+  if (!user) {
+    return (
+      <>
+        <li className="transition hover:text-purple-400 text-lg text-gray-100">
+          <Link href="/student/sign-in">Student Login</Link>
+        </li>
+        <li className="transition hover:text-purple-400 text-lg text-gray-100">
+          <Link href="/tutor/sign-in">Tutor Login</Link>
+        </li>
+      </>
+    );
+  }
+
+  switch (user.type) {
+    case "teacher":
+      return (
+        <li className="transition hover:text-purple-400 text-lg text-gray-100">
+          <Link href="/tutor-portal/profile">Teacher Portal</Link>
+        </li>
+      );
+    case "student":
+      return (
+        <li className="transition hover:text-purple-400 text-lg text-gray-100">
+          <Link href="/student-portal">Student Portal</Link>
+        </li>
+      );
+    default:
+      return null;
+  }
 }

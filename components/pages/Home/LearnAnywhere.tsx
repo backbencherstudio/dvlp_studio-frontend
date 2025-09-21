@@ -44,7 +44,7 @@ export default function LearnAnywhere() {
         {/*  */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {deviceFeatures.map((device) => (
-            <div className=" [background:rgba(255,255,255,0.10)] backdrop-blur-[2px] rounded-2xl py-8 px-6 flex flex-col items-center justify-center ">
+            <div key={device.id} className=" [background:rgba(255,255,255,0.10)] backdrop-blur-[2px] rounded-2xl py-8 px-6 flex flex-col items-center justify-center ">
               <span className="p-4 inline-flex items-center justify-center mb-6 [background:linear-gradient(90deg,#003466_0%,#1271CD_100%)] mx-auto rounded-xl text-white">
                 {device.icon}
               </span>

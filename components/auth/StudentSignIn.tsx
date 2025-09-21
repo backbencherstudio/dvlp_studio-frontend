@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import EmailIcon from "../icons/EmailIcon";
 import AuthInput from "../reusable/AuthInput";
@@ -10,6 +10,8 @@ import EyeIcon from "../icons/EyeIcon";
 import { EyeClosed, LockIcon } from "lucide-react";
 import ErrorMessage from "../reusable/ErrorMessage";
 import ArrowIcon from "../icons/ArrowIcon";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 type FormValues = {
   email: string;
@@ -19,6 +21,7 @@ type FormValues = {
 };
 
 export default function StudentSignIn() {
+  const { login, error } = useAuth();
   const {
     register,
     handleSubmit,
@@ -26,14 +29,28 @@ export default function StudentSignIn() {
     setValue,
     watch,
   } = useForm<FormValues>({
-    defaultValues: { email: "", password: "", remember: false },
+    defaultValues: {
+      email: "saaa0@gmail.com",
+      password: "12345678",
+      remember: false,
+    },
   });
 
   // ✅ watch a "virtual" value (not part of form schema)
   const showPassword = watch("showPassword", false);
 
-  const onSubmit = (data: FormValues) => {
-    console.log("payload:", data);
+
+  // Redirect to student portal when user is successfully logged in
+  // useEffect(() => {
+  //   if (user && !loading && !error) {
+  //     router.push("/student-portal");
+  //   }
+  // }, [user, loading, error, router]);
+
+  const onSubmit = async (data: FormValues) => {
+    // console.log("payload:", data);
+    const { email, password } = data;
+    await login(email, password);
   };
 
   return (
@@ -96,8 +113,8 @@ export default function StudentSignIn() {
                 )}
               </button>
             </div>
-        
-          <ErrorMessage error={errors.password} />
+
+            <ErrorMessage error={errors.password} />
           </div>
 
           {/* remember me */}
@@ -125,11 +142,19 @@ export default function StudentSignIn() {
             disabled={isSubmitting}
             className="flex justify-center items-center gap-[7.637px] [background:linear-gradient(90deg,#6366F1_0%,#A855F7_100%)] px-0 py-4 rounded-xl text-white w-full cursor-pointer hover:[background:linear-gradient(90deg,#A855F7_0%,#6366F1_100%)] transition-colors duration-300 text-base font-bold leading-6 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Signing In..." : "Sign In"} 
-            <ArrowIcon/>
+            {isSubmitting ? "Signing In..." : "Sign In"}
+            <ArrowIcon />
           </button>
         </div>
       </form>
+      {error && (
+        <p
+          className="mt-5 text-center text-orange-400 font-semibold text-sm"
+          aria-live="assertive"
+        >
+          {error}
+        </p>
+      )}
     </section>
   );
 }

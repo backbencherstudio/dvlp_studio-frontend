@@ -2,7 +2,7 @@ export default function layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen mx-auto shrink-0 [background:linear-gradient(135deg,#312E81_0%,#581C87_50%,#831843_100%),#FFF] relative">
       {/* children layer */}
-      <main className="w-full relative border z-[10] min-h-screen flex items-center justify-center ">
+      <main className="w-full relative  z-[10] min-h-screen flex items-center justify-center ">
         {children}
       </main>
 
