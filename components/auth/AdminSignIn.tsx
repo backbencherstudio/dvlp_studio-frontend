@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import EmailIcon from "../icons/EmailIcon";
 import AuthInput from "../reusable/AuthInput";
@@ -11,7 +11,6 @@ import { EyeClosed, LockIcon } from "lucide-react";
 import ErrorMessage from "../reusable/ErrorMessage";
 import ArrowIcon from "../icons/ArrowIcon";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
 
 type FormValues = {
   email: string;
@@ -20,7 +19,7 @@ type FormValues = {
   showPassword: boolean;
 };
 
-export default function StudentSignIn() {
+export default function AdminSignIn() {
   const { login, error } = useAuth();
   const {
     register,
@@ -30,7 +29,7 @@ export default function StudentSignIn() {
     watch,
   } = useForm<FormValues>({
     defaultValues: {
-      email: "saaa0@gmail.com",
+      email: "soysov@gmail.com",
       password: "12345678",
       remember: false,
     },
@@ -39,14 +38,6 @@ export default function StudentSignIn() {
   // ✅ watch a "virtual" value (not part of form schema)
   const showPassword = watch("showPassword", false);
 
-
-  // Redirect to student portal when user is successfully logged in
-  // useEffect(() => {
-  //   if (user && !loading && !error) {
-  //     router.push("/student-portal");
-  //   }
-  // }, [user, loading, error, router]);
-
   const onSubmit = async (data: FormValues) => {
     // console.log("payload:", data);
     const { email, password } = data;
@@ -54,14 +45,14 @@ export default function StudentSignIn() {
   };
 
   return (
-    <section className="border [background:rgba(255,255,255,0.10)] backdrop-blur-[5px] rounded-3xl border-solid border-[rgba(255,255,255,0.20)] mt-8 p-8 w-full">
+    <div className="w-[420px] mx-auto border border-gray-200/80 p-5 text-black rounded-2xl shadow-sm bg-gray-50">
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <div className="md:space-y-5 space-y-8">
+        <div className="md:space-y-5 space-y-8 text-black">
           {/* Email */}
           <div>
             <label
               htmlFor="email"
-              className="text-white text-sm font-medium leading-5 mb-2 block"
+              className="text-sm font-medium leading-5 mb-2 block"
             >
               Email Address
             </label>
@@ -77,6 +68,7 @@ export default function StudentSignIn() {
                   message: "Enter a valid email",
                 },
               })}
+              isDarkMode={false}
             />
             <ErrorMessage error={errors.email} />
           </div>
@@ -85,7 +77,7 @@ export default function StudentSignIn() {
           <div>
             <label
               htmlFor="password"
-              className="text-white text-sm font-medium leading-5 mb-2 block"
+              className=" text-sm font-medium leading-5 mb-2 block"
             >
               Password
             </label>
@@ -99,6 +91,7 @@ export default function StudentSignIn() {
                   required: "Password is required",
                   minLength: { value: 6, message: "Minimum 6 characters" },
                 })}
+                isDarkMode={false}
               />
               <button
                 type="button"
@@ -127,7 +120,7 @@ export default function StudentSignIn() {
                 }
                 className="w-4 h-4 shrink-0 border [background:#FFF] rounded-[2.5px] border-solid border-[#767676] data-[state=checked]:bg-[#6366F1] data-[state=checked]:border-[#6366F1]"
               />
-              <p className="shrink-0 text-gray-300 text-sm leading-5">
+              <p className="shrink-0 text-gray-600 text-sm leading-5">
                 Remember me
               </p>
             </div>
@@ -155,6 +148,6 @@ export default function StudentSignIn() {
           {error}
         </p>
       )}
-    </section>
+    </div>
   );
 }

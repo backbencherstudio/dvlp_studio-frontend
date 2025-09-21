@@ -10,6 +10,7 @@ export interface AuthInputProps
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   icon?: ReactNode;   // Example: <EmailIcon />
   className?: string;
+  isDarkMode?: boolean;  // Optional prop to switch between light and dark modes
 }
 
 export default function AuthInput({
@@ -23,6 +24,7 @@ export default function AuthInput({
   autoComplete,
   disabled,
   className = "",
+  isDarkMode = true, // Default is light mode
   ...rest
 }: AuthInputProps) {
   return (
@@ -43,9 +45,12 @@ export default function AuthInput({
         disabled={disabled}
         className={[
           "w-full h-[57.33px] rounded-xl",
-          "border border-[rgba(255,255,255,0.20)]",
-          "[background:rgba(255,255,255,0.10)] text-white placeholder:text-gray-300",
-          ` focus:outline-none focus:ring-0 ${icon ? "pl-[48.66px]": "pl-4"}`,
+          // For dark mode
+          isDarkMode
+            ? " text-white placeholder:text-gray-400 border border-[rgba(255,255,255,0.20)]"
+            // For light (default) mode
+            : "bg-[#f9f9f9] text-black placeholder:text-gray-300 border border-[rgba(0,0,0,0.10)]",
+          `focus:outline-none focus:ring-0 ${icon ? "pl-[48.66px]" : "pl-4"}`,
           className,
         ].join(" ")}
         {...rest}
