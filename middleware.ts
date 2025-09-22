@@ -14,6 +14,10 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (!token) {
+    if (pathname.startsWith("/admin-dashboard")) {
+      return NextResponse.redirect(new URL("/admin/sign-in", req.url));
+    }
+
     return NextResponse.redirect(new URL("/", req.url));
   }
 

@@ -147,9 +147,9 @@ export default function StudentSignUp() {
               placeholder="Enter your phone number"
               icon={<PhoneIcon />}
               {...register("phoneNumber", {
-                required: "Email is required",
+                required: "Phonenumber is required",
                 pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  value: /^\+?[0-9]{1,4}?[-.\s]?(\(?\d{2,4}\)?)[-.\s]?\d{3,4}[-.\s]?\d{3,4}$/,
                   message: "Enter a valid phonenumber",
                 },
               })}
