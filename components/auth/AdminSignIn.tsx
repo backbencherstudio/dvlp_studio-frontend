@@ -11,7 +11,7 @@ import { EyeClosed, LockIcon } from "lucide-react";
 import ErrorMessage from "../reusable/ErrorMessage";
 import ArrowIcon from "../icons/ArrowIcon";
 import { useAuth } from "@/context/AuthContext";
-
+import { useSearchParams, useRouter } from "next/navigation";
 type FormValues = {
   email: string;
   password: string;
@@ -20,7 +20,12 @@ type FormValues = {
 };
 
 export default function AdminSignIn() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const { login, error } = useAuth();
+
+  const callbackUrl = searchParams.get("callbackUrl") || "/admin-dashboard";
+
   const {
     register,
     handleSubmit,
@@ -41,7 +46,7 @@ export default function AdminSignIn() {
   const onSubmit = async (data: FormValues) => {
     // console.log("payload:", data);
     const { email, password } = data;
-    await login(email, password);
+    await login(email, password, callbackUrl);
   };
 
   return (

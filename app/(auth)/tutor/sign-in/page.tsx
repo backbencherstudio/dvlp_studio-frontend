@@ -1,9 +1,5 @@
 import Image from "next/image";
-import React from "react";
-import abc from "@/public/evolve-logo.png";
 import PageTag from "@/components/reusable/PageTag";
-import StudentSignIn from "@/components/auth/StudentSignIn";
-import BookIcon from "@/components/icons/BookIcon";
 import AuthTitle from "@/components/reusable/AuthTitle";
 import Link from "next/link";
 import ArrowIcon from "@/components/icons/ArrowIcon";
@@ -11,6 +7,9 @@ import CapIcon from "@/components/icons/CapIcon";
 import TutorSignIn from "@/components/auth/TutorSignIn";
 
 export default function page() {
+
+
+
   return (
     <div className="w-full h-full flex flex-col  items-center justify-center ">
       <div className=" w-[min(448px,90vw)] mx-auto  border- red-500/50 f flex-col flex items-center justify-center ">

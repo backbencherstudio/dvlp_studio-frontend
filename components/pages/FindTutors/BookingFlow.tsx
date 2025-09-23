@@ -17,6 +17,9 @@ import CustomInputField from "@/components/reusable/CustomInput";
 import CustomSelectField from "@/components/reusable/CustomSelect";
 import DatePickerField from "@/components/reusable/CustomDateInput";
 import TimePickerField from "@/components/reusable/CustomTimeInput";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { privateAxios } from "@/lib/axios";
 
 // Mock API calls
 type BookingFormValues = {
@@ -33,20 +36,12 @@ type PaymentFormValues = {
   cvc: string;
 };
 
-const mockCreateBooking = (
-  data: BookingFormValues
-): Promise<{ status: "success" | "error" }> => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve({ status: "success" }), 2000);
-  });
-};
-
-const mockPaymentProcessing = (
-  paymentDetails: PaymentFormValues
-): Promise<{ status: "success" | "error" }> => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve({ status: "success" }), 2000);
-  });
+// Single-call API: sends both booking and payment in one request
+const createBookingWithPayment = async (
+  payload: { booking: BookingFormValues; payment: PaymentFormValues }
+) => {
+  // Adjust endpoint/body as per backend
+  return privateAxios.post("/bookings/pay-and-book", payload);
 };
 
 const BookingFlow = ({ tutor }: any) => {
@@ -55,6 +50,10 @@ const BookingFlow = ({ tutor }: any) => {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [pendingBooking, setPendingBooking] = useState<BookingFormValues | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+  const { user } = useAuth();
 
   // Step 2: React Hook Form setup for booking and payment forms
   const {
@@ -69,7 +68,6 @@ const BookingFlow = ({ tutor }: any) => {
 
   // Watch form values to see date field updates (for debugging)
   const watchedValues = watchBooking();
-  console.log("Current form values:", watchedValues);
 
   const {
     register: registerPayment,
@@ -79,33 +77,49 @@ const BookingFlow = ({ tutor }: any) => {
     defaultValues: { cardName: "", cardNumber: "", expiry: "", cvc: "" },
   });
 
-  // Step 3: Booking Form Submission
-  const onBookingSubmit = async (formData: BookingFormValues) => {
-    console.log(formData); // Log form data for debugging
-    const response = await mockCreateBooking(formData);
-    if (response.status === "success") {
-      setIsBookingModalOpen(false);
-      setIsPaymentModalOpen(true); // Open payment modal after booking
+  const handleBookingSession = () => {
+    if (user && user.type === "student") {
+      setIsBookingModalOpen(true);
+    } else {
+      router.push(`/student/sign-in?callbackUrl=${encodeURIComponent("/find-tutors")}`);
     }
   };
 
+  // sign-in?callbackUrl=/tutor-portal/profile
+  
+
+
   // Step 4: Payment Form Submission
+  const onBookingSubmit = async (data: BookingFormValues) => {
+    setPendingBooking(data);
+    setIsBookingModalOpen(false);
+    setIsPaymentModalOpen(true);
+  };
+
   const onPaymentSubmit = async (paymentDetails: PaymentFormValues) => {
-    console.log(paymentDetails); // Log payment details for debugging
-    const response = await mockPaymentProcessing(paymentDetails);
-    if (response.status === "success") {
+    if (!pendingBooking) return;
+    try {
+      setIsSubmitting(true);
+      await createBookingWithPayment({
+        booking: pendingBooking,
+        payment: paymentDetails,
+      });
       setIsPaymentModalOpen(false);
-      setIsSuccessModalOpen(true); // Show success modal after payment
+      setIsSuccessModalOpen(true);
+    } catch (error) {
+      // Optionally show error UI/toast
+      console.error("Booking/payment failed", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="w-full">
       {/* Button to open booking modal */}
-    
 
       <button
-        onClick={() => setIsBookingModalOpen(true)}
+        onClick={handleBookingSession}
         className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white px-5 py-3.5 rounded-xl hover:opacity-80 w-full cursor-pointer border  "
       >
         Book Session
@@ -121,10 +135,7 @@ const BookingFlow = ({ tutor }: any) => {
           Book Session with {tutor?.name}
         </h2>
 
-        <form
-          onSubmit={handleBookingSubmit(onBookingSubmit)}
-          className="space-y-4"
-        >
+        <form onSubmit={handleBookingSubmit(onBookingSubmit)} className="space-y-4">
           {/* Name */}
 
           <CustomInputField
@@ -201,10 +212,7 @@ const BookingFlow = ({ tutor }: any) => {
       >
         <h2 className="text-2xl font-semibold mb-4">Complete Your Payment</h2>
 
-        <form
-          onSubmit={handlePaymentSubmit(onPaymentSubmit)}
-          className="space-y-4"
-        >
+        <form onSubmit={handlePaymentSubmit(onPaymentSubmit)} className="space-y-4">
           {/* Card Holder Name */}
 
           <CustomInputField
@@ -240,7 +248,7 @@ const BookingFlow = ({ tutor }: any) => {
               name="cvc"
               placeholder="123"
               register={registerPayment}
-              errors={paymentErrors.expiry}
+              errors={paymentErrors.cvc}
               required={true}
             />
           </div>
@@ -248,10 +256,11 @@ const BookingFlow = ({ tutor }: any) => {
           {/* Footer */}
           <div className="mt-4 flex flex-col justify-between gap-2.5">
             <button
-              className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white px-5 py-4 rounded-lg hover:opacity-80  cursor-pointer"
+              className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white px-5 py-4 rounded-lg hover:opacity-80  cursor-pointer disabled:opacity-60"
               type="submit"
+              disabled={isSubmitting}
             >
-              Pay Now
+              {isSubmitting ? "Processing..." : "Pay Now"}
             </button>
             <button
               className="px-5 py-2 rounded-lg  bg-gray-100"

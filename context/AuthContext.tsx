@@ -28,7 +28,7 @@ type AuthContextType = {
   user: User;
   loading: boolean;
   error: string | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, redirectPath?: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 };
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Login
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, redirectPath?:string) => {
     setLoading(true);
     setError(null);
     try {
@@ -86,6 +86,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Redirect after successful login
       const userData = await privateAxios.get("/auth/me");
       const userType = userData.data.data.type;
+
+      console.log("redirect path", redirectPath)
+
+      if (redirectPath) {
+        router.push(redirectPath);
+        return;
+      }
 
       if (userType === "admin") {
         router.push("/admin-dashboard");
