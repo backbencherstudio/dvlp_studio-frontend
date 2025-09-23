@@ -12,6 +12,7 @@ import ErrorMessage from "../reusable/ErrorMessage";
 import { AuthSelect } from "../reusable/AuthSelect";
 import ArrowIcon from "../icons/ArrowIcon";
 import PhoneIcon from "../icons/PhoneIcon";
+import { publicAxios } from "@/lib/axios";
 
 type FormValues = {
   firstName: string;
@@ -40,10 +41,35 @@ export default function StudentSignUp() {
 
   // ✅ watch a "virtual" value (not part of form schema)
   const showPassword = watch("showPassword", false);
-  const showConfirmPassword = watch("showConfirmPassword", false)
+  const showConfirmPassword = watch("showConfirmPassword", false);
 
-  const onSubmit = (data: FormValues) => {
-    console.log("payload:", data);
+  const onSubmit = async(data: FormValues) => {
+    // Create a new FormData object
+    const fd = new FormData();
+
+    // Append the fields to the FormData object
+    fd.append("first_name", data.firstName);
+    fd.append("last_name", data.lastName);
+    fd.append("email", data.email);
+    fd.append("password", data.password);
+    fd.append("phone_number", data.phoneNumber);
+    fd.append("grade_level", data.gradeLevel);
+    fd.append("type", "student"); // Fixed value for type (student)
+
+    
+
+    // Send the FormData to the server (using Axios)
+    try {
+      const response = await publicAxios.post("/auth/register", fd, {
+        headers: {
+          "Content-Type": "multipart/form-data", // Important for file uploads
+        },
+      });
+
+      console.log("Response:", response.data);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   const gradeOptions = [
@@ -109,7 +135,6 @@ export default function StudentSignUp() {
             </div>
           </div>
 
-          
           {/* Email */}
           <div>
             <label
@@ -149,7 +174,8 @@ export default function StudentSignUp() {
               {...register("phoneNumber", {
                 required: "Phonenumber is required",
                 pattern: {
-                  value: /^\+?[0-9]{1,4}?[-.\s]?(\(?\d{2,4}\)?)[-.\s]?\d{3,4}[-.\s]?\d{3,4}$/,
+                  value:
+                    /^\+?[0-9]{1,4}?[-.\s]?(\(?\d{2,4}\)?)[-.\s]?\d{3,4}[-.\s]?\d{3,4}$/,
                   message: "Enter a valid phonenumber",
                 },
               })}
@@ -236,12 +262,15 @@ export default function StudentSignUp() {
                 {...register("confirmPassword", {
                   required: "Confirm Password is required",
                   validate: (value) =>
-                    value === watch("confirmPassword") || "Passwords do not match",
+                    value === watch("confirmPassword") ||
+                    "Passwords do not match",
                 })}
               />
               <button
                 type="button"
-                onClick={() => setValue("showConfirmPassword" as any, !showConfirmPassword)}
+                onClick={() =>
+                  setValue("showConfirmPassword" as any, !showConfirmPassword)
+                }
                 className="text-gray-400 absolute top-1/2 right-4 -translate-y-1/2"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
@@ -281,9 +310,9 @@ export default function StudentSignUp() {
             disabled={isSubmitting}
             className="flex justify-center items-center gap-[7.637px] [background:linear-gradient(90deg,#6366F1_0%,#A855F7_100%)] px-0 py-4 rounded-xl text-white w-full cursor-pointer hover:[background:linear-gradient(90deg,#A855F7_0%,#6366F1_100%)] transition-colors duration-300 text-base font-bold leading-6 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-           {isSubmitting ? "Signing Up..." : "Sign Up"}
+            {isSubmitting ? "Signing Up..." : "Sign Up"}
 
-             <ArrowIcon/>
+            <ArrowIcon />
           </button>
         </div>
       </form>

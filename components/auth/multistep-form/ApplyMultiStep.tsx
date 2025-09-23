@@ -10,6 +10,7 @@ import {
 import Step1 from "./Step1";
 import { Step2 } from "./Step2";
 import { Step3 } from "./Step3";
+import { publicAxios } from "@/lib/axios";
 
 export type FormValues = {
   // Step 1
@@ -131,20 +132,46 @@ export default function ApplyMultiStep() {
     setCustomErrors([]);
 
     // Build FormData (handles files)
-    const fd = new FormData();
-    Object.entries(data).forEach(([k, v]) => {
-      if (k === "documents" && v instanceof FileList) {
-        Array.from(v).forEach((f) => fd.append("documents", f));
-      } else if (Array.isArray(v)) {
-        v.forEach((item) => fd.append(`${k}[]`, String(item)));
-      } else {
-        fd.append(k, String(v));
-      }
-    });
+    // const fd = new FormData();
+    // Object.entries(data).forEach(([k, v]) => {
+    //   if (k === "documents" && v instanceof FileList) {
+    //     Array.from(v).forEach((f) => fd.append("documents", f));
+    //   } else if (Array.isArray(v)) {
+    //     v.forEach((item) => fd.append(`${k}[]`, String(item)));
+    //   } else {
+    //     fd.append(k, String(v));
+    //   }
+    // });
 
+    const formData = new FormData();
+    formData.append('first_name', data.firstName);
+    formData.append('last_name', data.lastName);
+    formData.append('email', data.email);
+    formData.append('phone_number', data.phone);
+    formData.append('password', data.password);
+    formData.append('type', 'teacher');  
+    // formData.append('avatar', data.avatar);
+    // formData.append('certifications', data.documents);
+    formData.append('highest_education_level', data.educationLevel);
+    formData.append('teching_experience', data.experience);
+    formData.append('subjects_taught', JSON.stringify(data.subjects));  // Ensure it's a stringified array
+    formData.append('hourly_rate', data.hourlyRate);
+    formData.append('city', data.location);
+    formData.append('about_me', data.about);
+    formData.append('general_availability', data.availability);
+    formData.append('is_agreed_terms', String(data.agreeTerms));
+    formData.append('is_agree_application_process', String(data.consentBackground));
     // Example:
     // await fetch("/api/apply", { method: "POST", body: fd });
     console.log("FINAL payload (FormData shown as plain):", data);
+
+   
+    try {
+      const res = await publicAxios.post("/auth/register", formData);
+      console.log("Signup", res);
+    } catch (error) {
+      
+    }
   };
 
   return (
