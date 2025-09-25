@@ -3,6 +3,7 @@
 import CustomDialog from "@/components/reusable/CustomDialog";
 import { UserIcon, Users, UsersIcon } from "lucide-react";
 import React, { useState } from "react";
+import CreateSessionForm from "./CreateSessionForm";
 interface SessionCardProps {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   title: string;
@@ -45,12 +46,19 @@ const onEdit = () => {
 };
 
 export default function UpcomingSessions() {
+  const [isCreate, setIsCreate] = useState(false);
+
+  const onClose = () => setIsCreate(false);
+
   return (
     <section className="divide-y divide-[#E5E7EB] rounded-2xl border bg-white">
       <div className="px-8 py-6 flex items-center justify-between flex-wrap">
         <h3 className="text-2xl font-semibold leading-8">Upcoming Sessions</h3>
 
-        <button className="px-[17px] py-3 rounded-xl bg-[#F97316] text-white font-semibold leading-6 mt-4 sm:mt-0">
+        <button
+          onClick={() => setIsCreate(true)}
+          className="px-[17px] py-3 rounded-xl bg-[#F97316] hover:bg-amber-600 text-white font-semibold leading-6 mt-4 sm:mt-0 cursor-pointer"
+        >
           + Create Session
         </button>
       </div>
@@ -66,6 +74,11 @@ export default function UpcomingSessions() {
           onStartSession={onStartSession}
         />
       ))}
+
+      {/* create session modal */}
+      <CustomDialog open={isCreate} setOpen={setIsCreate}>
+        <CreateSessionForm onClose={onClose}/>
+      </CustomDialog>
     </section>
   );
 }
@@ -92,7 +105,9 @@ const SessionCard: React.FC<SessionCardProps> = ({
         </div>
 
         <div>
-          <p className="text-xl text-slate-800 font-semibold leading-7">{title}</p>
+          <p className="text-xl text-slate-800 font-semibold leading-7">
+            {title}
+          </p>
           <p className="text-gray-600">{studentsCount}</p>
           <p className="text-gray-500">{sessionDetails}</p>
         </div>
@@ -102,7 +117,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
       <div className="space-x-3 flex flex-wrap gap-4 justify-center sm:justify-end">
         <button
           onClick={onStartSession}
-          className="bg-gradient-to-r from-[#6366F1] to-[#A855F7] px-5 py-3 text-center rounded-xl text-white cursor-pointer"
+          className="bg-gradient-to-r from-[#6366F1] to-[#A855F7] px-5 py-3 text-center rounded-xl text-white cursor-pointer "
         >
           Start Session
         </button>

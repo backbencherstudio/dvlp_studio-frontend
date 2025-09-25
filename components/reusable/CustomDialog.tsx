@@ -29,12 +29,19 @@ export default function CustomDialog({
       <DialogContent
         className={`${
           width ? "sm:max-w-[367px]" : "sm:max-w-[511px]"
-        }  bg-white border-0 rounded-[16px]`}
+          }  bg-white border-0 rounded-[16px] overflow-hidden max-w-[80vh]`}
       >
         <DialogHeader className="hidden">
           <DialogTitle></DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4">{children}</div>
+        {/* <div className="grid gap-4 overflow-y-auto max-h-80vh">{children}</div> */}
+
+        <div className="flex flex-col min-h-0 max-h-[90vh]">
+          {/* scrollable area */}
+          <div className="overflow-y-auto  min-h-0 custom-scrollbar">
+            {children}
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );
