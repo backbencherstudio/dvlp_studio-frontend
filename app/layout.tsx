@@ -32,6 +32,7 @@ export default function RootLayout({
       <body className={`$ ${inter.className} antialiased`}>
         <QueryClientWrapper>
           <AuthProvider>{children}</AuthProvider>
+          {/* {children} */}
         </QueryClientWrapper>
       </body>
     </html>

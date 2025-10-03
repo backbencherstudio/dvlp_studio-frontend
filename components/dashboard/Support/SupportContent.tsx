@@ -49,24 +49,25 @@
 "use client";
 import CustomSelectField from "@/components/reusable/CustomSelect";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SupportEmail from "./SupportEmail";
 
 export function SupportContent() {
   return (
     <div className="flex w-full flex-col gap-6">
-      <Tabs defaultValue="account" className="">
+      <Tabs defaultValue="support-emails" className="">
         <div className="flex border items-center justify-between">
           <TabsList className="bg-white rounded-[14px] gap-1.5 p-2 w-[312px] h-[62px]">
             <TabsTrigger
               className="px-5 py-2.5 rounded-lg data-[state=active]:bg-black data-[state=active]:text-white "
-              value="account"
+              value="support-emails"
             >
-              Account
+              Support Emails
             </TabsTrigger>
             <TabsTrigger
               className="px-5 py-2.5 rounded-lg data-[state=active]:bg-black data-[state=active]:text-white"
-              value="password"
+              value="user-report"
             >
-              Password
+              User Report
             </TabsTrigger>
           </TabsList>
 
@@ -75,14 +76,12 @@ export function SupportContent() {
             <div className="px-5 py-2.5">Refresh</div>
           </div>
         </div>
-        <TabsContent value="account">
-          Make changes to your account here. Make changes to your account here.
-          Make changes to your account here. Make changes to your account here.
-          Make changes to your account here. Make changes to your account here.
-          Make changes to your account here. Make changes to your account here.
-          Make changes to your account here.
+        <TabsContent value="support-emails">
+          <SupportEmail />
         </TabsContent>
-        <TabsContent value="password">Change your password here.</TabsContent>
+        <TabsContent value="user-report">
+          Change your password here.
+        </TabsContent>
       </Tabs>
     </div>
   );

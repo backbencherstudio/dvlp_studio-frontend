@@ -160,7 +160,7 @@ const CustomTimePicker = <T extends FieldValues = FieldValues>({
               <button
                 type="button"
                 onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-                className="mt-2 px-4 py-4 w-full border border-gray-300 rounded-lg text-left font-normal bg-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className="mt-2 px-4 py-3.5 w-full border border-gray-300 rounded-lg text-left font-normal bg-white hover:border-gray-400 focus:outline-none  transition-all duration-200"
               >
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center space-x-2">
@@ -205,7 +205,7 @@ const CustomTimePicker = <T extends FieldValues = FieldValues>({
 
               {/* Dropdown Popover */}
               {isPopoverOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-50 animate-fade-in w-62">
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-[100] animate-fade-in w-auto">
                   <div className="p-2">
                     <div className="flex gap-1 divide-x">
                       {/* Hours Column */}

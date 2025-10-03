@@ -1,5 +1,6 @@
 import DatePickerField from "@/components/reusable/CustomDateInput";
 import CustomInputField from "@/components/reusable/CustomInput";
+import CustomTimePicker from "@/components/reusable/CustomTimePicker";
 import React from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
@@ -8,7 +9,10 @@ interface RescheduleFormData {
   date: string;
   time: string;
 }
-
+{
+  //   "rescheduled_date": "2025-09-14T10:00:00Z",
+  // "join_link": "oaijd"
+}
 interface RescheduleFormProps {
   onClose: () => void;
 }
@@ -24,7 +28,13 @@ export default function RescheduleForm({ onClose }: RescheduleFormProps) {
   });
 
   const handleAcceptReschedule: SubmitHandler<RescheduleFormData> = (data) => {
-    console.log("Form Data:", data);
+    // Transform the data
+    const transformedData = {
+      rescheduled_date: `${data.date}T${data.time}:00Z`,
+      join_link: data.joinLink,
+    };
+
+    console.log("Transformed Data:", transformedData);
     // Handle form submission logic here (e.g., API call, updating state, etc.)
     onClose();
   };
@@ -68,6 +78,15 @@ export default function RescheduleForm({ onClose }: RescheduleFormProps) {
                 required={true}
                 placeholder="Select Date"
               />
+              <div className="w-full">
+                <CustomTimePicker
+                  // label="Time"
+                  name={`time`}
+                  register={register}
+                  control={control}
+                  required={true}
+                />
+              </div>
             </div>
           </div>
 

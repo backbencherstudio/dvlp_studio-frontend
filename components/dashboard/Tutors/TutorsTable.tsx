@@ -4,6 +4,11 @@ import React, { useState } from "react";
 import ReusableTable from "@/components/reusable/ReusableTable";
 import { EllipsisVertical } from "lucide-react";
 import Link from "next/link";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
 
 const TutorData = [
   {
@@ -22,19 +27,434 @@ const TutorData = [
     status: "Inactive",
     location: "USA",
   },
-  // Add more data here...
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
+  {
+    session_id: "1001",
+    name: "Marvin McKinney",
+    subject: "FRENCH",
+    hourly_rate: "$25/hr",
+    status: "Active",
+    location: "China",
+  },
+  {
+    session_id: "1002",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Inactive",
+    location: "USA",
+  },
+  {
+    session_id: "1003",
+    name: "Sarah Wilson",
+    subject: "MATH",
+    hourly_rate: "$30/hr",
+    status: "Active",
+    location: "USA",
+  },
 ];
 
 const TutorTable = () => {
-  const [openDropdown, setOpenDropdown] = useState<number | null>(null); // Store open dropdown index
-
-  const handleDropdownToggle = (index: number) => {
-    setOpenDropdown(openDropdown === index ? null : index); // Toggle dropdown visibility
-  };
+  // store which row popover is open
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const handleActionClick = (action: string, rowData: any) => {
     console.log(action, rowData);
-    // You can implement action-specific behavior here
+    // do your API calls or logic here
+
+    // ✅ close the popover after action
+    setOpenIndex(null);
   };
 
   const columns = [
@@ -46,46 +466,46 @@ const TutorTable = () => {
     { id: "location", label: "LOCATION" },
     {
       id: "action2",
-      label: "Action2",
+      label: "Action",
       renderRow: (row: any, index: number) => (
-        <td className=" text-sm text-gray-600 relative">
+        <td className="text-sm text-gray-600">
           <div className="flex gap-2 items-center">
             <Link
               href={`/admin-dashboard/tutors/${row.session_id}`}
               className="text-blue-500 px-2 py-1.5 rounded-md border border-gray-200 cursor-pointer"
-              // onClick={() => handleActionClick("View", row)} // View action
             >
               View
             </Link>
-            {row.session_id == "1001" && (
-              <div>
-                <button
-                  className="text-blue-500 p-1.5 rounded-md border border-gray-200 cursor-pointer"
-                  onClick={() => handleDropdownToggle(index)} // Toggle dropdown on ellipsis click
-                >
-                  <EllipsisVertical />
-                </button>
-              </div>
+
+            {row.session_id === "1001" && (
+              <Popover
+                open={openIndex === index}
+                onOpenChange={(isOpen) =>
+                  setOpenIndex(isOpen ? index : null)
+                }
+              >
+                <PopoverTrigger asChild>
+                  <button className="text-blue-500 p-1.5 rounded-md border border-gray-200 cursor-pointer">
+                    <EllipsisVertical />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-28 p-2 space-y-2 mr-12">
+                  <button
+                    className="w-full bg-black text-white rounded-md py-2"
+                    onClick={() => handleActionClick("Delete", row)}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="w-full bg-red-400 text-white rounded-md py-2"
+                    onClick={() => handleActionClick("Restrict", row)}
+                  >
+                    Restrict
+                  </button>
+                </PopoverContent>
+              </Popover>
             )}
           </div>
-
-          {/* Dropdown menu */}
-          {openDropdown === index && (
-            <div className="p-2 space-y-2 absolute z-50 top-0 left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
-              <button
-                className="w-full bg-black text-white rounded-md py-2"
-                onClick={() => handleActionClick("Delete", row)} // Delete action
-              >
-                Delete
-              </button>
-              <button
-                className="w-full bg-red-400 text-white rounded-md py-2"
-                onClick={() => handleActionClick("Restrict", row)} // Restrict action
-              >
-                Restrict
-              </button>
-            </div>
-          )}
         </td>
       ),
     },
