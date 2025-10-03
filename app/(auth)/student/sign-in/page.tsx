@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React from "react";
+import React, { Suspense } from "react";
 import abc from "@/public/evolve-logo.png";
 import PageTag from "@/components/reusable/PageTag";
 import StudentSignIn from "@/components/auth/StudentSignIn";
@@ -31,20 +31,29 @@ export default function page() {
         />
 
         {/* sign in form  */}
-        <StudentSignIn />
-
+        <Suspense fallback={<div>Loading sign in...</div>}>
+          <StudentSignIn />
+        </Suspense>
         <div className=" gap-2  mt-[26px]">
           {/* already have or new comers */}
           <div className="mb-[30px]">
             <p className="leading-6  text-gray-300">
-              Don't have an account?  {" "}
-               <Link href={"/student/sign-up"} className="font-semibold leading-6 text-[#C084FC]">Sign up here</Link>
+              Don't have an account?{" "}
+              <Link
+                href={"/student/sign-up"}
+                className="font-semibold leading-6 text-[#C084FC]"
+              >
+                Sign up here
+              </Link>
             </p>
             <Link className="font-semibold leading-5 text-purple-400" href="" />
           </div>
 
           {/* go back */}
-          <Link href={"/"} className="text-sm font-normal leading-5 text-center text-gray-400 flex items-center justify-center mb-4 md:mb-0">
+          <Link
+            href={"/"}
+            className="text-sm font-normal leading-5 text-center text-gray-400 flex items-center justify-center mb-4 md:mb-0"
+          >
             <ArrowIcon className="w-4 h-4 rotate-180" /> Back to Home
           </Link>
         </div>

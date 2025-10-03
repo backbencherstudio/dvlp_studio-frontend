@@ -5,6 +5,7 @@ import Link from "next/link";
 import ArrowIcon from "@/components/icons/ArrowIcon";
 import CapIcon from "@/components/icons/CapIcon";
 import TutorSignIn from "@/components/auth/TutorSignIn";
+import { Suspense } from "react";
 
 export default function page() {
 
@@ -32,7 +33,9 @@ export default function page() {
         />
 
         {/* sign in form  */}
-        <TutorSignIn />
+            <Suspense fallback={<div>Loading sign in...</div>}>
+              <TutorSignIn />
+            </Suspense>
 
         <div className=" gap-2  mt-[26px]">
           {/* already have or new comers */}

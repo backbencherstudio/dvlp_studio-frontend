@@ -23,6 +23,10 @@ privateAxios.interceptors.request.use((config) => {
 privateAxios.interceptors.response.use(
   (res) => res,
   async (error) => {
+    const isMockAuth = process.env.NEXT_PUBLIC_MOCK_AUTH === "true";
+    if (isMockAuth) {
+      return Promise.reject(error);
+    }
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;

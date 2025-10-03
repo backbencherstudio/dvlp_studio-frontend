@@ -34,7 +34,8 @@ export default function AdminSignIn() {
     watch,
   } = useForm<FormValues>({
     defaultValues: {
-      email: "soysov@gmail.com",
+      // email: "soysov@gmail.com",
+      email: "admin@example.com",
       password: "12345678",
       remember: false,
     },
@@ -46,7 +47,7 @@ export default function AdminSignIn() {
   const onSubmit = async (data: FormValues) => {
     // console.log("payload:", data);
     const { email, password } = data;
-    await login(email, password, callbackUrl);
+    await login(email, password);
   };
 
   return (

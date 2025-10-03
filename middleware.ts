@@ -9,9 +9,25 @@ type TokenPayload = {
   exp: number;
 };
 
+const isMockAuth = process.env.NEXT_PUBLIC_MOCK_AUTH === "true";
+
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("access_token")?.value;
   const { pathname } = req.nextUrl;
+
+  // 🔹 If in mock mode → just inject a fake role
+  if (isMockAuth) {
+    let mockRole: "admin" | "student" | "teacher" = "student"; // default
+
+    if (pathname.startsWith("/admin-dashboard")) mockRole = "admin";
+    if (pathname.startsWith("/tutor-portal")) mockRole = "teacher";
+    if (pathname.startsWith("/student-portal")) mockRole = "student";
+
+    req.nextUrl.searchParams.set("mockRole", mockRole); // just for debugging
+    return NextResponse.next();
+  }
+
+  // 🔹 Normal auth flow
+  const token = req.cookies.get("access_token")?.value;
 
   if (!token) {
     if (pathname.startsWith("/admin-dashboard")) {
@@ -37,7 +53,6 @@ export function middleware(req: NextRequest) {
   try {
     const decoded: TokenPayload = jwtDecode(token);
     role = decoded.type;
-    console.log("Role", role);
   } catch {
     return NextResponse.redirect(new URL("/", req.url));
   }

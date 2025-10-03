@@ -27,6 +27,9 @@ interface TutorProps {
   priceRange: string;
   nextAvailability: string; // ISO 8601 string representation of the date
   grades: string;
+  rating: number;
+  reviews: number;
+  sessionsCompleted: number;
 }
 
 const fetchTutors = async () => {
@@ -69,9 +72,9 @@ const TutorList = () => {
   //   return <div>Loading...</div>;
   // }
 
-  if (isError) {
-    return <div className="text-red-500">Error: {error?.message}</div>;
-  }
+  // if (isError) {
+  //   return <div className="text-red-500">Error: {error?.message}</div>;
+  // }
 
   return (
     <section className="[background:linear-gradient(135deg,#F8FAFC_0%,#EFF6FF_100%)] py-16">
@@ -222,7 +225,7 @@ const TutorList = () => {
                   <TutorLoaderCard />
                 </>
               ) : (
-                tutorList?.map((tutor, index) => (
+                tutors?.map((tutor, index) => (
                   <TutorCard key={index} tutor={tutor} />
                 ))
               )}
@@ -243,7 +246,7 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
         <div className="flex justify-between items-start mb-6">
           {/* Info */}
           <div className="flex">
-            <div className="bg-gray-300 rounded-2xl w-16 h-16 md:w-20 md:h-20 mr-5 shrink-0">
+            <div className="bg-gray-300 rounded-2xl w-16 h-16 md:w-20 md:h-20 mr-5 shrink-0 overflow-hidden">
               <img className="w-full h-full object-cover" src={tutor.avatar || ""} alt={tutor.username} />
             </div>
             <div>
@@ -379,3 +382,75 @@ function TutorLoaderCard() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
+const tutors: TutorProps[] = [
+  {
+    username: "sarah_j",
+    avatar: "https://randomuser.me/api/portraits/women/45.jpg",
+    about_me: "Passionate English tutor with 5+ years of experience helping students improve writing and speaking skills.",
+    country: "USA",
+    city: "New York",
+    subjects: ["English", "Literature", "Creative Writing"],
+    modes: ["Online", "In-Person"],
+    priceRange: "$20 - $30/hr",
+    nextAvailability: "2025-10-05T10:00:00Z",
+    grades: "6-12",
+    rating: 4.8,
+    reviews: 120,
+    sessionsCompleted: 540,
+  },
+  {
+    username: "ahmed_math",
+    avatar: null, // No avatar
+    about_me: "Mathematics specialist focusing on algebra, calculus, and SAT preparation. I make math simple and fun!",
+    country: "Egypt",
+    city: "Cairo",
+    subjects: ["Mathematics", "Algebra", "Calculus"],
+    modes: ["Online"],
+    priceRange: "$15 - $25/hr",
+    nextAvailability: "2025-10-07T14:00:00Z",
+    grades: "9-12",
+    rating: 4.6,
+    reviews: 85,
+    sessionsCompleted: 310,
+  },
+  {
+    username: "maria_sci",
+    avatar: "https://randomuser.me/api/portraits/women/32.jpg",
+    about_me: "Science tutor with expertise in biology and chemistry. Love to engage students with experiments and real-world examples.",
+    country: "Spain",
+    city: "Madrid",
+    subjects: ["Biology", "Chemistry"],
+    modes: ["In-Person"],
+    priceRange: "$18 - $28/hr",
+    nextAvailability: "2025-10-06T09:30:00Z",
+    grades: "7-10",
+    rating: 4.9,
+    reviews: 150,
+    sessionsCompleted: 600,
+  },
+  {
+    username: "john_coding",
+    avatar: "https://randomuser.me/api/portraits/men/18.jpg",
+    about_me: "Software developer and tutor with a focus on teaching Python, JavaScript, and web development.",
+    country: "UK",
+    city: "London",
+    subjects: ["Python", "JavaScript", "Web Development"],
+    modes: ["Online", "In-Person"],
+    priceRange: "$25 - $40/hr",
+    nextAvailability: "2025-10-08T16:00:00Z",
+    grades: "College/University",
+    rating: 4.7,
+    reviews: 95,
+    sessionsCompleted: 420,
+  },
+];

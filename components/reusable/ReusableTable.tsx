@@ -13,6 +13,7 @@ interface TableProps {
   searchPlaceholder: string;
   renderHeader?: (column: string) => React.ReactNode;
   showDropdown?: boolean;
+  onActionClick?: (action: string, row: any) => void;
 }
 
 const ReusableTable = ({

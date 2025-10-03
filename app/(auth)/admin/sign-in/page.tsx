@@ -2,7 +2,7 @@ import AdminSignIn from "@/components/auth/AdminSignIn";
 import BookIcon from "@/components/icons/BookIcon";
 import AuthTitle from "@/components/reusable/AuthTitle";
 import PageTag from "@/components/reusable/PageTag";
-import React from "react";
+import React, { Suspense } from "react";
 
 export default function page() {
   return (
@@ -13,7 +13,9 @@ export default function page() {
         isDarkMode={false}
       />
       <div className="mt-2">
-        <AdminSignIn />
+        <Suspense fallback={<div>Loading sign in...</div>}>
+          <AdminSignIn />
+        </Suspense>
       </div>
     </div>
   );
