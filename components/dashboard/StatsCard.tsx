@@ -5,7 +5,7 @@ export interface CardProps {
   value: number | string;
   color?: string;
   icon: React.ElementType | React.ReactElement;
-  changeType?: "decrease" | "increase";
+  changeType?: "decrease" | "increase" | string;
   change?: string;
   period?: string;
 }

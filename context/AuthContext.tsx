@@ -28,7 +28,8 @@ type AuthContextType = {
   user: User;
   loading: boolean;
   error: string | null;
-  login: (email: string, password: string, redirectPath?: string) => Promise<void>;
+  login: (email: string, password: string, callbackUrl?:string
+  ) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 };
@@ -40,9 +41,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const isMockAuth = process.env.NEXT_PUBLIC_MOCK_AUTH === "true";
 
   // Fetch user info
   const refreshUser = async () => {
+    if (isMockAuth) {
+      return;
+    }
     try {
       const res = await privateAxios.get("/auth/me");
       setUser(res.data.data);
@@ -55,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const loadUser = async () => {
       const token = Cookies.get("access_token");
-      if (token) {
+      if (!isMockAuth && token) {
         await refreshUser();
       }
       setLoading(false);
@@ -65,41 +70,73 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Login
-  const login = async (email: string, password: string, redirectPath?:string) => {
+  const login = async (email: string, password: string, callbackUrl?: string) => {
     setLoading(true);
     setError(null);
     try {
-      const res = await publicAxios.post("/auth/login", { email, password });
-      const { access_token, refresh_token } = res.data.authorization;
-
-      Cookies.set("access_token", access_token, {
-        secure: true,
-        sameSite: "strict",
-      });
-      Cookies.set("refresh_token", refresh_token, {
-        secure: true,
-        sameSite: "strict",
-      });
-
-      await refreshUser(); // fetch actual user info
-
-      // Redirect after successful login
-      const userData = await privateAxios.get("/auth/me");
-      const userType = userData.data.data.type;
-
-      console.log("redirect path", redirectPath)
-
-      if (redirectPath) {
-        router.push(redirectPath);
-        return;
-      }
-
-      if (userType === "admin") {
-        router.push("/admin-dashboard");
-      } else if (userType === "teacher") {
-        router.push("/tutor-portal");
+      if (isMockAuth) {
+        // Simulate tokens and user
+        Cookies.set("access_token", "mock-access-token", {
+          secure: true,
+          sameSite: "strict",
+        });
+        Cookies.set("refresh_token", "mock-refresh-token", {
+          secure: true,
+          sameSite: "strict",
+        });
+        // Infer role from email prefix for convenience
+        const inferredType = email.includes("admin")
+          ? "admin"
+          : email.includes("teacher") || email.includes("tutor")
+          ? "teacher"
+          : "student";
+        const mockUser = {
+          id: "mock-id",
+          email,
+          avatar: null,
+          address: null,
+          phone_number: "",
+          type: inferredType,
+          gender: null,
+          date_of_birth: null,
+          created_at: new Date().toISOString(),
+          avatar_url: null,
+        } as User;
+        setUser(mockUser);
+        setError(null);
+        // Redirect based on inferred role
+        if (inferredType === "admin") {
+          router.push("/admin-dashboard");
+        } else if (inferredType === "teacher") {
+          router.push("/tutor-portal");
+        } else {
+          router.push("/student-portal");
+        }
       } else {
-        router.push("/student-portal");
+        const res = await publicAxios.post("/auth/login", { email, password });
+        const { access_token, refresh_token } = res.data.authorization;
+
+        Cookies.set("access_token", access_token, {
+          secure: true,
+          sameSite: "strict",
+        });
+        Cookies.set("refresh_token", refresh_token, {
+          secure: true,
+          sameSite: "strict",
+        });
+
+        await refreshUser();
+
+        const userData = await privateAxios.get("/auth/me");
+        const userType = userData.data.data.type;
+
+        if (userType === "admin") {
+          router.push("/admin-dashboard");
+        } else if (userType === "teacher") {
+          router.push("/tutor-portal");
+        } else {
+          router.push("/student-portal");
+        }
       }
     } catch (err: any) {
       setError(err.response?.data?.message || "Login failed");
