@@ -10,6 +10,9 @@ interface SelectFieldProps<T extends FieldValues = FieldValues> {
   control: Control<T>;
   options: { label: string; value: string }[];
   required?: boolean; // Optional required field
+  disabled?: boolean; // Optional disabled state
+  placeholder?: string; // Optional custom placeholder
+  onChange?: (value: string) => void; // Optional onChange callback
 }
 
 const CustomSelectField = <T extends FieldValues = FieldValues>({
@@ -19,6 +22,9 @@ const CustomSelectField = <T extends FieldValues = FieldValues>({
   control,
   options,
   required = false,
+  disabled = false,
+  placeholder,
+  onChange,
 }: SelectFieldProps<T>) => {
   return (
     <div>
@@ -36,9 +42,16 @@ const CustomSelectField = <T extends FieldValues = FieldValues>({
         }}
         render={({ field, fieldState }) => (
           <>
-            <Select onValueChange={field.onChange} value={field.value}>
-              <SelectTrigger className="mt-2 px-4 py-6.5 w-full border border-gray-300 rounded-lg">
-                <SelectValue placeholder={`Select ${label}`} />
+            <Select 
+              onValueChange={(value) => {
+                field.onChange(value);
+                onChange?.(value);
+              }} 
+              value={field.value}
+              disabled={disabled}
+            >
+              <SelectTrigger className="mt-2 px-4 py-6.5 w-full border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                <SelectValue placeholder={placeholder || `Select ${label}`} />
               </SelectTrigger>
               <SelectContent>
                 {options.map((option) => (

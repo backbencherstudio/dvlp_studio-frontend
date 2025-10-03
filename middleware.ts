@@ -14,6 +14,22 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (!token) {
+    if (pathname.startsWith("/admin-dashboard")) {
+      return NextResponse.redirect(
+        new URL(`/admin/sign-in?callbackUrl=${pathname}`, req.url)
+      );
+    }
+    if (pathname.startsWith("/tutor-portal")) {
+      return NextResponse.redirect(
+        new URL(`/tutor/sign-in?callbackUrl=${pathname}`, req.url)
+      );
+    }
+    if (pathname.startsWith("/student-portal")) {
+      return NextResponse.redirect(
+        new URL(`/student/sign-in?callbackUrl=${pathname}`, req.url)
+      );
+    }
+
     return NextResponse.redirect(new URL("/", req.url));
   }
 

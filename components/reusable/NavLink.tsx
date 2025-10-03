@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
-import { isatty } from "tty";
 
 interface NavLinkProps {
   href: string;
   children: ReactNode;
-  className?: string; // normal classes
-  activeClassName?: string; // classes when active
-  normalClassName?: string; // classes when active
+  className?: string; // common classes
+  activeClassName?: string; // when active
+  normalClassName?: string; // when not active
+  exact?: boolean; // true = strict match, false = startsWith match
 }
 
 export default function NavLink({
@@ -19,12 +19,14 @@ export default function NavLink({
   className = "",
   activeClassName = "",
   normalClassName = "",
+  exact = false, // default is flexible
 }: NavLinkProps) {
   const pathname = usePathname();
 
-    // const isActive = pathname === href || pathname.startsWith(href + "/" );
-  const isActive = pathname === href;
-  // console.log(pathname, isActive, href)
+  const isActive = exact
+    ? pathname === href
+    : pathname === href || pathname.startsWith(href + "/");
+
   return (
     <Link
       href={href}

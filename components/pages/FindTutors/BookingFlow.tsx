@@ -16,14 +16,18 @@ import {
 import CustomInputField from "@/components/reusable/CustomInput";
 import CustomSelectField from "@/components/reusable/CustomSelect";
 import DatePickerField from "@/components/reusable/CustomDateInput";
-import TimePickerField from "@/components/reusable/CustomTimeInput";
+
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { privateAxios, publicAxios } from "@/lib/axios";
+import CustomTimePicker from "@/components/reusable/CustomTimePicker";
+import { useQuery } from "@tanstack/react-query";
 
 // Mock API calls
 type BookingFormValues = {
   name: string;
   subject: string;
-  date: string;
-  time: string;
+  slot: string;
 };
 
 type PaymentFormValues = {
@@ -33,28 +37,46 @@ type PaymentFormValues = {
   cvc: string;
 };
 
-const mockCreateBooking = (
-  data: BookingFormValues
-): Promise<{ status: "success" | "error" }> => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve({ status: "success" }), 2000);
-  });
+// Separate API calls for booking and payment
+type BookingApiPayload = {
+  name: string;
+  subject: string;
+  slots: Date;
+  tutorId: string;
+  sessionId: string;
+  sessionCharge: string;
+  mode: string;
 };
 
-const mockPaymentProcessing = (
-  paymentDetails: PaymentFormValues
-): Promise<{ status: "success" | "error" }> => {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve({ status: "success" }), 2000);
-  });
+const createBooking = async (bookingData: BookingApiPayload) => {
+  const { sessionId, ...body } = bookingData; 
+  return privateAxios.post(`/students/sessions/${sessionId}/book`, body);
+};
+
+const processPayment = async (
+  paymentData: PaymentFormValues & { bookingId: string }
+) => {
+  // Adjust endpoint/body as per backend
+  return privateAxios.post("/payments", paymentData);
 };
 
 const BookingFlow = ({ tutor }: any) => {
-  // console.log("Tutor", tutor);
+  console.log("Tutor", tutor);
   // Step 1: State for handling modal visibility
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [createdBooking, setCreatedBooking] = useState<{ id: string } | null>(
+    null
+  );
+  const [isBookingSubmitting, setIsBookingSubmitting] = useState(false);
+  const [isPaymentSubmitting, setIsPaymentSubmitting] = useState(false);
+  const [bookingError, setBookingError] = useState<string | null>(null);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [tutorSessions, setTutorSessions] = useState<any>([]);
+  const [selectedSubject, setSelectedSubject] = useState<string>("");
+  const router = useRouter();
+  const { user } = useAuth();
 
   // Step 2: React Hook Form setup for booking and payment forms
   const {
@@ -64,12 +86,11 @@ const BookingFlow = ({ tutor }: any) => {
     control: bookingControl,
     watch: watchBooking,
   } = useForm<BookingFormValues>({
-    defaultValues: { name: "", subject: "", date: "", time: "" },
+    defaultValues: { name: "", subject: "", slot: "" },
   });
 
   // Watch form values to see date field updates (for debugging)
   const watchedValues = watchBooking();
-  console.log("Current form values:", watchedValues);
 
   const {
     register: registerPayment,
@@ -79,33 +100,175 @@ const BookingFlow = ({ tutor }: any) => {
     defaultValues: { cardName: "", cardNumber: "", expiry: "", cvc: "" },
   });
 
-  // Step 3: Booking Form Submission
-  const onBookingSubmit = async (formData: BookingFormValues) => {
-    console.log(formData); // Log form data for debugging
-    const response = await mockCreateBooking(formData);
-    if (response.status === "success") {
-      setIsBookingModalOpen(false);
-      setIsPaymentModalOpen(true); // Open payment modal after booking
+  const handleBookingSession = async (id: string) => {
+    if (user && user.type === "student") {
+      setBookingError(null);
+      setPaymentError(null);
+      setSelectedSubject("");
+      setIsBookingModalOpen(true);
+
+      try {
+        const res = await publicAxios.get(`/teacher/my-sessions/${id}`);
+        setTutorSessions(res.data);
+      } catch (error) {
+        console.error("Failed to fetch tutor sessions:", error);
+      }
+    } else {
+      router.push(
+        `/student/sign-in?callbackUrl=${encodeURIComponent("/find-tutors")}`
+      );
     }
   };
 
-  // Step 4: Payment Form Submission
+  console.log("tutorSessions:", tutorSessions);
+  console.log("bookingErrors:", bookingErrors);
+  console.log("selectedSubject:", selectedSubject);
+
+  // Helper functions to extract data from tutorSessions
+  const getUniqueSubjects = () => {
+    const subjects = tutorSessions.map((session: any) => session.subject);
+    return [...new Set(subjects)].map((subject) => ({
+      label: subject as string,
+      value: subject as string,
+    }));
+  };
+
+  const getAvailableSlotsForSubject = (subject: string) => {
+    const session = tutorSessions.find(
+      (session: any) => session.subject === subject
+    );
+    return session?.available_slots_time_and_date || [];
+  };
+
+  const formatSlotForDisplay = (slot: string) => {
+    const date = new Date(slot);
+    return date.toLocaleString("en-US", {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
+  const getAvailableSlotOptions = () => {
+    if (!selectedSubject) return [];
+    const slots = getAvailableSlotsForSubject(selectedSubject);
+    return slots.map((slot: string) => ({
+      label: formatSlotForDisplay(slot),
+      value: slot,
+    }));
+  };
+
+  // sign-in?callbackUrl=/tutor-portal/profile
+
+  // Step 4: Booking Form Submission
+  const onBookingSubmit = async (data: BookingFormValues) => {
+    console.log("Form data:", data);
+    console.log("Tutor sessions:", tutorSessions);
+
+    try {
+      setIsBookingSubmitting(true);
+      setBookingError(null);
+
+      // Validate required fields
+      if (!data.name || !data.subject || !data.slot) {
+        throw new Error("Please fill in all required fields");
+      }
+
+      // Validate slot is a valid date string
+      const slotDate = new Date(data.slot);
+      if (isNaN(slotDate.getTime())) {
+        throw new Error("Invalid date selected");
+      }
+
+      // Find the session details for the selected subject
+      const selectedSession = tutorSessions.find(
+        (session: any) => session.subject === data.subject
+      );
+
+      if (!selectedSession) {
+        throw new Error("Selected session not found");
+      }
+
+      console.log("Selected session:", selectedSession);
+      console.log("Slot date:", slotDate);
+      console.log("Slot date type:", typeof slotDate);
+      console.log("Slot date instanceof Date:", slotDate instanceof Date);
+
+      const bookingPayload = {
+        name: data.name,
+        subject: data.subject,
+        slots: slotDate, // Use the validated Date instance
+        tutorId: tutor?.id || tutor?._id,
+        sessionId: selectedSession.id,
+        sessionCharge: selectedSession.session_charge,
+        mode: selectedSession.mode,
+      };
+
+      console.log("Booking payload:", bookingPayload);
+
+      const response = await createBooking(bookingPayload);
+
+      console.log("Booking response:", response);
+
+      // Store the created booking ID for payment
+      setCreatedBooking({ id: response.data.id || response.data._id });
+
+      setIsBookingModalOpen(false);
+      setIsPaymentModalOpen(true);
+    } catch (error: any) {
+      console.error("Booking creation failed", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to create booking. Please try again.";
+      setBookingError(
+        typeof errorMessage === "string"
+          ? errorMessage
+          : "Failed to create booking. Please try again."
+      );
+    } finally {
+      setIsBookingSubmitting(false);
+    }
+  };
+
   const onPaymentSubmit = async (paymentDetails: PaymentFormValues) => {
-    console.log(paymentDetails); // Log payment details for debugging
-    const response = await mockPaymentProcessing(paymentDetails);
-    if (response.status === "success") {
+    if (!createdBooking) return;
+    try {
+      setIsPaymentSubmitting(true);
+      setPaymentError(null);
+
+      await processPayment({
+        ...paymentDetails,
+        bookingId: createdBooking.id,
+      });
+
       setIsPaymentModalOpen(false);
-      setIsSuccessModalOpen(true); // Show success modal after payment
+      setIsSuccessModalOpen(true);
+    } catch (error: any) {
+      console.error("Payment processing failed", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.message ||
+        "Payment processing failed. Please try again.";
+      setPaymentError(
+        typeof errorMessage === "string"
+          ? errorMessage
+          : "Payment processing failed. Please try again."
+      );
+    } finally {
+      setIsPaymentSubmitting(false);
     }
   };
 
   return (
     <div className="w-full">
       {/* Button to open booking modal */}
-    
 
       <button
-        onClick={() => setIsBookingModalOpen(true)}
+        onClick={() => handleBookingSession(tutor?.userid || tutor?.id)}
         className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white px-5 py-3.5 rounded-xl hover:opacity-80 w-full cursor-pointer border  "
       >
         Book Session
@@ -132,7 +295,7 @@ const BookingFlow = ({ tutor }: any) => {
             name="name"
             placeholder="Enter your name"
             register={registerBooking}
-            errors={bookingErrors.name}
+            errors={bookingErrors?.name}
             required={true}
           />
 
@@ -142,49 +305,77 @@ const BookingFlow = ({ tutor }: any) => {
             name="subject"
             register={registerBooking}
             control={bookingControl}
-            options={[
-              { label: "Math", value: "Math" },
-              { label: "Science", value: "Science" },
-            ]}
+            options={getUniqueSubjects()}
             required={true}
+            onChange={(value: string) => setSelectedSubject(value)}
           />
 
-          {/* Date */}
-          <DatePickerField
-            label="Date"
-            name="date"
+          {/* Available Slots */}
+          <CustomSelectField
+            label="Available Slots"
+            name="slot"
             register={registerBooking}
             control={bookingControl}
+            options={getAvailableSlotOptions()}
             required={true}
+            disabled={!selectedSubject}
+            placeholder={
+              selectedSubject ? "Select a time slot" : "First select a subject"
+            }
           />
 
-          {/* Time */}
+          {/* <div className="flex flex-col sm:flex-row gap-4">
 
-          <div>
-            <label htmlFor="time" className="block text-sm font-medium">
-              Time
-            </label>
-            <input
-              type="time"
-              id="time"
-              className="mt-2 px-3 py-4 w-full border border-gray-300 rounded-md"
-              {...registerBooking("time", { required: "Time is required" })}
-            />
-            <ErrorMessage error={bookingErrors.time} />
-          </div>
+            <div className="flex-1">
+              <DatePickerField
+                label="Date"
+                name="date"
+                register={registerBooking}
+                control={bookingControl}
+                required={true}
+              />
+            </div>
+
+            <div className="flex-1">
+
+              <CustomTimePicker
+                label="Time"
+                name="time"
+                register={registerBooking}
+                control={bookingControl}
+                required={true}
+              />
+            </div>
+          </div> */}
+
+          {/* Error Display */}
+          {bookingError && (
+            <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+              {typeof bookingError === "string"
+                ? bookingError
+                : JSON.stringify(bookingError)}
+            </div>
+          )}
 
           {/* Footer */}
           <div className="mt-4 flex flex-col justify-between">
             <button
               type="submit"
-              className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white px-5 py-2 rounded-lg hover:opacity-80  cursor-pointer"
+              className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white px-5 py-2 rounded-lg hover:opacity-80 cursor-pointer disabled:opacity-60"
+              disabled={isBookingSubmitting}
             >
-              Proceed to Payment
+              {isBookingSubmitting
+                ? "Creating Booking..."
+                : "Proceed to Payment"}
             </button>
             <button
               type="button"
               className="px-5 py-2 rounded-lg"
-              onClick={() => setIsBookingModalOpen(false)}
+              onClick={() => {
+                setIsBookingModalOpen(false);
+                setSelectedSubject("");
+                // Reset form if needed
+              }}
             >
               Cancel
             </button>
@@ -240,18 +431,28 @@ const BookingFlow = ({ tutor }: any) => {
               name="cvc"
               placeholder="123"
               register={registerPayment}
-              errors={paymentErrors.expiry}
+              errors={paymentErrors.cvc}
               required={true}
             />
           </div>
 
+          {/* Error Display */}
+          {paymentError && (
+            <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+              {typeof paymentError === "string"
+                ? paymentError
+                : JSON.stringify(paymentError)}
+            </div>
+          )}
+
           {/* Footer */}
           <div className="mt-4 flex flex-col justify-between gap-2.5">
             <button
-              className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white px-5 py-4 rounded-lg hover:opacity-80  cursor-pointer"
+              className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white px-5 py-4 rounded-lg hover:opacity-80 cursor-pointer disabled:opacity-60"
               type="submit"
+              disabled={isPaymentSubmitting}
             >
-              Pay Now
+              {isPaymentSubmitting ? "Processing Payment..." : "Pay Now"}
             </button>
             <button
               className="px-5 py-2 rounded-lg  bg-gray-100"

@@ -11,6 +11,7 @@ import { EyeClosed, LockIcon } from "lucide-react";
 import ErrorMessage from "../reusable/ErrorMessage";
 import ArrowIcon from "../icons/ArrowIcon";
 import { useAuth } from "@/context/AuthContext";
+import { useSearchParams } from "next/navigation";
 
 type FormValues = {
   email: string;
@@ -20,6 +21,9 @@ type FormValues = {
 };
 
 export default function TutorSignIn() {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/tutor-portal";
+
   const { login, error } = useAuth();
   const {
     register,
@@ -41,7 +45,7 @@ export default function TutorSignIn() {
   const onSubmit = async (data: FormValues) => {
     // console.log("payload:", data);
     const { email, password } = data;
-    await login(email, password);
+    await login(email, password, callbackUrl);
   };
 
   return (

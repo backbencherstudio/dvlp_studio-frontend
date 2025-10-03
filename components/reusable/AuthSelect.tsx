@@ -44,7 +44,7 @@ export function AuthSelect({
             "w-full rounded-xl",
             "py-[26px] px-4",
             "border border-[rgba(255,255,255,0.20)]",
-            "bg-white/5 backdrop-blur-[5px]",
+            // "bg-white/5 backdrop-blur-[5px]",
             "text-white text-base data-[placeholder]:text-gray-300",
             "focus:outline-none focus:ring-0 focus:ring-white/30",
             "[&_svg]:!text-gray-400 [&_svg]:w-5 [&_svg]:h-5",

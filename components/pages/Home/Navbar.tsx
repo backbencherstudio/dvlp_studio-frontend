@@ -50,7 +50,7 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-100 transition-all duration-300 ease-in-out ${
+      className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ease-in-out ${
         solid
           ? "bg-gradient-to-r from-[#2a0261]/90 via-[#2c0f54]/90 to-[#0f172a]/90 backdrop-blur-sm"
           : "bg-[rgba(0,0,0,0.16)]"
