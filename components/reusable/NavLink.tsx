@@ -26,6 +26,7 @@ export default function NavLink({
   const isActive = exact
     ? pathname === href
     : pathname === href || pathname.startsWith(href + "/");
+    
 
   return (
     <Link
