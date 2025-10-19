@@ -207,7 +207,7 @@ function renderUser(user: User | null) {
     case "teacher":
       return (
         <li className="transition hover:text-purple-400 text-lg text-gray-100">
-          <Link href="/tutor-portal/profile">Teacher Portal</Link>
+          <Link href="/tutor-portal">Teacher Portal</Link>
         </li>
       );
     case "student":

@@ -47,8 +47,8 @@ export default function Sidebar({
               href={item?.slug}
               className="flex items-center px-3 py-3.5   rounded-lg transition-all duration-200 gap-2.5"
               activeClassName="bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-white shadow-sm font-medium"
-              normalClassName="text-[#4A4C56] hover:bg-gray-100 hover:text-gray-800 "
-              exact={true}
+              normalClassName="text-[#4A4C56] hover:bg-gray-100 hover:text-gray-800"
+              exact={index === 0}
             >
               <item.icon className="w-5 h-5 " />
               {item.label}

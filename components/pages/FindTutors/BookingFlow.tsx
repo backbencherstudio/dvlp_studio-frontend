@@ -56,9 +56,11 @@ const createBooking = async (bookingData: BookingApiPayload) => {
 const processPayment = async (
   paymentData: PaymentFormValues & { bookingId: string }
 ) => {
-  // Adjust endpoint/body as per backend
   return privateAxios.post("/payments", paymentData);
 };
+
+
+// booking form component
 
 const BookingFlow = ({ tutor }: any) => {
   console.log("Tutor", tutor);

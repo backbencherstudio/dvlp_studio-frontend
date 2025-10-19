@@ -1,100 +1,156 @@
+"use client";
 import BookIcon from "@/components/icons/BookIcon";
 import CalenderIcon from "@/components/icons/CalenderIcon";
 import RescheduleModal from "./RescheduleModal";
 
-interface SessionCardProps {
-  subject: string;
-  tutor: string;
-  date: string;
-  time: string;
-  mode: "Virtual" | "In-person";
-  status?: "upcoming" | "ended" | "reschedule" | "rescheduleRequested";
-  joinLink?: string;
+export interface SessionCardProps {
+  bookingId: string;
+  studentUsername: string;
+  sessionDate: string;
+  isJoined: boolean;
+  isCancelled: boolean;
+  isCompleted: boolean;
+  status: string;
+  sessionDetails: {
+    sessionId: string;
+    teacherId: string;
+    teacherName: string;
+    avatar: string | null;
+    sessionType: string;
+    subject: string;
+    charge: string;
+    mode: "In_Person" | "Virtual";
+    joinLink?: string;
+  };
+  rescheduleDetails?: any;
+  onReschedule?: () => void;
 }
 
 export default function SessionCard({
-  subject,
-  tutor,
-  date,
-  time,
-  mode,
-  status = "upcoming",
-  joinLink,
+  bookingId,
+  studentUsername,
+  sessionDate,
+  isJoined,
+  isCancelled,
+  isCompleted,
+  status,
+  sessionDetails,
+  rescheduleDetails,
+  onReschedule,
 }: SessionCardProps) {
+  const { subject, teacherName, mode, joinLink } = sessionDetails;
+
+  // Format date and time nicely
+  const dateObj = new Date(sessionDate);
+  const formattedDate = dateObj.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+  const formattedTime = dateObj.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  // Determine UI status
+  const showEndedMessage = isCompleted && !isCancelled;
+  const showRescheduleButton = showEndedMessage && !rescheduleDetails;
+
   return (
     <div className="p-6 bg-white rounded-xl shadow border border-gray-200 space-y-3">
       {/* Header */}
       <div className="flex items-start justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-            {/* icon */}
-            <div className="flex items-center justify-center p-4 bg-gradient-to-r from-[#6366F1] to-[#A855F7] rounded-2xl text-white">
-              <BookIcon className="w-8 h-8" />
-            </div>
-            <div>
-              <p> {subject}</p>
-              <p className="text-sm text-gray-600">with {tutor}</p>
-            </div>
-          </h3>
+        {/* Subject + Tutor */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center justify-center p-4 bg-gradient-to-r from-[#6366F1] to-[#A855F7] rounded-2xl text-white">
+            <BookIcon className="w-8 h-8" />
+          </div>
+          <div>
+            <p className="text-lg font-semibold text-gray-800">{subject}</p>
+            <p className="text-sm text-gray-600">with {teacherName}</p>
+          </div>
         </div>
 
         {/* Date + Time */}
         <div className="text-right text-sm text-gray-500">
           <div className="flex items-center gap-1 justify-end">
             <CalenderIcon className="w-4 h-4" />
-            {date}
+            {formattedDate}
           </div>
           <div>
-            {time} • {mode}
+            {formattedTime} • {mode.replace("_", " ")}
           </div>
         </div>
       </div>
 
-      {/* Extra info if session ended */}
-      {status === "ended" && (
+      {/* Info Message */}
+      {showEndedMessage && (
         <div className="p-3 border border-dashed border-red-300 bg-red-50 rounded-lg text-sm text-red-700">
-          Your session has ended. If you’d like to retake the missed session,
-          kindly submit a reschedule request within 3 hours.
+          Your session has ended. You can request a reschedule within 3 hours.
         </div>
       )}
 
       {/* Buttons */}
       <div className="flex flex-wrap gap-3">
-        {status === "upcoming" && (
+        {/* ✅ Upcoming or Pending */}
+        {!isCancelled && !isCompleted && (
           <>
             {joinLink && (
               <a
                 href={joinLink}
                 target="_blank"
-                className="px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-white rounded-md hover:bg-purple-700"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-white rounded-md hover:opacity-90"
               >
                 Join Session
               </a>
             )}
-            <button className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 cursor-pointer">
-              Reschedule
-            </button>
-            <button className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 cursor-pointer">
-              Cancel
-            </button>
-          </>
-        )}
-
-        {status === "ended" && (
-          <>
-            {/* <button className="px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-white rounded-md hover:bg-purple-700 cursor-pointer">
+            {/* <button className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200">
               Reschedule
             </button> */}
-            <RescheduleModal/>
-            <button className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200 cursor-pointer">
+
+            <RescheduleModal
+              data={{
+                tutor: teacherName,
+                subject,
+                id: bookingId
+              }}
+              color={false}
+            />
+            <button className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200">
               Cancel
             </button>
           </>
         )}
 
-        {status === "rescheduleRequested" && (
+        {/* ✅ Completed but Reschedulable */}
+        {showRescheduleButton && !rescheduleDetails &&(
+          <>
+            <RescheduleModal
+              data={{
+                tutor: teacherName,
+                subject,
+                id:bookingId
+              }}
+              color={true}
+            />
+            <button className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200">
+              Cancel
+            </button>
+          </>
+        )}
+
+        {/* ✅ Already Requested Reschedule */}
+        {rescheduleDetails && (
           <span className="px-3 py-1 text-xs font-medium bg-yellow-100 text-yellow-600 rounded-md">
             Reschedule Requested
+          </span>
+        )}
+
+        {/* ✅ Cancelled */}
+        {isCancelled && (
+          <span className="px-3 py-1 text-xs font-medium bg-red-100 text-red-600 rounded-md">
+            Cancelled
           </span>
         )}
       </div>
