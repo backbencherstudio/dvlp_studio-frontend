@@ -5,6 +5,12 @@ import CustomInputField from "@/components/reusable/CustomInput";
 import CustomSelectField from "@/components/reusable/CustomSelect";
 import ErrorMessage from "@/components/reusable/ErrorMessage";
 import SuccessModal from "@/components/reusable/SuccessModal";
+import { privateAxios } from "@/lib/axios";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -14,7 +20,24 @@ type FormValues = {
   reason: string;
 };
 
-export default function RescheduleModal() {
+// api call
+const useResheduleSession = (id: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (data: FormValues) => {
+      const res = await privateAxios.post(`/students/${id}/reschedule`, data);
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["studentSessions", id],
+      });
+    },
+  });
+};
+
+export default function RescheduleModal({ data, color }: any) {
+  const { tutor, subject, id } = data;
   // handle modal
   const [open, setOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -28,51 +51,69 @@ export default function RescheduleModal() {
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<FormValues>({
+    defaultValues: {
+      name: tutor || "",
+      subject: subject || "",
+      reason: "",
+    },
+  });
 
+  // api
+  const { mutate, isPending } = useResheduleSession(id);
   const onSubmit = (data: FormValues) => {
-    console.log("Reschedule Request:", data);
-    // send data to API
+    console.log("Reschedule Request:", data + id);
 
-    setTimeout(() => {
-      onClose();
-      setIsSuccess(true);
-    }, 1000);
+    mutate(data, {
+      onSuccess: () => {
+        onClose();
+        setIsSuccess(true);
+      },
+      onError: (error: any) => {
+        console.log("Error", error);
+      },
+    });
   };
   return (
     <div>
-      <button
-        onClick={onOpen}
-        className="px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-white rounded-md hover:bg-purple-700 cursor-pointer"
-      >
-        Reschedule
-      </button>
+      {color ? (
+        <button
+          onClick={onOpen}
+          className="px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-white rounded-md hover:bg-purple-700 cursor-pointer"
+        >
+          Reschedule
+        </button>
+      ) : (
+        <button
+          onClick={onOpen}
+          className="px-4 py-2 cursor-pointer bg-gray-100 rounded-md hover:bg-gray-200"
+        >
+          Reschedule
+        </button>
+      )}
 
       <CustomDialog open={open} setOpen={setOpen}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 ">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <CustomInputField
-            label="Your Name"
+            label="Name"
             name="name"
-            placeholder="Enter your full name"
+            placeholder="Your Name"
             register={register}
             errors={errors.name}
             required={true}
+            readonly={true}
           />
 
-          <div>
-            {/* Subject */}
-            <CustomSelectField
-              label="Subject"
-              name="subject"
-              register={register}
-              control={control}
-              options={[
-                { label: "Math", value: "Math" },
-                { label: "Science", value: "Science" },
-              ]}
-              required={true}
-            />
-          </div>
+          <CustomInputField
+            label="Subject"
+            name="subject"
+            placeholder="Your Subject"
+            register={register}
+            errors={errors.subject}
+            required={true}
+            readonly={true}
+          />
+
           <div>
             <label
               className="block text-sm font-medium text-[#374151]"
@@ -101,8 +142,6 @@ export default function RescheduleModal() {
           </button>
         </form>
       </CustomDialog>
-
-   
 
       <SuccessModal
         open={isSuccess}

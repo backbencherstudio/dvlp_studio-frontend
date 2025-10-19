@@ -1,52 +1,90 @@
 import ArrowIcon from "@/components/icons/ArrowIcon";
 import BookIcon from "@/components/icons/BookIcon";
-import LightIcon from "@/components/icons/LightIcon";
 import Image from "next/image";
 import React from "react";
 
 interface SubjectProps {
   id: string | number;
   imageSrc: string;
+  icon: React.ElementType;
+  tutors: number;
   title: string;
   description: string;
+  bgColorFrom: string;
+  bgColorTo: string;
 }
+import {
+  CalculatorIcon,
+  FlaskConicalIcon,
+  BookOpenIcon,
+  LanguagesIcon,
+  Globe2Icon,
+  TargetIcon,
+  Icon,
+  PenTool,
+  PentagonIcon,
+} from "lucide-react";
 
-const subjects: SubjectProps[] = [
+export const subjects: SubjectProps[] = [
   {
-    id: 120,
-    imageSrc: "https://via.placeholder.com/400x300",
+    id: 1,
+    imageSrc: "/images/Mathematics.png",
+    icon: CalculatorIcon,
+    tutors: 120,
     title: "Mathematics",
     description: "From basic arithmetic to advanced calculus",
+    bgColorFrom: "#3B82F6",
+    bgColorTo: "#06B6D4",
   },
   {
-    id: 95,
-    imageSrc: "https://via.placeholder.com/400x300",
+    id: 2,
+    imageSrc: "/images/Science.png",
+    icon: FlaskConicalIcon,
+    tutors: 95,
     title: "Science",
     description: "Physics, Chemistry, Biology & more",
+    bgColorFrom: "#22C55E",
+    bgColorTo: "#16A34A",
   },
   {
-    id: 85,
-    imageSrc: "https://via.placeholder.com/400x300",
+    id: 3,
+    imageSrc: "/images/English.png",
+    icon: PenTool,
+    tutors: 85,
     title: "English",
     description: "Literature, Writing & Communication",
+    bgColorFrom: "#8B5CF6",
+    bgColorTo: "#7C3AED",
   },
   {
-    id: 70,
-    imageSrc: "https://via.placeholder.com/400x300",
+    id: 4,
+    imageSrc: "/images/Languages.png",
+    icon: LanguagesIcon,
+    tutors: 70,
     title: "Languages",
     description: "Spanish, French, German & more",
+    bgColorFrom: "#EC4899",
+    bgColorTo: "#DB2777",
   },
   {
-    id: 60,
-    imageSrc: "https://via.placeholder.com/400x300",
+    id: 5,
+    imageSrc: "/images/Social-Studies.png",
+    icon: Globe2Icon,
+    tutors: 60,
     title: "Social Studies",
     description: "History, Geography & Government",
+    bgColorFrom: "#F97316",
+    bgColorTo: "#EA580C",
   },
   {
-    id: 110,
-    imageSrc: "https://via.placeholder.com/400x300",
+    id: 6,
+    imageSrc: "/images/Test-Prep.png",
+    icon: TargetIcon,
+    tutors: 110,
     title: "Test Prep",
     description: "SAT, ACT, AP & College Prep",
+    bgColorFrom: "#EC4899",
+    bgColorTo: "#DB2777",
   },
 ];
 
@@ -76,13 +114,7 @@ export default function SubjectMastery() {
       {/*  */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 lg:gap-x-[115px] gap-y-8 gap max-w-[1378px] mx-auto px-8 mt-8 md:mt-[84px]">
         {subjects.map((subject) => (
-          <SubjectCard
-            key={subject.id}
-            id={subject.id}
-            title={subject.title}
-            imageSrc={subject.imageSrc}
-            description={subject.description}
-          />
+          <SubjectCard key={subject.id} {...subject} />
         ))}
       </div>
 
@@ -101,20 +133,45 @@ export default function SubjectMastery() {
   );
 }
 
-const SubjectCard = ({ id, imageSrc, title, description }: SubjectProps) => {
+const SubjectCard = ({
+  id,
+  imageSrc,
+  title,
+  description,
+  icon: Icon,
+  tutors,
+  bgColorFrom,
+  bgColorTo,
+}: SubjectProps) => {
   return (
     <div className="rounded-3xl border border-gray-100  md:w-96">
       {/* img */}
       <div className="w-full md:h-48 rounded-t-3xl overflow-hidden relative">
         <Image
-          src="https://img.freepik.com/free-photo/elder-professor-standing-near-chalkboard-classroom_23-2148201092.jpg?semt=ais_hybrid&w=740&q=80"
+          src={imageSrc}
           alt={title}
           className="w-full h-full object-cover "
           width={600}
           height={300}
         />
+
         <div className="shrink-0 [background:linear-gradient(0deg,rgba(0,0,0,0.50)_0%,rgba(0,0,0,0.00)_100%)] absolute inset-0 rounded-t-3xl" />
+
+        <div className="absolute z-10 inset-0  flex flex-col justify-between p-4">
+          <div
+            className={`flex w-12 h-12 justify-center items-center shrink-0 bg-gradient-to-r p-2 rounded-xl text-white`}
+            style={{
+              backgroundImage: `linear-gradient(to right, ${bgColorFrom}, ${bgColorTo})`,
+            }}
+          >
+            <Icon />
+          </div>
+          <span className="text-sm font-bold leading-5 opacity-90 text-white">
+            {tutors}+ tutors
+          </span>
+        </div>
       </div>
+
       {/* info */}
       <div className="p-[25px] font-arial">
         <h5 className="text-2xl text-slate-800 font-bold leading-8 mb-3">

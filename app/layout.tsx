@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import QueryClientWrapper from "@/context/queryClientProvider";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -32,7 +33,7 @@ export default function RootLayout({
       <body className={`$ ${inter.className} antialiased`}>
         <QueryClientWrapper>
           <AuthProvider>{children}</AuthProvider>
-          {/* {children} */}
+          <Toaster/>
         </QueryClientWrapper>
       </body>
     </html>

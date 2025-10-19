@@ -1,4 +1,4 @@
-import StudentPortalContents from "@/components/pages/StudentPortal/StudentPortalContents";
+import StudentPortalContents from "@/components/pages/StudentPortal/StudentPortalBookings";
 import React from "react";
 
 export default function BookingPage() {

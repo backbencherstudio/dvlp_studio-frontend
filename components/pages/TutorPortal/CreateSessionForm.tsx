@@ -3,160 +3,188 @@
 import DatePickerField from "@/components/reusable/CustomDateInput";
 import CustomInputField from "@/components/reusable/CustomInput";
 import CustomSelectField from "@/components/reusable/CustomSelect";
-import TimePickerField from "@/components/reusable/CustomTimeInput";
 import CustomTimePicker from "@/components/reusable/CustomTimePicker";
+import { useCreateSession, useUpdateSession } from "@/hooks/useTutorSessions";
 import { privateAxios } from "@/lib/axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React from "react";
 import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
+import { toast } from "sonner";
 
-interface CreateSessionFormData {
+/* ================================
+   Interfaces
+================================ */
+export interface CreateSessionFormData {
   session_type: string;
   subject: string;
   session_charge: string;
   mode: "Virtual" | "In_Person";
   join_link: string;
-  available_slots: {
+  available_slots_time_and_date: {
     date: string;
     time: string;
   }[];
 }
 
-interface CreateSessionFormProps {
+interface SessionFormProps {
   onClose: () => void;
+  session?: CreateSessionFormData & { id?: string }; // ✅ optional for edit
 }
 
-const createSession = async (data:any) => {
-  const res = await privateAxios.post("/teacher/create-session", data);
-  return res.data;
-};
+/* ================================
+   API Mutations
+================================ */
 
-export default function CreateSessionForm({ onClose }: CreateSessionFormProps) {
-  const queryClient = useQueryClient();
+// create session
+// const createSession = async (data: any) => {
+//   const res = await privateAxios.post("/teacher/create-session", data);
+//   return res.data;
+// };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    control,
-  } = useForm<CreateSessionFormData>({
-    defaultValues: {
-      session_type: "",
-      subject: "",
-      session_charge: "",
-      mode: "In_Person",
-      join_link: "",
-      available_slots: [{ date: "", time: "" }],
-    },
-  });
+// update session
+// const updateSession = async (data: any, id: string) => {
+//   const res = await privateAxios.put(`/teacher/update-session/${id}`, data);
+//   return res.data;
+// };
+
+// // hook: create
+// const useCreateSession = () => {
+//   const queryClient = useQueryClient();
+//   return useMutation({
+//     mutationFn: createSession,
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["sessions"] });
+//       toast.success("Session created successfully!");
+//     },
+//     onError: () => toast.error("Failed to create session"),
+//   });
+// };
+
+// hook: update
+// const useUpdateSession = () => {
+//   const queryClient = useQueryClient();
+//   return useMutation({
+//     mutationFn: ({ id, data }: { id: string; data: any }) =>
+//       updateSession(data, id),
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["sessions"] });
+//       toast.success("Session updated successfully!");
+//     },
+//     onError: () => toast.error("Failed to update session"),
+//   });
+// };
+
+/* ================================
+   Component
+================================ */
+export default function SessionForm({ onClose, session }: SessionFormProps) {
+
+  console.log("Session: ", session)
+  const { register, handleSubmit, control, formState: { errors } } =
+    useForm<CreateSessionFormData>({
+      defaultValues: session
+        ? {
+            session_type: session.session_type,
+            subject: session.subject,
+            session_charge: session.session_charge,
+            mode: session.mode,
+            join_link: session.join_link,
+            available_slots_time_and_date: session.available_slots_time_and_date,
+          }
+        : {
+            session_type: "",
+            subject: "",
+            session_charge: "",
+            mode: "In_Person",
+            join_link: "",
+            available_slots_time_and_date: [{ date: "", time: "" }],
+          },
+    });
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "available_slots",
+    name: "available_slots_time_and_date",
   });
 
-  // mutation for api call
-  const mutation = useMutation({
-    mutationFn: createSession,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["sessions"] })
-      console.log(("Sucess"));
-    },
-    onError: (error: any) => {
-        console.log("Create session  Error", error)
-    }
-  });
+  const createSessionMutation = useCreateSession();
+  const updateSessionMutation = useUpdateSession();
 
-
-
-  //   handle submit
-  const handleAcceptCreateSession: SubmitHandler<CreateSessionFormData> = (
-    data
-  ) => {
-    // Transform the data to match the required structure
+  /* --------------------------
+     Submit Handler
+  --------------------------- */
+  const handleAcceptSession: SubmitHandler<CreateSessionFormData> = (data) => {
     const transformedData = {
-      session_type: data.session_type,
-      subject: data.subject,
-      session_charge: data.session_charge.replace("$", ""), // Remove $ sign
-      mode: data.mode,
-      join_link: data.join_link,
-      available_slots_time_and_date: data.available_slots
+      ...data,
+      session_charge: data.session_charge.replace("$", ""),
+      available_slots_time_and_date: data.available_slots_time_and_date
         .filter((slot) => slot.date && slot.time)
-        .map((slot) => {
-          // Combine date and time into ISO string
-          const dateTimeString = `${slot.date}T${slot.time}:00Z`;
-          return dateTimeString;
-        }),
+        .map((slot) => `${slot.date}T${slot.time}:00Z`),
     };
 
-    console.log("Form Data:", transformedData);
-
-    mutation.mutate(transformedData);
-    // Handle form submission logic here (e.g., API call, updating state, etc.)
-
- 
+    if (session?.id) {
+      // ✅ Edit mode
+      updateSessionMutation.mutate({ id: session.id, data: transformedData });
+    } else {
+      // ✅ Create mode
+      createSessionMutation.mutate(transformedData);
+    }
 
     onClose();
   };
 
+  /* --------------------------
+     Add new time slot
+  --------------------------- */
   const addTimeSlot = () => {
     append({ date: "", time: "" });
   };
 
+  /* --------------------------
+     Render
+  --------------------------- */
   return (
-    <div className="border backdrop-blur-[2px] rounded-3xl border-solid border-[rgba(255,255,255,0.50)] ">
-      <div className="mb-6">
-        <h3 className="text-slate-800 [font-family:Inter] text-2xl font-medium leading-9 ">
-          Create Session
+    <div className="border backdrop-blur-[2px] rounded-3xl border-solid border-[#ffffff80]">
+      <div className="mb-4">
+        <h3 className="text-slate-800 text-2xl font-medium leading-5">
+          {session ? "Edit Session" : "Create Session"}
         </h3>
-        {/* <p className="text-[#4A4C56]">
-          Please create session slots for your students.
-        </p> */}
       </div>
 
       <hr className="bg-[#DFE1E7] my-2" />
 
-      <form
-        onSubmit={handleSubmit(handleAcceptCreateSession)}
-        className="space-y-4"
-      >
+      <form onSubmit={handleSubmit(handleAcceptSession)} className="space-y-2">
         {/* Session Type */}
-        <div></div>
-        <div>
-          <CustomSelectField
-            label="Session Type"
-            name="session_type"
-            register={register}
-            control={control}
-            options={[
-              { label: "New Session", value: "new_session" },
-              { label: "Reschedule", value: "reschedule" },
-            ]}
-            required={true}
-          />
-        </div>
+        <CustomSelectField
+          label="Session Type"
+          name="session_type"
+          register={register}
+          control={control}
+          options={[
+            { label: "New Session", value: "new_session" },
+            { label: "Reschedule", value: "reschedule" },
+          ]}
+          required
+        />
 
-        <div>
-          <CustomInputField
-            label="Subject"
-            name="subject"
-            placeholder="Enter Subject"
-            register={register}
-            errors={errors.subject}
-            required={true}
-          />
-        </div>
+        {/* Subject */}
+        <CustomInputField
+          label="Subject"
+          name="subject"
+          placeholder="Enter Subject"
+          register={register}
+          errors={errors.subject}
+          required
+        />
+
         {/* Session Charge */}
-        <div>
-          <CustomInputField
-            label="Session Charge "
-            name="session_charge"
-            placeholder="$75"
-            register={register}
-            errors={errors.session_charge}
-            required={true}
-          />
-        </div>
+        <CustomInputField
+          label="Session Charge"
+          name="session_charge"
+          placeholder="$75"
+          register={register}
+          errors={errors.session_charge}
+          required
+        />
 
         {/* Mode */}
         <div>
@@ -178,24 +206,20 @@ export default function CreateSessionForm({ onClose }: CreateSessionFormProps) {
                 type="radio"
                 {...register("mode", { required: "Mode is required" })}
                 value="In_Person"
-                defaultChecked
+                defaultChecked={!session || session.mode === "In_Person"}
                 className="mr-2 w-4 h-4"
               />
               In-person
             </label>
           </div>
-          {/* {errors.mode && (
-            <p className="text-red-500 text-sm mt-1">{errors.mode.message}</p>
-          )} */}
         </div>
 
         {/* Available Slots */}
-
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Available Slots *
           </label>
-          <div className="space-y-2 ">
+          <div className="space-y-2">
             {fields.map((field, index) => (
               <div
                 key={field.id}
@@ -203,54 +227,32 @@ export default function CreateSessionForm({ onClose }: CreateSessionFormProps) {
               >
                 <div className="flex-1">
                   <DatePickerField
-                    name={`available_slots.${index}.date`}
+                    name={`available_slots_time_and_date.${index}.date`}
                     register={register}
                     control={control}
-                    required={true}
+                    required
                     placeholder="Select Date"
                   />
                 </div>
 
-                <div className="flex-1 ">
-                  <div className="w-full">
-                    <CustomTimePicker
-                      // label="Time"
-                      name={`available_slots.${index}.time`}
-                      register={register}
-                      control={control}
-                      required={true}
-                    />
-                  </div>
-
-                  {/* <input
-                    type="time"
-                    {...register(`available_slots.${index}.time`, {
-                      required: "Time is required",
-                    })}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#6366F1]"
-                  /> */}
+                <div className="flex-1">
+                  <CustomTimePicker
+                    name={`available_slots_time_and_date.${index}.time`}
+                    register={register}
+                    control={control}
+                    required
+                  />
                 </div>
 
                 {fields.length > 1 && (
                   <button
                     type="button"
                     onClick={() => remove(index)}
-                    className="pr-2 text-red-500 hover:text-red-700 mt-2 text-lg "
+                    className="pr-2 text-red-500 hover:text-red-700 mt-2 text-lg"
                   >
                     ×
                   </button>
                 )}
-
-                {/* {errors.available_slots?.[index]?.date && (
-                  <p className="text-red-500 text-sm col-span-2">
-                    {errors.available_slots[index]?.date?.message}
-                  </p>
-                )}
-                {errors.available_slots?.[index]?.time && (
-                  <p className="text-red-500 text-sm col-span-2">
-                    {errors.available_slots[index]?.time?.message}
-                  </p>
-                )} */}
               </div>
             ))}
 
@@ -266,16 +268,14 @@ export default function CreateSessionForm({ onClose }: CreateSessionFormProps) {
         </div>
 
         {/* Join Link */}
-        <div>
-          <CustomInputField
-            label="Join Link"
-            name="join_link"
-            placeholder="dummyshortcut.link/session12"
-            register={register}
-            errors={errors.join_link}
-            required={true}
-          />
-        </div>
+        <CustomInputField
+          label="Join Link"
+          name="join_link"
+          placeholder="dummyshortcut.link/session12"
+          register={register}
+          errors={errors.join_link}
+          required
+        />
 
         {/* Buttons */}
         <div className="flex gap-3 pt-4">
@@ -290,7 +290,7 @@ export default function CreateSessionForm({ onClose }: CreateSessionFormProps) {
             type="submit"
             className="flex-1 px-4 py-3 text-center font-medium bg-gradient-to-r from-[#6366F1] to-[#A855F7] rounded-xl text-white hover:opacity-90"
           >
-            Create Session
+            {session ? "Update Session" : "Create Session"}
           </button>
         </div>
       </form>

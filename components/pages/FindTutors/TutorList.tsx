@@ -14,9 +14,11 @@ import { useQuery } from "@tanstack/react-query";
 import { privateAxios, publicAxios } from "@/lib/axios";
 import { Tulpen_One } from "next/font/google";
 import { format } from "date-fns";
+import Link from "next/link";
 
 // Define the Tutor type
 interface TutorProps {
+  userid: string ;
   username: string;
   avatar: string | null; // Allowing 'null' as avatar can be null
   about_me: string;
@@ -72,9 +74,9 @@ const TutorList = () => {
   //   return <div>Loading...</div>;
   // }
 
-  // if (isError) {
-  //   return <div className="text-red-500">Error: {error?.message}</div>;
-  // }
+  if (isError) {
+    return <div className="text-red-500">Error: {error?.message}</div>;
+  }
 
   return (
     <section className="[background:linear-gradient(135deg,#F8FAFC_0%,#EFF6FF_100%)] py-16">
@@ -207,7 +209,7 @@ const TutorList = () => {
               <div>
                 <h2 className="text-2xl font-bold">Available Tutors</h2>
                 <p className="text-gray-600 leading-6">
-                  Showing 6 of {tutorList?.length} tutors
+                  Showing 4 of {tutorList?.length} tutors
                 </p>
               </div>
               <button className="bg-white/50 py-3  rounded-3xl pl-[20.66px] pr-[32.67px] backdrop-blur-[2px] border-gray-300">
@@ -216,7 +218,7 @@ const TutorList = () => {
             </div>
 
             {/* all tutors */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-8 gap-4 place-items-center p-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-8 gap-4  p-4">
               {isPending ? (
                 <>
                   <TutorLoaderCard />
@@ -225,7 +227,7 @@ const TutorList = () => {
                   <TutorLoaderCard />
                 </>
               ) : (
-                tutors?.map((tutor, index) => (
+                tutorList?.map((tutor, index) => (
                   <TutorCard key={index} tutor={tutor} />
                 ))
               )}
@@ -247,7 +249,7 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
           {/* Info */}
           <div className="flex">
             <div className="bg-gray-300 rounded-2xl w-16 h-16 md:w-20 md:h-20 mr-5 shrink-0 overflow-hidden">
-              <img className="w-full h-full object-cover" src={tutor.avatar || ""} alt={tutor.username} />
+              <img className="w-full h-full object-cover" src={tutor.avatar || "https://placehold.co/600x400"} alt={tutor.username} />
             </div>
             <div>
               <h2 className="text-xl font-bold mb-2">{tutor.username}</h2>
@@ -331,9 +333,9 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
       <div className="mt-5 flex justify-between gap-3">
         <BookingFlow tutor={tutor} />
         {/* <div className="border w-full"> hi</div> */}
-        <button className="border border-gray-300 text-gray-700 px-5 py-3.5 rounded-xl font-medium hover:opacity-80 text-nowrap cursor-pointer ">
+        <Link href={`find-tutors/${tutor.userid}`} className="border border-gray-300 text-gray-700 px-5 py-3.5 rounded-xl font-medium hover:opacity-80 text-nowrap cursor-pointer ">
           View Profile
-        </button>
+        </Link>
       </div>
     </div>
   );
@@ -392,7 +394,7 @@ function TutorLoaderCard() {
 
 
 
-const tutors: TutorProps[] = [
+const tutors: any = [
   {
     username: "sarah_j",
     avatar: "https://randomuser.me/api/portraits/women/45.jpg",
