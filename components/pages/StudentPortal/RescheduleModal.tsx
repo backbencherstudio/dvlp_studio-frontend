@@ -23,14 +23,16 @@ type FormValues = {
 // api call
 const useResheduleSession = (id: string) => {
   const queryClient = useQueryClient();
+  
   return useMutation({
     mutationFn: async (data: FormValues) => {
       const res = await privateAxios.post(`/students/${id}/reschedule`, data);
+      return res.data;
     },
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["studentSessions", id],
+        queryKey: ["studentSessions"],
       });
     },
   });
@@ -137,18 +139,19 @@ export default function RescheduleModal({ data, color }: any) {
           <button
             type="submit"
             className="py-4.5 text-center bg-gradient-to-l from-[#6366F1] to-[#A855F7] w-full rounded-xl text-white font-bold leading-6 cursor-pointer"
+            disabled={isPending}
           >
             Send Message
           </button>
         </form>
       </CustomDialog>
 
-      <SuccessModal
-        open={isSuccess}
-        setOpen={setIsSuccess}
-        title="Payment Successful"
-        message="Your session with Dr. Jessica Miller has been successfully booked."
-      />
+       <SuccessModal
+             open={isSuccess}
+             setOpen={setIsSuccess}
+             title="Reschedule Request Successful"
+             message="Your request was submitted successfully. Please wait until the student accepts."
+           />
     </div>
   );
 }

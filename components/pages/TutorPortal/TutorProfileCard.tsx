@@ -1,5 +1,8 @@
 "use client";
 
+import { useAuth } from "@/context/AuthContext";
+import { privateAxios } from "@/lib/axios";
+import { useQuery } from "@tanstack/react-query";
 // components/ProfileCard.tsx
 import { Diamond, UserPen } from "lucide-react";
 import Link from "next/link";
@@ -31,7 +34,25 @@ const profile: TutorProfile = {
     "https://img.freepik.com/premium-photo/indian-male-model_928503-1122.jpg?w=2000",
 };
 
+const fetchStudentById = async (id: string) => {
+  const { data } = await privateAxios.get(`/teacher/get/${id}`);
+  return data;
+};
+
 const TutorProfileCard = () => {
+  const { user } = useAuth();
+  // console.log(user);
+
+  const { data, isPending, isError } = useQuery({
+    queryKey: ["teacher", user],
+    queryFn: () => {
+      if (!user) throw new Error("User not found");
+      return fetchStudentById(user.id);
+    },
+    enabled: !!user?.id,
+  });
+
+  console.log("Teacher info", user);
   return (
     <div className="max-w-[902px] mx-auto bg-white rounded-2xl  divide-y divide-[#E5E7EB] border ">
       <div className="flex flex-wrap gap-2 items-start justify-between px-6 py-9">
@@ -99,9 +120,7 @@ const TutorProfileCard = () => {
           </ul>
 
           <div className="flex flex-col md:flex-row gap-8 ">
-            <div
-              className="h-[264px]  w-full md:w-1/2 bg-blue-200 rounded-xl"
-            ></div>
+            <div className="h-[264px]  w-full md:w-1/2 bg-blue-200 rounded-xl"></div>
             <div className="h-[264px] w-full md:w-1/2 bg-red-200 rounded-xl"></div>
           </div>
         </div>

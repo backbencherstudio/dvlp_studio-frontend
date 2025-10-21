@@ -1,4 +1,9 @@
+"use client";
+
 // components/ProfileCard.tsx
+import { useAuth } from "@/context/AuthContext";
+import { privateAxios } from "@/lib/axios";
+import { useQuery } from "@tanstack/react-query";
 import { UserPen } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -23,10 +28,29 @@ const profile: Profile = {
   about:
     "Michael has over 12 years of experience teaching physics and mathematics to high school and college students. He specializes in making complex concepts easy to understand and enjoys helping students achieve their academic goals.",
   sessionGrade: "High School (Grades 9—12)",
-  profilePicture: "https://img.freepik.com/premium-photo/indian-male-model_928503-1122.jpg?w=2000", 
+  profilePicture:
+    "https://img.freepik.com/premium-photo/indian-male-model_928503-1122.jpg?w=2000",
+};
+
+const fetchStudentById = async (id: string) => {
+  const { data } = await privateAxios.get(`students/${id}`);
+  return data;
 };
 
 const ProfileCard = () => {
+  const { user } = useAuth();
+  // console.log("Id", user.id);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["user", user?.id],
+    queryFn: () => {
+      if (!user) throw new Error("User not found");
+      return fetchStudentById(user.id);
+    },
+    enabled: !!user?.id,
+  });
+
+  console.log("data", data);
   return (
     <div className="max-w-[902px] mx-auto bg-white rounded-2xl  divide-y divide-[#E5E7EB] border ">
       <div className="flex items-start justify-between px-6 py-9">
