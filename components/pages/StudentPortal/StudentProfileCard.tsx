@@ -1,6 +1,5 @@
 "use client";
 
-// components/ProfileCard.tsx
 import { useAuth } from "@/context/AuthContext";
 import { privateAxios } from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
@@ -8,41 +7,16 @@ import { UserPen } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-interface Profile {
-  id: string | number;
-  name: string;
-  role: string;
-  location: string;
-  totalBookings: number;
-  about: string;
-  sessionGrade: string;
-  profilePicture: string;
-}
-
-const profile: Profile = {
-  id: 123,
-  name: "Michael Thompson",
-  role: "Student",
-  location: "New York, USA",
-  totalBookings: 12,
-  about:
-    "Michael has over 12 years of experience teaching physics and mathematics to high school and college students. He specializes in making complex concepts easy to understand and enjoys helping students achieve their academic goals.",
-  sessionGrade: "High School (Grades 9—12)",
-  profilePicture:
-    "https://img.freepik.com/premium-photo/indian-male-model_928503-1122.jpg?w=2000",
-};
-
 const fetchStudentById = async (id: string) => {
-  const { data } = await privateAxios.get(`students/${id}`);
-  return data;
+  const { data } = await privateAxios.get(`/students/${id}`);
+  return data?.data; // access the actual student object
 };
 
 const ProfileCard = () => {
   const { user } = useAuth();
-  // console.log("Id", user.id);
 
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["user", user?.id],
+  const { data: student, isLoading, isError } = useQuery({
+    queryKey: ["student", user?.id],
     queryFn: () => {
       if (!user) throw new Error("User not found");
       return fetchStudentById(user.id);
@@ -50,48 +24,82 @@ const ProfileCard = () => {
     enabled: !!user?.id,
   });
 
-  console.log("data", data);
+  if (isLoading)
+    return (
+      <div className="text-center py-10 text-gray-500">Loading profile...</div>
+    );
+
+  if (isError || !student)
+    return (
+      <div className="text-center py-10 text-red-500">
+        Failed to load student profile.
+      </div>
+    );
+
+  // fallback helper
+  const safe = (value: any) =>
+    value && value !== "null" && value !== null && value !== undefined
+      ? value
+      : "N/A";
+
+  const fullName = `${safe(student.first_name)} ${safe(student.last_name)}`;
+  const location =
+    safe(student.city) !== "N/A" || safe(student.country) !== "N/A"
+      ? `${safe(student.city)}, ${safe(student.country)}`
+      : "N/A";
+
   return (
-    <div className="max-w-[902px] mx-auto bg-white rounded-2xl  divide-y divide-[#E5E7EB] border ">
+    <div className="max-w-[902px] mx-auto bg-white rounded-2xl divide-y divide-[#E5E7EB] border">
+      {/* Top Section */}
       <div className="flex items-start justify-between px-6 py-9">
-        {/* profile info */}
+        {/* Profile info */}
         <div className="flex gap-9">
           <img
-            className="w-[92px] h-[92px] rounded-[23px]"
-            src={profile.profilePicture}
-            alt={profile.name}
+            className="w-[92px] h-[92px] rounded-[23px] object-cover"
+            src={
+              safe(student.avatar) !== "N/A"
+                ? student.avatar
+                : "https://via.placeholder.com/92x92?text=No+Image"
+            }
+            alt={fullName}
           />
+
           <div className="space-y-2">
             <h2 className="text-[28px] font-semibold leading-7 text-[#1E293B] mb-4">
-              {profile.name}
+              {fullName}
             </h2>
-            <p className="text-gray-600">{profile.role}</p>
-            <p className="text-gray-500">{profile.location}</p>
-            <p className=" text-gray-500">
-              Total Booking:{" "}
+            <p className="text-gray-600">Student</p>
+            <p className="text-gray-500">{location}</p>
+            <p className="text-gray-500">
+              Total Bookings:{" "}
               <span className="text-gray-800 font-medium">
-                {profile.totalBookings}
+                {safe(student.totalBookedSessions)}
               </span>
             </p>
           </div>
         </div>
-        {/* edit button */}
-        <Link href={`/student-portal/profile/${profile.id}`}>
-          <button className="flex cursor-pointer  gap-2.5 px-4 py-3 border-gray-300 border rounded-xl font-medium leading-6 ">
+
+        {/* Edit button */}
+        <Link href={`/student-portal/profile/${safe(student.id)}`}>
+          <button className="flex cursor-pointer gap-2.5 px-4 py-3 border-gray-300 border rounded-xl font-medium leading-6">
             <UserPen className="w-5 h-5" />
-            <span className="text-[#374151]"> Edit</span>
+            <span className="text-[#374151]">Edit</span>
           </button>
         </Link>
       </div>
+
+      {/* About Section */}
       <div className="px-6 py-9">
         <h3 className="font-semibold text-xl mb-5 text-[#1E293B]">About</h3>
-        <p className="text-gray-600 leading-6 ">{profile.about}</p>
+        <p className="text-gray-600 leading-6">{safe(student.about_me)}</p>
       </div>
+
+      {/* Grade & Level Section */}
       <div className="px-6 py-9">
         <h3 className="text-xl font-semibold leading-7 mb-5">
           Session Grades & Levels
         </h3>
-        <p className="text-gray-700 text-sm">{profile.sessionGrade}</p>
+        <p className="text-gray-700 text-sm">{safe(student.grade_level)}</p>
       </div>
     </div>
   );

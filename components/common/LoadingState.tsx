@@ -11,14 +11,14 @@ const LoadingState: React.FC<LoadingStateProps> = ({
   message = "Loading...",
   count = 3,
   width = "w-full",
-  height = "h-[200px]",
+  height = "h-[400px]",
 }) => {
   return (
     <div
-      className={`flex flex-col items-center justify-center ${width} ${height} bg-gray-50 border border-gray-200 rounded-lg`}
+      className={`flex flex-col items-center justify-center ${width} ${height} bg-gray-50 border border-gray-200 rounded-lg py-4`}
     >
       {/* Spinner */}
-      <div className="w-12 h-12 border-4 border-y-transparent border-purple-500 rounded-full animate-spin" />
+      <div className="w-12 h-12 border-4 border-y-transparent border-purple-500 rounded-full animate-spin " />
 
       {/* Message */}
       <p className="text-purple-600 font-medium mt-3">{message}</p>

@@ -13,7 +13,7 @@ const ErrorState: React.FC<ErrorStateProps> = ({
 }) => {
   return (
     <div
-      className={`flex flex-col justify-center items-center ${width} ${height} bg-purple-50 border border-purple-200 rounded-lg`}
+      className={`flex flex-col justify-center items-center ${width} ${height} bg-purple-50 border border-purple-200 rounded-lg py-3`}
     >
       <div className="flex flex-col items-center space-y-2 text-center px-4">
         <span className="text-purple-600 text-4xl">⚠️</span>

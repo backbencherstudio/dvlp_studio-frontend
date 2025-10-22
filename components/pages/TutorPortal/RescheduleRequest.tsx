@@ -75,7 +75,7 @@ export default function RescheduleRequest() {
   /* -----------------------------
      Loading & Error States
   ----------------------------- */
-  if (isFetching) return <LoadingState height="400px" />;
+  if (isFetching) return <LoadingState height="500px" />;
   if (isError) return <ErrorState height="400px" />;
 
   /* -----------------------------
@@ -83,7 +83,7 @@ export default function RescheduleRequest() {
   ----------------------------- */
   if (!requests || requests.length === 0) {
     return (
-      <div className="border rounded-2xl overflow-hidden bg-white p-10 text-center text-gray-600">
+      <div className="border rounded-2xl overflow-hidden bg-white p-10 text-center text-gray-600 ">
         No reschedule requests found.
       </div>
     );

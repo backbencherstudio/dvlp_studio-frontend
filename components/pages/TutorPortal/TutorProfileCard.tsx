@@ -1,139 +1,166 @@
 "use client";
 
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { privateAxios } from "@/lib/axios";
-import { useQuery } from "@tanstack/react-query";
-// components/ProfileCard.tsx
 import { Diamond, UserPen } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+
+import LoadingState from "@/components/common/LoadingState";
+import ErrorState from "@/components/common/ErrorState";
 
 interface TutorProfile {
-  id: string | number;
+  id: string;
   name: string;
   role: string;
   location: string;
-  totalSessions: number;
-  earningAmount: number;
+  totalSessions: string | number;
+  earningAmount: string | number;
   about: string;
   sessionGrade: string;
   profilePicture: string;
+  qualifications: string[];
+  certifications: string[];
+  phone?: string;
+  email?: string;
+  gender?: string;
+  joinedDate?: string;
 }
 
-const profile: TutorProfile = {
-  id: 123,
-  name: "Michael Thompson",
-  role: "Student",
-  location: "New York, USA",
-  totalSessions: 12,
-  earningAmount: 480,
-  about:
-    "Michael has over 12 years of experience teaching physics and mathematics to high school and college students. He specializes in making complex concepts easy to understand and enjoys helping students achieve their academic goals.",
-  sessionGrade: "High School (Grades 9—12)",
-  profilePicture:
-    "https://img.freepik.com/premium-photo/indian-male-model_928503-1122.jpg?w=2000",
-};
-
-const fetchStudentById = async (id: string) => {
-  const { data } = await privateAxios.get(`/teacher/get/${id}`);
-  return data;
+const fetchTeacherById = async (id: string) => {
+  const response = await privateAxios.get(`/teacher/get/${id}`);
+  return response.data;
 };
 
 const TutorProfileCard = () => {
   const { user } = useAuth();
-  // console.log(user);
 
-  const { data, isPending, isError } = useQuery({
-    queryKey: ["teacher", user],
+  const { data: tdata, isLoading, isError } = useQuery({
+    queryKey: ["teacher", user?.id],
     queryFn: () => {
       if (!user) throw new Error("User not found");
-      return fetchStudentById(user.id);
+      return fetchTeacherById(user.id);
     },
     enabled: !!user?.id,
   });
 
-  console.log("Teacher info", user);
+  const teacher = tdata?.data;
+
+  if (isLoading) return <LoadingState />;
+  if (isError || !teacher) return <ErrorState />;
+
+  const safe = (val: any) =>
+    val && val !== "null" && val !== null && val !== undefined ? val : "N/A";
+
+  const joinedDate =
+    teacher.created_at &&
+    new Date(teacher.created_at).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+  const profile: TutorProfile = {
+    id: teacher.id ?? "N/A",
+    name: `${teacher.first_name ?? ""} ${teacher.last_name ?? ""}`.trim() || safe(teacher.name),
+    role: safe(teacher.type),
+    location: teacher.city ? (teacher.country ? `${teacher.city}, ${teacher.country}` : teacher.city) : "N/A",
+    totalSessions: "N/A",
+    earningAmount: "N/A",
+    about: teacher.about ?? "N/A",
+    sessionGrade: teacher.grade_level ?? "N/A",
+    profilePicture: teacher.avatar_url ?? "https://via.placeholder.com/100x100?text=No+Image",
+    qualifications: teacher.qualifications ?? [],
+    certifications: teacher.certifications_urls ?? [],
+    phone: teacher.phone_number,
+    email: teacher.email,
+    gender: teacher.gender,
+    joinedDate: joinedDate,
+  };
+
   return (
-    <div className="max-w-[902px] mx-auto bg-white rounded-2xl  divide-y divide-[#E5E7EB] border ">
-      <div className="flex flex-wrap gap-2 items-start justify-between px-6 py-9">
-        {/* profile info */}
+    <div className="py-10 max-w-[902px] mx-auto bg-white rounded-2xl divide-y divide-[#E5E7EB] border">
+      {/* Header */}
+      <div className="flex justify-between px-6 py-9">
         <div className="flex gap-9">
           <img
-            className="w-[92px] h-[92px] rounded-[23px]"
+            className="w-[92px] h-[92px] rounded-[23px] object-cover"
             src={profile.profilePicture}
             alt={profile.name}
           />
           <div className="space-y-2">
-            <h2 className="text-[28px] font-semibold leading-7 text-[#1E293B] mb-4">
-              {profile.name}
-            </h2>
+            <h2 className="text-[28px] font-semibold text-[#1E293B]">{profile.name}</h2>
             <p className="text-gray-600">{profile.role}</p>
             <p className="text-gray-500">{profile.location}</p>
-            <p className=" text-gray-500">
-              Total Session:{" "}
-              <span className="text-gray-800 font-medium">
-                {profile.totalSessions}
-              </span>
+            <p className="text-gray-500">
+              Phone: <span className="text-gray-800 font-medium">{safe(profile.phone)}</span>
             </p>
-            <p className=" text-gray-500">
-              Earning Amount:{" "}
-              <span className="text-gray-800 font-medium">
-                {profile.earningAmount}
-              </span>
+            <p className="text-gray-500">
+              Email: <span className="text-gray-800 font-medium">{safe(profile.email)}</span>
+            </p>
+            <p className="text-gray-500">
+              Gender: <span className="text-gray-800 font-medium">{safe(profile.gender)}</span>
+            </p>
+            <p className="text-gray-500">
+              Joined on: <span className="text-gray-800 font-medium">{profile.joinedDate}</span>
             </p>
           </div>
         </div>
-        {/* edit button */}
-        <Link href={`/tutor-portal/profile/${profile.id}`}>
-          <button className="flex cursor-pointer  gap-2.5 px-4 py-3 border-gray-300 border rounded-xl font-medium leading-6 ">
-            <UserPen className="w-5 h-5" />
-            <span className="text-[#374151]"> Edit</span>
-          </button>
-        </Link>
+
+        {/* Actions */}
+        <div className="flex flex-col gap-4">
+          <Link href={`/tutor-portal/profile/${profile.id}`}>
+            <button className="flex gap-2.5 px-4 py-3 border-gray-300 border rounded-xl font-medium cursor-pointer">
+              <UserPen className="w-5 h-5" />
+              Edit
+            </button>
+          </Link>
+        
+        </div>
       </div>
+
+      {/* About */}
       <div className="px-6 py-9">
         <h3 className="font-semibold text-xl mb-5 text-[#1E293B]">About</h3>
-        <p className="text-gray-600 leading-6 ">{profile.about}</p>
+        <p className="text-gray-600 leading-6">{profile.about}</p>
       </div>
 
+      {/* Qualifications & Certifications */}
       <div className="px-6 py-9">
-        <h3 className="font-semibold text-xl mb-5 text-[#1E293B]">
-          Qualifications & Certificates
-        </h3>
+        <h3 className="font-semibold text-xl mb-5 text-[#1E293B]">Qualifications & Certificates</h3>
 
-        <div>
+        {profile.qualifications.length > 0 && (
           <ul className="mb-8">
-            {[
-              "Phd in theoriticl physics",
-              "MSc in applied math",
-              "BSc in physics",
-            ].map((item) => (
-              <li className="flex gap-2 items-center">
-                <span className=" shrink-0">
-                  <Diamond className="w-3 h-3 text-blue-500 fill-blue-300 " />
-                </span>
-                <span className="text-gray-600 font-medium leading-6">
-                  {item}
-                </span>
+            {profile.qualifications.map((q, i) => (
+              <li key={i} className="flex gap-2 items-center">
+                <Diamond className="w-3 h-3 text-blue-500 fill-blue-300 shrink-0" />
+                <span className="text-gray-600 font-medium">{q}</span>
               </li>
             ))}
           </ul>
+        )}
 
-          <div className="flex flex-col md:flex-row gap-8 ">
-            <div className="h-[264px]  w-full md:w-1/2 bg-blue-200 rounded-xl"></div>
-            <div className="h-[264px] w-full md:w-1/2 bg-red-200 rounded-xl"></div>
-          </div>
+        <div className="flex flex-col md:flex-row gap-8">
+          {profile.certifications.length > 0 ? (
+            profile.certifications.map((url, i) => (
+              <img
+                key={i}
+                src={url}
+                alt={`Certificate ${i + 1}`}
+                className="h-[264px] w-full md:w-1/2 rounded-xl object-cover border"
+              />
+            ))
+          ) : (
+            <p className="text-gray-500 text-sm">No certifications uploaded.</p>
+          )}
         </div>
+      </div>
 
-        <div></div>
-        <div />
-
-        <div className="px-6 py-9">
-          <h3 className="text-xl font-semibold leading-7 mb-5">
-            Session Grades & Levels
-          </h3>
-          <p className="text-gray-700 text-sm">{profile.sessionGrade}</p>
-        </div>
+      {/* Session Grades */}
+      <div className="px-6 py-9">
+        <h3 className="text-xl font-semibold mb-5">Session Grades & Levels</h3>
+        <p className="text-gray-700">{profile.sessionGrade}</p>
       </div>
     </div>
   );
