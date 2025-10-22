@@ -116,8 +116,8 @@ const SessionMaterials = () => {
             >
               <Upload className="w-5 h-5 text-[#141B34]" />
               <span className="text-gray-700">
-                {isPending ? "Uploading..." : "Upload Materials"}
-              </span>
+                  {isPending ? "Uploading..." : "Upload Materials"}
+                </span>
             </label>
           </div>
 

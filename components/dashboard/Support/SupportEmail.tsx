@@ -17,7 +17,7 @@ type Message = {
 };
 
 const fetchMessages = async () => {
-  const response = await privateAxios.get("/help-and-support/all-support"); // Adjust the endpoint if necessary
+  const response = await privateAxios.get("/help-and-support/all-support");
   return response.data.data;
 };
 
@@ -43,38 +43,45 @@ const SupportEmail = () => {
   return (
     <div>
       <div className=" border rounded-xl divide-y overflow-hidden">
-        {messages?.map((message) => (
-          //   <div className={`p-6 ${message.status === "unsolved"bg-white`}>
-          <div
-            className={`p-6 ${
-              message.status === "unsolved" ? "bg-[#ECEFF3]" : "bg-white"
-            }`}
-          >
-            <div className="mb-4">
-              <h3 className="text-slate-800 text-xl font-medium leading-[130%]">
-                {message.full_name} - {message.subject}
-              </h3>
-              <p>
-                <span className="text-gray-400">{message.created_at} </span>
-                (from:
-                {message.email})
-              </p>
-            </div>
+        <div className="border rounded-xl divide-y overflow-hidden">
+          {messages?.map((message) => (
+            <div
+              key={message.id}
+              className={`p-6 ${
+                message.status === "unsolved" ? "bg-[#ECEFF3]" : "bg-white"
+              }`}
+            >
+              {/* Header */}
+              <div className="mb-4">
+                <h3 className="text-slate-800 text-xl font-medium leading-[130%]">
+                  {message.full_name} - {message.subject}
+                </h3>
+                <p>
+                  <span className="text-gray-400">
+                    {new Date(message.created_at).toLocaleDateString()}
+                  </span>{" "}
+                  (from: {message.email})
+                </p>
+              </div>
 
-            <div className="flex justify-between">
-              <p className="leading-[160%] tracking-[0.08px] text-slate-800">
-                {message.message}
-              </p>
+              {/* Message & Action */}
+              <div className="flex justify-between items-start">
+                <p className="leading-[160%] tracking-[0.08px] text-slate-800">
+                  {message.message}
+                </p>
 
-              {message.status === "unsolved" && (
-                <button className="px-4 py-2.5 rounded-lg bg-white font-medium cursor-pointer ">
-                 <Link href="/"> View/Reply</Link>
-                </button>
-              )}
+                {message.status === "unsolved" && (
+                  <Link href={`/admin-dashboard/support/email/${message.id}`}>
+                    {" "}
+                    <button className="px-4 py-2.5 rounded-lg bg-white font-medium cursor-pointer">
+                      View/Reply
+                    </button>
+                  </Link>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-       
+          ))}
+        </div>
       </div>
     </div>
   );
