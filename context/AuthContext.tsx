@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 
 export type User = {
   id: string;
+  name:string;
   email: string;
   avatar: string | null;
   address: string | null;
