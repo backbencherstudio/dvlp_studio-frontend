@@ -53,6 +53,7 @@ export default function StudentSignIn() {
   const onSubmit = async (data: FormValues) => {
     // console.log("payload:", data);
     const { email, password, rememberMe } = data;
+    // console.log("🚀 StudentSignIn - redirectPath:", redirectPath);
     await login(email, password, rememberMe, redirectPath);
   };
 
