@@ -46,8 +46,8 @@ export default function AdminSignIn() {
 
   const onSubmit = async (data: FormValues) => {
     // console.log("payload:", data);
-    const { email, password } = data;
-    await login(email, password);
+    const { email, password, remember } = data;
+    await login(email, password, remember);
   };
 
   return (
