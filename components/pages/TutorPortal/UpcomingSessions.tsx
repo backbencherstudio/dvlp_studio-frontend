@@ -9,6 +9,8 @@ import { useGetTeacherSessions } from "@/hooks/useTutorSessions";
 import { se } from "date-fns/locale";
 import SessionForm from "./CreateSessionForm";
 import { transformSession } from "@/lib/utils";
+import ErrorState from "@/components/common/ErrorState";
+import LoadingState from "@/components/common/LoadingState";
 
 // Example fake data
 const fakeSessions = [
@@ -51,12 +53,8 @@ export default function UpcomingSessions() {
   const [isCreate, setIsCreate] = useState(false);
   const onClose = () => setIsCreate(false);
 
-  if (isError)
-    return (
-      <div className="text-red-500 p-4 text-center">
-        There are something wrong, please try again later.
-      </div>
-    );
+  if (isFetching) return <LoadingState />;
+  if (isError) return <ErrorState />;
 
   return (
     <section className="divide-y divide-[#E5E7EB] rounded-2xl border bg-white">

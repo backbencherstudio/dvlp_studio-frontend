@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 
 export type User = {
   id: string;
+  name:string;
   email: string;
   avatar: string | null;
   address: string | null;
@@ -28,7 +29,11 @@ type AuthContextType = {
   user: User;
   loading: boolean;
   error: string | null;
-  login: (email: string, password: string, callbackUrl?:string
+  login: (
+    email: string,
+    password: string,
+    rememberMe: boolean,
+    callbackUrl?: string
   ) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -70,7 +75,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   // Login
-  const login = async (email: string, password: string, callbackUrl?: string) => {
+  const login = async (
+    email: string,
+    password: string,
+    rememberMe: boolean,
+    callbackUrl?: string
+  ) => {
     setLoading(true);
     setError(null);
     try {
@@ -116,11 +126,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const res = await publicAxios.post("/auth/login", { email, password });
         const { access_token, refresh_token } = res.data.authorization;
 
+        const accessExpiry = rememberMe ? 7 : undefined; // 7 days 
+        const refreshExpiry = rememberMe ? 30 : undefined;
+
         Cookies.set("access_token", access_token, {
+          expires: accessExpiry,
           secure: true,
           sameSite: "strict",
         });
         Cookies.set("refresh_token", refresh_token, {
+          expires: refreshExpiry,
           secure: true,
           sameSite: "strict",
         });

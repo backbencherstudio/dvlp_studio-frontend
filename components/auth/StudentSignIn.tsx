@@ -16,7 +16,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 type FormValues = {
   email: string;
   password: string;
-  remember: boolean;
+  rememberMe: boolean;
   showPassword: boolean;
 };
 
@@ -35,7 +35,7 @@ export default function StudentSignIn() {
     defaultValues: {
       email: "saaa0@gmail.com",
       password: "12345678",
-      remember: false,
+      rememberMe: false,
     },
   });
 
@@ -52,8 +52,8 @@ export default function StudentSignIn() {
 
   const onSubmit = async (data: FormValues) => {
     // console.log("payload:", data);
-    const { email, password } = data;
-    await login(email, password, redirectPath);
+    const { email, password, rememberMe } = data;
+    await login(email, password, rememberMe, redirectPath);
   };
 
   return (
@@ -124,9 +124,9 @@ export default function StudentSignIn() {
           <div className="flex items-center justify-between">
             <div className="flex gap-2 items-center">
               <Checkbox
-                checked={watch("remember")}
+                checked={watch("rememberMe")}
                 onCheckedChange={(checked) =>
-                  setValue("remember", Boolean(checked))
+                  setValue("rememberMe", Boolean(checked))
                 }
                 className="w-4 h-4 shrink-0 border [background:#FFF] rounded-[2.5px] border-solid border-[#767676] data-[state=checked]:bg-[#6366F1] data-[state=checked]:border-[#6366F1]"
               />

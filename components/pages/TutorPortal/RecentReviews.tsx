@@ -1,6 +1,11 @@
+"use client";
+import ErrorState from "@/components/common/ErrorState";
+import LoadingState from "@/components/common/LoadingState";
 import StarIcon from "@/components/icons/StarIcon";
+import { privateAxios } from "@/lib/axios";
+import { useQuery } from "@tanstack/react-query";
 import React from "react";
-const reviews = [
+const fakeReviews = [
   {
     name: "Sarah J.",
     review:
@@ -30,7 +35,33 @@ const reviews = [
     rating: 3,
   },
 ];
+
+/* -----------------------------
+   Fetch function
+----------------------------- */
+const fetchRecentReviews = async () => {
+  const res = await privateAxios.get("/");
+  return res.data;
+};
+
 export default function RecentReviews() {
+  const {
+    data: recentReviews,
+    isFetching,
+    isError,
+  } = useQuery({
+    queryKey: ["completedSessions"],
+    queryFn: fetchRecentReviews,
+  });
+
+  /* -----------------------------
+     Loading & Error States
+  ----------------------------- */
+  if (isFetching) return <LoadingState height="500px" />;
+  if (isError) return <ErrorState height="400px" />;
+
+  // main component
+
   return (
     <section className=" divide-y divide-[#E5E7EB] rounded-2xl border bg-white overflow-hidden">
       <div className="p-4 md:p-8 ">
@@ -39,7 +70,7 @@ export default function RecentReviews() {
 
       {/* cards */}
 
-      {reviews.map((review, index) => (
+      {fakeReviews.map((review, index) => (
         <ReviewCard
           key={index}
           name={review.name}

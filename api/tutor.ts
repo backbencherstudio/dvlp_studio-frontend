@@ -6,7 +6,7 @@ export const createSession = async (data: any) => {
 };
 
 export const getTeacherSessions = async () => {
-  const res = await privateAxios.get(`/teacher/my-sessions/`);
+  const res = await privateAxios.get(`/teacher/my-sessions`);
   return res.data;
 };
 

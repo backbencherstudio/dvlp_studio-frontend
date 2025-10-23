@@ -1,15 +1,51 @@
+import { privateAxios } from "@/lib/axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { OctagonAlert } from "lucide-react";
 import React from "react";
+import { toast } from "sonner";
 
 interface DeclinePopup {
   onClose: () => void;
-  reqId: number | string;
+  reqId: string;
 }
+
+// Mutation setup
+
 export default function DeclinePopup({ onClose, reqId }: DeclinePopup) {
+  const queryClient = useQueryClient();
+
+  /* -----------------------------
+     ✅ Mutation setup
+  ----------------------------- */
+  const mutation = useMutation({
+    mutationFn: async (id: string) => {
+      return privateAxios.post(`/teacher/reject/${id}`, {
+        reject_reason: "N/A",
+        join_link: null,
+      });
+    },
+    onSuccess: () => {
+      toast.success("Request declined successfully!");
+      queryClient.invalidateQueries({
+        queryKey: ["rescheduleRequests"],
+      }); 
+      onClose(); 
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.message || "Failed to decline request."
+      );
+    },
+  });
+
+  /* -----------------------------
+     ✅ Handle Decline Click
+  ----------------------------- */
   const handleDecline = () => {
-    console.log("Delete this", reqId);
-    onClose();
+    console.log("Declining request:", reqId);
+    mutation.mutate(reqId); // <-- this actually triggers the API call
   };
+
   return (
     <div className="flex flex-col items-center">
       {/* Success Icon */}

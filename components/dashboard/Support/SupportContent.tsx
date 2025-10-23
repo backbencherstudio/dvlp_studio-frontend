@@ -50,6 +50,7 @@
 import CustomSelectField from "@/components/reusable/CustomSelect";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import SupportEmail from "./SupportEmail";
+import { UsersReport } from "./UsersReport";
 
 export function SupportContent() {
   return (
@@ -80,7 +81,7 @@ export function SupportContent() {
           <SupportEmail />
         </TabsContent>
         <TabsContent value="user-report">
-          Change your password here.
+          <UsersReport/>
         </TabsContent>
       </Tabs>
     </div>
