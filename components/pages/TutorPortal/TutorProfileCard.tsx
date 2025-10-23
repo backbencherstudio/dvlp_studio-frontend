@@ -33,16 +33,22 @@ const fetchTeacherById = async (id: string) => {
   return response.data;
 };
 
-const TutorProfileCard = () => {
-  const { user } = useAuth();
+const TutorProfileCard = ({ id }: { id: string }) => {
+  // const { user } = useAuth();
 
-  const { data: tdata, isLoading, isError } = useQuery({
-    queryKey: ["teacher", user?.id],
+  console.log("teacher id", id);
+
+  const {
+    data: tdata,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["teacher", id],
     queryFn: () => {
-      if (!user) throw new Error("User not found");
-      return fetchTeacherById(user.id);
+      if (!id) throw new Error("User not found");
+      return fetchTeacherById(id);
     },
-    enabled: !!user?.id,
+    enabled: !!id,
   });
 
   const teacher = tdata?.data;
@@ -63,14 +69,21 @@ const TutorProfileCard = () => {
 
   const profile: TutorProfile = {
     id: teacher.id ?? "N/A",
-    name: `${teacher.first_name ?? ""} ${teacher.last_name ?? ""}`.trim() || safe(teacher.name),
+    name:
+      `${teacher.first_name ?? ""} ${teacher.last_name ?? ""}`.trim() ||
+      safe(teacher.name),
     role: safe(teacher.type),
-    location: teacher.city ? (teacher.country ? `${teacher.city}, ${teacher.country}` : teacher.city) : "N/A",
+    location: teacher.city
+      ? teacher.country
+        ? `${teacher.city}, ${teacher.country}`
+        : teacher.city
+      : "N/A",
     totalSessions: "N/A",
     earningAmount: "N/A",
     about: teacher.about ?? "N/A",
     sessionGrade: teacher.grade_level ?? "N/A",
-    profilePicture: teacher.avatar_url ?? "https://via.placeholder.com/100x100?text=No+Image",
+    profilePicture:
+      teacher.avatar_url ?? "https://via.placeholder.com/100x100?text=No+Image",
     qualifications: teacher.qualifications ?? [],
     certifications: teacher.certifications_urls ?? [],
     phone: teacher.phone_number,
@@ -90,20 +103,34 @@ const TutorProfileCard = () => {
             alt={profile.name}
           />
           <div className="space-y-2">
-            <h2 className="text-[28px] font-semibold text-[#1E293B]">{profile.name}</h2>
+            <h2 className="text-[28px] font-semibold text-[#1E293B]">
+              {profile.name}
+            </h2>
             <p className="text-gray-600">{profile.role}</p>
             <p className="text-gray-500">{profile.location}</p>
             <p className="text-gray-500">
-              Phone: <span className="text-gray-800 font-medium">{safe(profile.phone)}</span>
+              Phone:{" "}
+              <span className="text-gray-800 font-medium">
+                {safe(profile.phone)}
+              </span>
             </p>
             <p className="text-gray-500">
-              Email: <span className="text-gray-800 font-medium">{safe(profile.email)}</span>
+              Email:{" "}
+              <span className="text-gray-800 font-medium">
+                {safe(profile.email)}
+              </span>
             </p>
             <p className="text-gray-500">
-              Gender: <span className="text-gray-800 font-medium">{safe(profile.gender)}</span>
+              Gender:{" "}
+              <span className="text-gray-800 font-medium">
+                {safe(profile.gender)}
+              </span>
             </p>
             <p className="text-gray-500">
-              Joined on: <span className="text-gray-800 font-medium">{profile.joinedDate}</span>
+              Joined on:{" "}
+              <span className="text-gray-800 font-medium">
+                {profile.joinedDate}
+              </span>
             </p>
           </div>
         </div>
@@ -116,7 +143,6 @@ const TutorProfileCard = () => {
               Edit
             </button>
           </Link>
-        
         </div>
       </div>
 
@@ -128,7 +154,9 @@ const TutorProfileCard = () => {
 
       {/* Qualifications & Certifications */}
       <div className="px-6 py-9">
-        <h3 className="font-semibold text-xl mb-5 text-[#1E293B]">Qualifications & Certificates</h3>
+        <h3 className="font-semibold text-xl mb-5 text-[#1E293B]">
+          Qualifications & Certificates
+        </h3>
 
         {profile.qualifications.length > 0 && (
           <ul className="mb-8">

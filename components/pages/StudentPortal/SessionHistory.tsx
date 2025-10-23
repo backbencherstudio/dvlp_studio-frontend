@@ -8,6 +8,7 @@ import { Star } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import FeedbackModal from "./FeedbackModal";
+import Link from "next/link";
 
 export interface SessionData {
   sessionId: string;
@@ -16,6 +17,7 @@ export interface SessionData {
   isCompleted: number;
   sessionDetails: {
     teacherName: string;
+    teacherId: string;
     avatar: string | null;
     sessionRate: number;
     subject: string;
@@ -54,6 +56,7 @@ export default function SessionHistory() {
           sessionId={s.sessionId}
           subject={s.sessionDetails.subject}
           teacherName={s.sessionDetails.teacherName}
+          teacherId={s.sessionDetails.teacherId}
           sessionDate={s.sessionDate}
           sessionPeriod={s.sessionDetails.sessionPeriod}
           charge={s.sessionDetails.charge}
@@ -69,6 +72,7 @@ interface SessionCardProps {
   sessionId: string;
   subject: string;
   teacherName: string;
+  teacherId: string;
   sessionDate: string;
   sessionPeriod: string;
   charge: string;
@@ -80,6 +84,7 @@ const SessionCard = ({
   sessionId,
   subject,
   teacherName,
+  teacherId,
   sessionDate,
   sessionPeriod,
   charge,
@@ -125,8 +130,16 @@ const SessionCard = ({
           {/* Info */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900">{subject}</h3>
-            <p className="text-gray-600 text-sm">
-              with <span className="font-medium">{teacherName}</span>
+            <p className="text-gray-600 text-sm ">
+              with{" "}
+              <Link
+                href={`/student-portal/bookings/${teacherId}`}
+                className="font-medium"
+              >
+                <span className="hover:underline underline-offset-2">
+                  {teacherName}
+                </span>
+              </Link>
             </p>
             <p className="text-gray-500 text-sm mt-1">
               {formattedDate} • {sessionPeriod}

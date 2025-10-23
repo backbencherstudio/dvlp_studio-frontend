@@ -9,6 +9,8 @@ import BookingFlow from "@/components/pages/FindTutors/BookingFlow";
 import LoadingState from "@/components/common/LoadingState";
 import ErrorState from "@/components/common/ErrorState";
 import { privateAxios } from "@/lib/axios";
+import FindTutorHero from "@/components/pages/FindTutors/FindTutorHero";
+import TutorDetailsHero from "@/components/pages/FindTutors/TutorDetailsHero";
 
 interface TutorProfile {
   id: string;
@@ -32,7 +34,7 @@ const fetchTutorById = async (id: string) => {
   return response.data;
 };
 
-const TutorProfileDetails = () => {
+const TutorProfile = () => {
   const params = useParams();
   const tId = Array.isArray(params.tId) ? params.tId[0] : params.tId;
 
@@ -116,7 +118,7 @@ const TutorProfileDetails = () => {
           </div>
           <div className="w-1/4 space-y-4">
             <BookingFlow />
-            {tId && <ReportButton tutorId={tId} />}
+            {/* {tId && <ReportButton tutorId={tId} />} */}
           </div>
         </div>
 
@@ -173,4 +175,13 @@ const TutorProfileDetails = () => {
   );
 };
 
-export default TutorProfileDetails;
+export default function page() {
+  return (
+    <div>
+      <TutorDetailsHero />
+      <div className="-mt-36">
+        <TutorProfile />
+      </div>
+    </div>
+  );
+}

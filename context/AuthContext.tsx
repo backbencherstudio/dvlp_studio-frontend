@@ -117,10 +117,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         
         // Use callbackUrl if provided, otherwise redirect based on role
         if (callbackUrl) {
-          console.log("🔗 Redirecting to callbackUrl:", callbackUrl);
           router.push(callbackUrl);
         } else {
-          console.log("🔄 No callbackUrl, redirecting based on role:", inferredType);
           // Redirect based on inferred role
           if (inferredType === "admin") {
             router.push("/admin-dashboard");
@@ -155,10 +153,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         // Use callbackUrl if provided, otherwise redirect based on role
         if (callbackUrl) {
-          console.log("🔗 Redirecting to callbackUrl:", callbackUrl);
           router.push(callbackUrl);
         } else {
-          console.log("🔄 No callbackUrl, redirecting based on role:", userType);
           if (userType === "admin") {
             router.push("/admin-dashboard");
           } else if (userType === "teacher") {

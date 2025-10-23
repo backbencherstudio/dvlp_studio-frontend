@@ -1,14 +1,15 @@
-
-'use client'
+"use client";
 import TutorProfileCard from "@/components/pages/TutorPortal/TutorProfileCard";
 import { useAuth } from "@/context/AuthContext";
-import React from "react";
+import { useParams } from "next/navigation";
 
 export default function page() {
-  const { user } = useAuth();
+  const { tid } = useParams();
+
+  console.log("TID", tid);
   return (
     <div>
-      <TutorProfileCard id={user?.id} />
+      <TutorProfileCard id={tid} />
     </div>
   );
 }
