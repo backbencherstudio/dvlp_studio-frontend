@@ -4,6 +4,8 @@ import React from "react";
 import SessionCard from "./SessionCard";
 import { privateAxios } from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
+import LoadingState from "@/components/common/LoadingState";
+import ErrorState from "@/components/common/ErrorState";
 
 /* -----------------------------
    Fetch function for sessions
@@ -27,23 +29,13 @@ function useStudentSessions() {
    Component
 ----------------------------- */
 export default function StudentPortalContents() {
-
   const { data, isPending, isError } = useStudentSessions();
-  
- 
+  const bookings = data?.bookings || [];
 
-   const bookings = data?.bookings || [];
+  if (isPending) return <LoadingState />;
+  if (isError) return <ErrorState />;
 
-  if (isPending) {
-    return <p className="text-gray-500 p-4">Loading sessions...</p>;
-  }
-
-  if (isError) {
-    return <p className="text-red-500 p-4">Failed to load sessions.</p>;
-  }
-
-  // Handle case when no sessions
-  if (!bookings || bookings.length === 0) {
+  if (bookings.length === 0) {
     return (
       <div className="p-6 text-center text-gray-600">No sessions found.</div>
     );
@@ -56,7 +48,7 @@ export default function StudentPortalContents() {
       </h3>
 
       <div className="space-y-5">
-        {bookings?.map((item: any) => (
+        {bookings.map((item: any) => (
           <SessionCard
             key={item.bookingId}
             bookingId={item.bookingId}

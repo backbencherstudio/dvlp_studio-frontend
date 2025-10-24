@@ -36,7 +36,7 @@ export default function page() {
         </Suspense>
         <div className=" gap-2  mt-[26px]">
           {/* already have or new comers */}
-          <div className="mb-[30px]">
+          <div className="mb-[10px]">
             <p className="leading-6  text-gray-300">
               Don't have an account?{" "}
               <Link

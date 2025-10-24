@@ -22,12 +22,13 @@ export default function PrivateRoute({
 
   // Helper function to get appropriate sign-in path based on current route
   const getSignInPath = () => {
+    const callbackUrl = encodeURIComponent(pathname);
     if (pathname.startsWith("/admin-dashboard")) {
-      return "/admin/sign-in";
+      return `/admin/sign-in?callbackUrl=${callbackUrl}`;
     } else if (pathname.startsWith("/tutor-portal")) {
-      return "/tutor/sign-in";
+      return `/tutor/sign-in?callbackUrl=${callbackUrl}`;
     } else if (pathname.startsWith("/student-portal")) {
-      return "/student/sign-in";
+      return `/student/sign-in?callbackUrl=${callbackUrl}`;
     }
     return fallbackPath;
   };

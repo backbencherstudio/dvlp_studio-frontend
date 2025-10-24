@@ -27,7 +27,13 @@ export const reportTutor = async (
   return data;
 };
 
-export default function ReportButton({ tutorId }: { tutorId: string }) {
+export default function ReportButton({
+  tutorId,
+  userType,
+}: {
+  tutorId: string;
+  userType?: string;
+}) {
   const [open, setOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState("");
 
@@ -72,13 +78,13 @@ export default function ReportButton({ tutorId }: { tutorId: string }) {
     <div>
       <p
         onClick={() => setOpen(true)}
-        className="inline-block underline underline-offset-4 text-[#6B7280] cursor-pointer"
+        className="inline-block underline underline-offset-2 text-[#6B7280] cursor-pointer"
       >
-        Report Tutor
+        Report {userType}
       </p>
 
       <CustomDialog open={open} setOpen={handleClose}>
-        <h2 className="text-2xl font-bold mb-5">Report Student</h2>
+        <h2 className="text-2xl font-bold mb-5">Report {userType}</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <CustomSelectField
@@ -108,7 +114,10 @@ export default function ReportButton({ tutorId }: { tutorId: string }) {
             required
           />
 
-          <Button type="submit" className="mt-2 w-full h-11">
+          <Button type="submit" className=" flex justify-center items-center self-stretch
+    bg-gradient-to-r from-[#6366F1] to-[#A855F7]
+   
+    rounded-xl w-full h-11 cursor-pointer">
             Submit Report
           </Button>
         </form>

@@ -114,13 +114,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } as User;
         setUser(mockUser);
         setError(null);
-        // Redirect based on inferred role
-        if (inferredType === "admin") {
-          router.push("/admin-dashboard");
-        } else if (inferredType === "teacher") {
-          router.push("/tutor-portal");
+        
+        // Use callbackUrl if provided, otherwise redirect based on role
+        if (callbackUrl) {
+          router.push(callbackUrl);
         } else {
-          router.push("/student-portal");
+          // Redirect based on inferred role
+          if (inferredType === "admin") {
+            router.push("/admin-dashboard");
+          } else if (inferredType === "teacher") {
+            router.push("/tutor-portal");
+          } else {
+            router.push("/student-portal");
+          }
         }
       } else {
         const res = await publicAxios.post("/auth/login", { email, password });
@@ -145,12 +151,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const userData = await privateAxios.get("/auth/me");
         const userType = userData.data.data.type;
 
-        if (userType === "admin") {
-          router.push("/admin-dashboard");
-        } else if (userType === "teacher") {
-          router.push("/tutor-portal");
+        // Use callbackUrl if provided, otherwise redirect based on role
+        if (callbackUrl) {
+          router.push(callbackUrl);
         } else {
-          router.push("/student-portal");
+          if (userType === "admin") {
+            router.push("/admin-dashboard");
+          } else if (userType === "teacher") {
+            router.push("/tutor-portal");
+          } else {
+            router.push("/student-portal");
+          }
         }
       }
     } catch (err: any) {

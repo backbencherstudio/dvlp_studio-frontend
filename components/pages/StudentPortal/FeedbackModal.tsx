@@ -1,17 +1,16 @@
 "use client";
 
 import CustomDialog from "@/components/reusable/CustomDialog";
-import CustomInputField from "@/components/reusable/CustomInput";
 import ErrorMessage from "@/components/reusable/ErrorMessage";
 import SuccessModal from "@/components/reusable/SuccessModal";
 import { privateAxios } from "@/lib/axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface FeedbackFormValues {
   rating: number;
-  name: string;
-  comments: string;
+  comment: string;
 }
 
 export default function FeedbackModal({
@@ -24,8 +23,8 @@ export default function FeedbackModal({
   sessionId: string;
 }) {
   const [isSuccess, setIsSuccess] = useState(false);
+  const queryClient = useQueryClient();
 
-  // react hook form setup
   const {
     register,
     handleSubmit,
@@ -34,25 +33,35 @@ export default function FeedbackModal({
     watch,
     formState: { errors },
   } = useForm<FeedbackFormValues>({
-    defaultValues: { rating: 5, name: "", comments: "" },
+    defaultValues: { rating: 5, comment: "" },
   });
 
   const selectedRating = watch("rating");
 
-  const onSubmit = async (data: FeedbackFormValues) => {
-    try {
-      await privateAxios.post(`/students/session/${sessionId}/feedback`, data);
-      setOpen(false);
+  // Mutation with query invalidation (revalidation)
+  const feedbackMutation = useMutation({
+    mutationFn: (data: FeedbackFormValues) =>
+      privateAxios.post(`/students/rateASession/${sessionId}`, data),
+    onSuccess: () => {
+      // Revalidate or refetch session-related queries
+      queryClient.invalidateQueries({
+        queryKey: ["completedSessions"]
+      });
       setIsSuccess(true);
       reset();
-    } catch (error: any) {
+      setOpen(false);
+    },
+    onError: (error) => {
       console.error("Feedback Error:", error);
-    }
+    },
+  });
+
+  const onSubmit = (data: FeedbackFormValues) => {
+    feedbackMutation.mutate(data);
   };
 
   return (
     <>
-      {/* Modal */}
       <CustomDialog
         open={open}
         setOpen={(val: boolean) => {
@@ -61,7 +70,6 @@ export default function FeedbackModal({
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* Title */}
           <h2 className="text-2xl font-semibold text-gray-900 text-center">
             Share Your Feedback
           </h2>
@@ -89,16 +97,6 @@ export default function FeedbackModal({
             </div>
           </div>
 
-          {/* Name Field */}
-          <CustomInputField
-            label="Your Name"
-            name="name"
-            placeholder="Enter your name"
-            register={register}
-            errors={errors.name}
-            required={true}
-          />
-
           {/* Comments */}
           <div>
             <label
@@ -111,24 +109,21 @@ export default function FeedbackModal({
               id="comments"
               className="mt-2 px-4 py-4 w-full border border-gray-300 rounded-lg h-[177px]"
               placeholder="Write your comments here..."
-              {...register("comments", {
-                required: "Comments are required",
-              })}
+              {...register("comment", { required: "Comments are required" })}
             />
-            <ErrorMessage error={errors.comments} />
+            <ErrorMessage error={errors.comment} />
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
-            className="py-4.5 text-center bg-gradient-to-l from-[#6366F1] to-[#A855F7] w-full rounded-xl text-white font-bold leading-6 cursor-pointer hover:opacity-90"
+            disabled={feedbackMutation.isPending}
+            className="py-4 text-center bg-gradient-to-l from-[#6366F1] to-[#A855F7] w-full rounded-xl text-white font-bold leading-6 cursor-pointer hover:opacity-90 disabled:opacity-60"
           >
-            Submit Feedback
+            {feedbackMutation.isPending ? "Submitting..." : "Submit Feedback"}
           </button>
         </form>
       </CustomDialog>
 
-      {/* Success Modal */}
       <SuccessModal
         open={isSuccess}
         setOpen={setIsSuccess}

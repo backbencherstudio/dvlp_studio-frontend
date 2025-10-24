@@ -36,7 +36,7 @@ export default function page() {
 
         <div className=" gap-2  mt-[26px]">
           {/* already have */}
-          <div className="mb-[30px]">
+          <div className="mb-[10px]">
             <p className="leading-6  text-gray-300">
               Already have an account? <Link href={"/student/sign-in"} className="font-semibold leading-6 text-[#C084FC]">Sign in here</Link>
             </p>

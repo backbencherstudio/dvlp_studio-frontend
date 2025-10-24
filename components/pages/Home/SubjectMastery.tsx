@@ -177,7 +177,7 @@ const SubjectCard = ({
         <h5 className="text-2xl text-slate-800 font-bold leading-8 mb-3">
           {title}
         </h5>
-        <p className="mb-4 text-lg text-gray-600 leading-6 text-nowrap">
+        <p className="mb-4 text-lg text-gray-600 leading-6 md:text-nowrap">
           {description}
         </p>
 

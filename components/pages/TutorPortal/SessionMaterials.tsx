@@ -90,45 +90,53 @@ const SessionMaterials = () => {
   });
 
   // Mutation: delete file
-  const deleteFileMutation = useMutation({
-    mutationFn: async ({
-      sessionId,
-      fileName,
-    }: {
-      sessionId: string;
-      fileName: string;
-    }) => {
-      await privateAxios.delete(`/teacher/delete-file/${sessionId}`, {
-        data: { fileName },
-      });
-      return { sessionId, fileName };
-    },
-    onSuccess: ({ sessionId, fileName }) => {
-      queryClient.setQueryData(["materials"], (oldData: any) => {
-        if (!oldData) return oldData;
-        return {
-          ...oldData,
-          creator: {
-            ...oldData.creator,
-            Create_Session: oldData.creator.Create_Session.map(
-              (session: Session) =>
-                session.id === sessionId
-                  ? {
-                      ...session,
-                      pdf_attachment: session.pdf_attachment.filter(
-                        (f) => f !== fileName
-                      ),
-                    }
-                  : session
-            ),
-          },
-        };
-      });
-    },
-    onError: () => {
-      toast.error("Document Delete Failed!");
-    },
-  });
+// Mutation: delete file
+const deleteFileMutation = useMutation({
+  mutationFn: async ({
+    sessionId,
+    fileName,
+  }: {
+    sessionId: string;
+    fileName: string;
+  }) => {
+    // DELETE request with new API structure
+    await privateAxios.delete(
+      `/teacher/${sessionId}/materials/${fileName}`
+    );
+    return { sessionId, fileName };
+  },
+
+  onSuccess: ({ sessionId, fileName }) => {
+    // Update cache after successful deletion
+    queryClient.setQueryData(["materials"], (oldData: any) => {
+      if (!oldData) return oldData;
+      return {
+        ...oldData,
+        creator: {
+          ...oldData.creator,
+          Create_Session: oldData.creator.Create_Session.map(
+            (session: Session) =>
+              session.id === sessionId
+                ? {
+                    ...session,
+                    pdf_attachment: session.pdf_attachment.filter(
+                      (f) => f !== fileName
+                    ),
+                  }
+                : session
+          ),
+        },
+      };
+    });
+    toast.success("Document deleted successfully!");
+  },
+
+  onError: () => {
+    toast.error("Document Delete Failed!");
+  },
+});
+
+
 
   // Handle file upload
   const handleFileUpload = (
@@ -140,10 +148,10 @@ const SessionMaterials = () => {
     uploadMaterialMutation.mutate({ sessionId, file });
   };
 
-  // Handle file delete
-  const handleDeleteFile = (sessionId: string, fileName: string) => {
-    deleteFileMutation.mutate({ sessionId, fileName });
-  };
+ // Handle file delete
+const handleDeleteFile = (sessionId: string, fileName: string) => {
+  deleteFileMutation.mutate({ sessionId, fileName });
+};
 
   if (isFetching) return <LoadingState />;
   if (isError) return <ErrorState />;

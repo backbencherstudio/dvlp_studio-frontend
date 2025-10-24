@@ -65,7 +65,7 @@ export default function SuccessStory() {
   return (
     <section className="relative  inset-0 shrink-0 bg-gradient-to-r from-[#581C87] via-[#1E3A8A] to-[#0F172A] ">
       {/* content */}
-      <div className="max-w-[1280px] mx-auto py-[128px] px-16 ">
+      <div className="max-w-[1280px] mx-auto py-20 md:py-[128px] px-10 md:px-16 ">
         {/* heading */}
         <div>
           <div className="flex items-center justify-center mb-3">

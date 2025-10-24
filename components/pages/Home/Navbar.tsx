@@ -99,16 +99,16 @@ export default function Navbar() {
             {/* Conditional Link for Tutor/Student */}
 
             <div className="flex gap-2 items-center">
-              <a
-                href="#"
-                className="rounded-lg [background:#F97316] px-6.5 py-2 text-lg font-normal text-white leading-5 hover:bg-orange-600 transition-colors"
+              <Link
+                href="/find-tutors"
+                className="rounded-lg [background:#F97316] px-3 md:px-6.5 py-2 text-lg font-normal text-white leading-5 hover:bg-orange-600 transition-colors"
               >
                 Book Session
-              </a>
+              </Link>
               {user && (
                 <button
                   onClick={logout}
-                  className="rounded-lg [background:#F97316] px-6.5 py-2 text-lg font-normal text-white leading-5 hover:bg-orange-600 transition-colors"
+                  className="rounded-lg [background:#F97316] px-6.5 py-2 text-lg font-normal text-white leading-5 hover:bg-orange-600 transition-colors cursor-pointer"
                 >
                   Logout
                 </button>
@@ -118,12 +118,12 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center gap-4">
-            <a
-              href="#"
-              className="rounded-lg [background:#F97316] px-4 py-2 text-sm font-normal text-white leading-5 hover:bg-orange-600 transition-colors"
+            <Link
+              href="/find-tutors"
+              className="rounded-lg [background:#F97316] px-2.5 py-2 text-[13px] font-normal text-white leading-5 hover:bg-orange-600 transition-colors"
             >
               Book Session
-            </a>
+            </Link>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -180,6 +180,20 @@ export default function Navbar() {
                   </Link>
                 </li>
               ))}
+
+              <li className="block px-6 py-3 transition-colors hover:bg-white/5">
+                {renderUser(user)}
+              </li>
+              <li className="block px-6 py-3">
+                {user && (
+                  <button
+                    onClick={logout}
+                    className="rounded-lg [background:#F97316] px-6.5 py-2 text-lg font-normal text-white leading-5 hover:bg-orange-600 transition-colors cursor-pointer"
+                  >
+                    Logout
+                  </button>
+                )}
+              </li>
             </ul>
           </div>
         </div>
