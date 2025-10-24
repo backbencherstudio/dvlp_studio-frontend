@@ -4,7 +4,7 @@ import ContactInfo from "./ContactInfo";
 
 export default function ContactUsContent() {
   return (
-    <section className="[background:linear-gradient(135deg,#F8FAFC_0%,#EFF6FF_100%)]  py-14 md:py-[128px] relative">
+    <section id="send-message" className="[background:linear-gradient(135deg,#F8FAFC_0%,#EFF6FF_100%)]  py-14 md:py-[128px] relative">
       {/* main content */}
       <div className="max-w-[1280px] mx-auto px-8">
         {/* title */}

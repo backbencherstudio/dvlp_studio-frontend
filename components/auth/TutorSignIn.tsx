@@ -34,8 +34,8 @@ export default function TutorSignIn() {
   } = useForm<FormValues>({
     defaultValues: {
       // email: "tutor@example.com",
-      email: "sazzz@example.com",
-      password: "password123",
+      email: "",
+      password: "",
       remember: false,
     },
   });
@@ -174,11 +174,7 @@ export default function TutorSignIn() {
               className="w-1/2 flex items-center justify-center gap-2 bg-white/10 py-3 rounded-xl border border-white/20 text-sm text-white font-medium leading-5 hover:bg-white/20 transition"
               onClick={() => console.log("Facebook sign-in")}
             >
-              <img
-                src="/icons/facebook.svg"
-                alt="Facebook"
-                className="w-5 h-5"
-              />
+              
               Facebook
             </button>
           </div>

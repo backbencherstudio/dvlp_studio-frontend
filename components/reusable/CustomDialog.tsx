@@ -29,7 +29,7 @@ export default function CustomDialog({
       <DialogContent
         className={`${
           width ? "sm:max-w-[367px]" : "sm:max-w-[511px]"
-          }  bg-white border-0 rounded-[16px] overflow-hidden max-w-[80vh]`}
+          }  bg-white border-0 rounded-[16px] overflow-hidden max-w-[80vh] `}
       >
         <DialogHeader className="hidden">
           <DialogTitle></DialogTitle>

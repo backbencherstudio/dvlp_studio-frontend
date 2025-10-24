@@ -9,7 +9,7 @@ export default function page() {
   console.log("TID", tid);
   return (
     <div>
-      <TutorProfileCard id={tid} />
+      <TutorProfileCard id={tid as string} isEdit={false} />
     </div>
   );
 }

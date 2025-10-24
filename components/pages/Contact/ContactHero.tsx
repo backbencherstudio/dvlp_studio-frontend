@@ -37,7 +37,7 @@ export default function ContactHero() {
 
         {/*  CTA buttons */}
         <div className=" flex flex-col md:flex-row-reverse items-center justify-center gap-4 ">
-          <Link href="/tutors">
+          <Link href="#send-message">
             <button className="px-[40px] py-5 shrink-0 bg-gradient-to-r from-[#6366F1] to-[#A855F7] flex rounded-2xl gap-3 items-center text-lg font-bold text-white w-[260px] justify-center">
               <span>Send Message</span>
               <span>
@@ -46,14 +46,14 @@ export default function ContactHero() {
             </button>
           </Link>
 
-          <a href="/adfadf">
+          <Link href="#faq">
             <button className="py-5 px-[30px] flex rounded-2xl gap-3 border border-[rgba(255,255,255,0.20)] items-center text-lg font-bold bg-white/10 text-white w-[260px] justify-center">
               <span> View FAQ</span>
               <span>
                 <ArrowIcon className="h-5 w-5" />
               </span>
             </button>
-          </a>
+          </Link>
         </div>
       </div>
 

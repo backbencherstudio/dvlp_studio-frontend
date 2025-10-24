@@ -1,8 +1,11 @@
+"use client";
+
 import { Bell } from "lucide-react";
 import UserIcon from "../icons/UserIcon";
+import { useAuth } from "@/context/AuthContext";
 
 interface HeaderCardProps {
-  type: "tutor" | "student";
+  type: "teacher" | "student";
   username: string;
   notificationCount: number;
 }
@@ -12,6 +15,8 @@ const PortalHero: React.FC<HeaderCardProps> = ({
   username,
   notificationCount,
 }) => {
+  const { user } = useAuth();
+  console.log("User info", user);
   return (
     <div className="md:h-[495px] shrink-0 [background:linear-gradient(135deg,rgba(49,46,129,0.95)_0%,rgba(88,28,135,0.95)_50%,rgba(131,24,67,0.95)_100%)] relative">
       <div className="max-w-[1216px] mx-auto relative flex flex-col sm:flex-row items-center justify-between py-28 sm:pt-[182px]  z-20">
@@ -21,17 +26,17 @@ const PortalHero: React.FC<HeaderCardProps> = ({
               <UserIcon className="text-[#C084FC]" />
             </span>
             <span className="text-sm font-medium leading-5 text-white">
-              {type === "tutor" ? "Tutor Portal" : "Student Portal"}
+              {user?.type === "teacher" ? "Tutor Portal" : "Student Portal"}
             </span>
           </div>
           <h2 className="max-w-[462.3px] mb-2.5 text-4xl sm:text-6xl font-black leading-[60px] text-white text-center sm:text-left">
             Welcome Back,{" "}
             <span className="bg-gradient-to-r from-[#FACC15] to-[#F472B6] text-transparent bg-clip-text">
-              {username}
+              {user?.name ?? "Guest"}
             </span>
           </h2>
           <p className="text-lg sm:text-xl font-normal leading-7 text-[#D1D5DB] text-center sm:text-left">
-            {type === "tutor"
+            {user?.type === "teacher"
               ? "Here's your teaching overview and upcoming sessions."
               : "Here's your learning overview and upcoming sessions."}
           </p>

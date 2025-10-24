@@ -28,7 +28,6 @@ export interface SessionCardProps {
 
 export default function SessionCard({
   bookingId,
-  studentUsername,
   sessionDate,
   isJoined,
   isCancelled,
@@ -36,11 +35,10 @@ export default function SessionCard({
   status,
   sessionDetails,
   rescheduleDetails,
-  onReschedule,
 }: SessionCardProps) {
   const { subject, teacherName, mode, joinLink } = sessionDetails;
 
-  // Format date and time nicely
+  // Format date and time
   const dateObj = new Date(sessionDate);
   const formattedDate = dateObj.toLocaleDateString("en-US", {
     weekday: "short",
@@ -52,9 +50,10 @@ export default function SessionCard({
     minute: "2-digit",
   });
 
-  // Determine UI status
+  // Conditions
   const showEndedMessage = isCompleted && !isCancelled;
   const showRescheduleButton = showEndedMessage && !rescheduleDetails;
+  const isRescheduleRequested = status === "Reschedule_requested";
 
   return (
     <div className="p-6 bg-white rounded-xl shadow border border-gray-200 space-y-3">
@@ -62,7 +61,7 @@ export default function SessionCard({
       <div className="flex items-start justify-between">
         {/* Subject + Tutor */}
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center p-4 bg-gradient-to-r from-[#6366F1] to-[#A855F7] rounded-2xl text-white">
+          <div className="flex items-center justify-center p-4 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl text-white">
             <BookIcon className="w-8 h-8" />
           </div>
           <div>
@@ -83,38 +82,40 @@ export default function SessionCard({
         </div>
       </div>
 
-      {/* Info Message */}
+      {/* Status Message */}
       {showEndedMessage && (
         <div className="p-3 border border-dashed border-red-300 bg-red-50 rounded-lg text-sm text-red-700">
           Your session has ended. You can request a reschedule within 3 hours.
         </div>
       )}
 
+      {isRescheduleRequested && rescheduleDetails?.isAccepted && (
+        <div className="p-3 border border-dashed border-yellow-300 bg-yellow-50 rounded-lg text-sm text-yellow-700">
+          Rescheduled to{" "}
+          <span className="font-semibold">
+            {new Date(rescheduleDetails.rescheduledDate).toLocaleString()}
+          </span>
+        </div>
+      )}
+
       {/* Buttons */}
       <div className="flex flex-wrap gap-3">
         {/* ✅ Upcoming or Pending */}
-        {!isCancelled && !isCompleted && (
+        {!isCancelled && !isCompleted && !isRescheduleRequested && (
           <>
             {joinLink && (
               <a
                 href={joinLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-gradient-to-r from-[#6366F1] to-[#A855F7] text-white rounded-md hover:opacity-90"
+                className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-md hover:opacity-90"
               >
                 Join Session
               </a>
             )}
-            {/* <button className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200">
-              Reschedule
-            </button> */}
 
             <RescheduleModal
-              data={{
-                tutor: teacherName,
-                subject,
-                id: bookingId
-              }}
+              data={{ tutor: teacherName, subject, id: bookingId }}
               color={false}
             />
             <button className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200">
@@ -123,15 +124,11 @@ export default function SessionCard({
           </>
         )}
 
-        {/* ✅ Completed but Reschedulable */}
-        {showRescheduleButton && !rescheduleDetails &&(
+        {/* ✅ Completed but reschedulable */}
+        {showRescheduleButton && (
           <>
             <RescheduleModal
-              data={{
-                tutor: teacherName,
-                subject,
-                id:bookingId
-              }}
+              data={{ tutor: teacherName, subject, id: bookingId }}
               color={true}
             />
             <button className="px-4 py-2 bg-gray-100 rounded-md hover:bg-gray-200">
@@ -141,7 +138,7 @@ export default function SessionCard({
         )}
 
         {/* ✅ Already Requested Reschedule */}
-        {rescheduleDetails && (
+        {isRescheduleRequested && (
           <span className="px-3 py-1 text-xs font-medium bg-yellow-100 text-yellow-600 rounded-md">
             Reschedule Requested
           </span>

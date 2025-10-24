@@ -39,7 +39,7 @@ export default function page() {
 
         <div className=" gap-2  mt-[26px]">
           {/* already have or new comers */}
-          <div className="mb-[30px]">
+          <div className="mb-[10px]">
             <p className="leading-6  text-gray-300">
               New to teaching with us?{" "}
               <Link

@@ -33,8 +33,8 @@ export default function StudentSignIn() {
     watch,
   } = useForm<FormValues>({
     defaultValues: {
-      email: "saaa0@gmail.com",
-      password: "12345678",
+      email: "",
+      password: "",
       rememberMe: false,
     },
   });

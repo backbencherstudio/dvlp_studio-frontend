@@ -34,7 +34,7 @@ const faqItems = [
 
 export default function FAQSection() {
   return (
-    <section className="lg:py-[128px] md:py-25 sm:py-20 py-15">
+    <section id="faq" className="lg:py-[128px] md:py-25 sm:py-20 py-15">
       <div className="max-w-[896px] md:px-8 px-4 mx-auto ">
         {/* title */}
         <div className="mb-[80px]  space-y-4.5 flex flex-col items-center  ">
