@@ -11,6 +11,7 @@ import Step1 from "./Step1";
 import { Step2 } from "./Step2";
 import { Step3 } from "./Step3";
 import { publicAxios } from "@/lib/axios";
+import { toast } from "sonner";
 
 export type FormValues = {
   // Step 1
@@ -82,6 +83,7 @@ export default function ApplyMultiStep() {
     },
   });
 
+  const [serverMessage, setServerMessage] = React.useState<string | null>(null);
   const [step, setStep] = React.useState(0);
   const [customErrors, setCustomErrors] = React.useState<string[]>([]);
   const total = 3;
@@ -101,27 +103,27 @@ export default function ApplyMultiStep() {
   const onSubmit = async (data: FormValues) => {
     // Custom validation for fields that don't use standard react-hook-form validation
     const customErrors: string[] = [];
-    
+
     // Validate subjects
     if (!data.subjects || data.subjects.length === 0) {
       customErrors.push("Please select at least one subject");
     }
-    
+
     // Validate documents
     if (!data.documents || data.documents.length === 0) {
       customErrors.push("Please upload at least one document");
     }
-    
+
     // Validate consent
     if (!data.consentBackground) {
       customErrors.push("You must consent to a background check");
     }
-    
+
     // Validate terms agreement
     if (!data.agreeTerms) {
       customErrors.push("You must agree to the terms and conditions");
     }
-    
+
     // If there are custom validation errors, set them and don't submit
     if (customErrors.length > 0) {
       setCustomErrors(customErrors);
@@ -144,35 +146,48 @@ export default function ApplyMultiStep() {
     // });
 
     const formData = new FormData();
-    formData.append('first_name', data.firstName);
-    formData.append('last_name', data.lastName);
-    formData.append('email', data.email);
-    formData.append('phone_number', data.phone);
-    formData.append('password', data.password);
-    formData.append('type', 'teacher');  
+    formData.append("first_name", data.firstName);
+    formData.append("last_name", data.lastName);
+    formData.append("email", data.email);
+    formData.append("phone_number", data.phone);
+    formData.append("password", data.password);
+    formData.append("type", "teacher");
     // formData.append('avatar', data.avatar);
     // formData.append('certifications', data.documents);
-    formData.append('highest_education_level', data.educationLevel);
-    formData.append('teching_experience', data.experience);
-    formData.append('subjects_taught', JSON.stringify(data.subjects));  // Ensure it's a stringified array
-    formData.append('hourly_rate', data.hourlyRate);
-    formData.append('city', data.location);
-    formData.append('about_me', data.about);
-    formData.append('general_availability', data.availability);
-    formData.append('is_agreed_terms', String(data.agreeTerms));
-    formData.append('is_agree_application_process', String(data.consentBackground));
+    formData.append("highest_education_level", data.educationLevel);
+    formData.append("teching_experience", data.experience);
+    formData.append("subjects_taught", JSON.stringify(data.subjects)); // Ensure it's a stringified array
+    formData.append("hourly_rate", data.hourlyRate);
+    formData.append("city", data.location);
+    formData.append("about_me", data.about);
+    formData.append("general_availability", data.availability);
+    formData.append("is_agreed_terms", String(data.agreeTerms));
+    formData.append(
+      "is_agree_application_process",
+      String(data.consentBackground)
+    );
     // Example:
     // await fetch("/api/apply", { method: "POST", body: fd });
     console.log("FINAL payload (FormData shown as plain):", data);
 
-   
     try {
       const res = await publicAxios.post("/auth/register", formData);
       console.log("Signup", res);
-    } catch (error) {
-      
+      const msg =
+        res?.data?.message ?? "Registration successful. Check your email.";
+      setServerMessage(msg);
+      toast.success(msg);
+      setStep(total - 1);
+    } catch (error: any) {
+      const errMsg =
+        error?.response?.data?.message ||
+        "Registration failed. Please try again.";
+      toast.error(errMsg);
+      setServerMessage(errMsg);
     }
   };
+
+  // console.log("server msg", serverMessage);
 
   return (
     <div>
@@ -223,7 +238,6 @@ export default function ApplyMultiStep() {
           <p className="text-sm text-white/80">
             Step {step + 1} of {total}
           </p>
-          
         </header>
 
         <FormProvider {...methods}>
@@ -234,15 +248,19 @@ export default function ApplyMultiStep() {
           >
             {step === 0 && <Step1 />}
             {step === 1 && <Step2 />}
-            {step === 2 && <Step3 />}
+            {step === 2 && <Step3 serverMsg={serverMessage} />}
 
             {/* Custom validation errors display */}
             {customErrors.length > 0 && (
               <div className="rounded-xl border border-red-300/30 bg-red-500/10 p-4">
-                <p className="text-sm font-medium text-red-300 mb-2">Please fix the following errors:</p>
+                <p className="text-sm font-medium text-red-300 mb-2">
+                  Please fix the following errors:
+                </p>
                 <ul className="space-y-1">
                   {customErrors.map((error, index) => (
-                    <li key={index} className="text-xs text-red-300">• {error}</li>
+                    <li key={index} className="text-xs text-red-300">
+                      • {error}
+                    </li>
                   ))}
                 </ul>
               </div>

@@ -3,8 +3,12 @@ import { FormValues } from "./ApplyMultiStep";
 import { SelectInput, TextArea, FormCheckbox } from "./InputHelpers";
 
 /* ---------- Step 3: Final steps ---------- */
-export function Step3() {
-  const { watch, setValue, formState: { errors, isSubmitted } } = useFormContext<FormValues>();
+export function Step3({ serverMsg }: { serverMsg: string | null }) {
+  const {
+    watch,
+    setValue,
+    formState: { errors, isSubmitted },
+  } = useFormContext<FormValues>();
   const docs = watch("documents");
 
   // Availability options
@@ -52,7 +56,9 @@ export function Step3() {
             accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             className="hidden"
             onChange={(e) =>
-              setValue("documents", e.target.files ?? undefined, { shouldDirty: true })
+              setValue("documents", e.target.files ?? undefined, {
+                shouldDirty: true,
+              })
             }
           />
         </label>
@@ -64,7 +70,7 @@ export function Step3() {
             ))}
           </ul>
         )}
-        
+
         {/* Error message for documents */}
         {errors.documents && isSubmitted && (
           <p className="mt-2 text-xs text-red-300">
@@ -85,6 +91,14 @@ export function Step3() {
         label="I agree to the Terms of Service and Privacy Policy"
         rules={{ required: "You must agree to the terms and conditions" }}
       />
+
+      {serverMsg && (
+        <div className="rounded-xl border border-yellow-300/30 bg-yellow-500/10 p-2">
+          <p className="text-sm  text-yellow-300 mb-1 text-center">
+            {serverMsg}!
+          </p>
+        </div>
+      )}
     </div>
   );
 }

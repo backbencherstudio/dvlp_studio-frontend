@@ -27,12 +27,14 @@ const ReusableTable = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
 
-  const totalItems = data.length;
+  const totalItems = data?.length;
+
+  
 
   // Slice data for current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-  const currentData = data.slice(startIndex, endIndex);
+  const currentData = data?.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -81,8 +83,8 @@ const ReusableTable = ({
           </thead>
 
           <tbody className="divide-y divide-gray-200">
-            {currentData.length > 0 ? (
-              currentData.map((row, index) => (
+            {currentData?.length > 0 ? (
+              currentData?.map((row, index) => (
                 <tr 
                   key={index} 
                   className="hover:bg-gray-50 transition-colors duration-150"

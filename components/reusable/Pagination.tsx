@@ -102,7 +102,7 @@ const Pagination = ({
       {/* Right: Info + dropdown */}
       <div className="flex items-center gap-3 flex-wrap justify-center">
         <span className="text-sm text-gray-600 whitespace-nowrap">
-          Showing {startIndex + 1} to {endIndex} of {totalItems.toLocaleString()} entries
+          Showing {startIndex + 1} to {endIndex} of {totalItems?.toLocaleString()} entries
         </span>
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-600 whitespace-nowrap">Show:</span>

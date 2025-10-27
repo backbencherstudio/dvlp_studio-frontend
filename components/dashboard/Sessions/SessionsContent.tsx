@@ -4,10 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import SessionTable from "./SessionsTable";
 
-const fetchSessions = async () => {
-  const response = await privateAxios.get("/sessions/all-sessions");
-  return response.data.data;
-};
 
 
 const mockSessions = [
@@ -41,21 +37,10 @@ const mockSessions = [
 ];
 
 export default function SessionsContent() {
-  const {
-    data: sessions,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["sessions"],
-    queryFn: fetchSessions,
-  });
-
-  console.log(sessions)
 
   return (
     <div>
-      <SessionTable sessions={sessions} />
+      <SessionTable  />
     </div>
   );
 }
