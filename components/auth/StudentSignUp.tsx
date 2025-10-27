@@ -13,6 +13,7 @@ import { AuthSelect } from "../reusable/AuthSelect";
 import ArrowIcon from "../icons/ArrowIcon";
 import PhoneIcon from "../icons/PhoneIcon";
 import { publicAxios } from "@/lib/axios";
+import { toast } from "sonner";
 
 type FormValues = {
   firstName: string;
@@ -28,6 +29,8 @@ type FormValues = {
 };
 
 export default function StudentSignUp() {
+  const [serverMessage, setServerMessage] = React.useState<string | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -43,7 +46,7 @@ export default function StudentSignUp() {
   const showPassword = watch("showPassword", false);
   const showConfirmPassword = watch("showConfirmPassword", false);
 
-  const onSubmit = async(data: FormValues) => {
+  const onSubmit = async (data: FormValues) => {
     // Create a new FormData object
     const fd = new FormData();
 
@@ -56,8 +59,6 @@ export default function StudentSignUp() {
     fd.append("grade_level", data.gradeLevel);
     fd.append("type", "student"); // Fixed value for type (student)
 
-    
-
     // Send the FormData to the server (using Axios)
     try {
       const response = await publicAxios.post("/auth/register", fd, {
@@ -65,10 +66,16 @@ export default function StudentSignUp() {
           "Content-Type": "multipart/form-data", // Important for file uploads
         },
       });
-
-      console.log("Response:", response.data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
+      const msg =
+        response?.data?.message ?? "Registration successful. Check your email.";
+      setServerMessage(msg);
+      toast.success(msg);
+    } catch (error: any) {
+      const errMsg =
+        error?.response?.data?.message ||
+        "Registration failed. Please try again.";
+      toast.error(errMsg);
+      setServerMessage(errMsg);
     }
   };
 
@@ -303,6 +310,15 @@ export default function StudentSignUp() {
               Forgot Password
             </Link>
           </div>
+
+          {/*  */}
+          {serverMessage && (
+            <div className="rounded-xl border border-yellow-300/30 bg-yellow-500/10 p-2">
+              <p className="text-sm  text-yellow-300 mb-1 text-center">
+                {serverMessage}!
+              </p>
+            </div>
+          )}
 
           {/* Submit */}
           <button

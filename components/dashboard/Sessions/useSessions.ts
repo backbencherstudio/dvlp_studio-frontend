@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { privateAxios } from "@/lib/axios";
 
 const fetchSessions = async () => {
-  const { data } = await privateAxios.get("/sessions");
+  const { data } = await privateAxios.get("/sessions/all-sessions");
   return data;
 };
 

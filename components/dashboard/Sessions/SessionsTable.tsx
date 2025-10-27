@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { EllipsisVertical } from "lucide-react";
 import {
   Popover,
@@ -10,10 +9,19 @@ import {
 } from "@/components/ui/popover";
 import ReusableTable from "@/components/reusable/ReusableTable";
 import ActionModal from "@/components/reusable/AdminActionModal";
-import { useSessionDetails, useSessionMutations } from "./useSessions";
+import {
+  useSessionDetails,
+  useSessionMutations,
+  useSessions,
+} from "./useSessions";
 import { toast } from "sonner";
+import LoadingState from "@/components/common/LoadingState";
+import ErrorState from "@/components/common/ErrorState";
 
-const SessionTable = ({ sessions = [] }: any) => {
+const SessionTable = () => {
+  const { data: sessionss, isFetching, isError } = useSessions();
+
+  //
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   // unified modal state
   const [modalOpen, setModalOpen] = useState(false);
@@ -23,8 +31,9 @@ const SessionTable = ({ sessions = [] }: any) => {
   const [selectedData, setSelectedData] = useState<any>(null);
 
   const { data: sessionDetails, isLoading: loadingDetails } = useSessionDetails(
-    selectedData?.id
+    modalAction === "view" ? selectedData?.id : undefined
   );
+
   const { deleteMut, restrictMut } = useSessionMutations();
 
   const handleActionClick = (
@@ -78,18 +87,18 @@ const SessionTable = ({ sessions = [] }: any) => {
       id: "available_slots_time_and_date",
       label: "AVAILABLE SLOTS",
       renderRow: (row: any) => (
-        <td className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600">
           {row.available_slots_time_and_date.length > 0
             ? `${row.available_slots_time_and_date.length} slots`
             : "No slots"}
-        </td>
+        </p>
       ),
     },
     {
       id: "Book_Session",
       label: "BOOKED BY",
       renderRow: (row: any) => (
-        <td className="text-sm text-gray-600">
+        <p className="text-sm text-gray-600">
           {row.Book_Session.length > 0 ? (
             <>
               {row.Book_Session[0].name}
@@ -100,7 +109,7 @@ const SessionTable = ({ sessions = [] }: any) => {
           ) : (
             "No Bookings"
           )}
-        </td>
+        </p>
       ),
     },
     { id: "status", label: "STATUS" },
@@ -128,13 +137,13 @@ const SessionTable = ({ sessions = [] }: any) => {
               </PopoverTrigger>
               <PopoverContent className="w-28 p-2 space-y-2 mr-12">
                 <button
-                  className="w-full bg-black text-white rounded-md py-2"
+                  className="w-full cursor-pointer bg-black text-white rounded-md py-2"
                   onClick={() => handleActionClick("delete", row)}
                 >
                   Delete
                 </button>
                 <button
-                  className="w-full bg-red-400 text-white rounded-md py-2"
+                  className="w-full cursor-pointer bg-red-400 text-white rounded-md py-2"
                   onClick={() => handleActionClick("restrict", row)}
                 >
                   Restrict
@@ -147,16 +156,21 @@ const SessionTable = ({ sessions = [] }: any) => {
     },
   ];
 
+  if (isFetching) return <LoadingState />;
+  if (isError) return <ErrorState />;
+
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold mb-6">Sessions</h2>
-      <ReusableTable
-        tableTitle="Tutor Sessions"
-        columns={columns}
-        data={sessions}
-        searchPlaceholder="Search Session"
-        // onActionClick={handleActionClick}
-      />
+      {sessionss && (
+        <ReusableTable
+          tableTitle="Tutor Sessions"
+          columns={columns}
+          data={sessionss?.data}
+          searchPlaceholder="Search Session"
+          // onActionClick={handleActionClick}
+        />
+      )}
 
       <ActionModal
         open={modalOpen}
@@ -164,7 +178,8 @@ const SessionTable = ({ sessions = [] }: any) => {
         actionType={modalAction}
         data={modalAction === "view" ? sessionDetails : selectedData}
         onConfirm={handleConfirm}
-        loading={deleteMut.isPending || restrictMut.isPending}
+        loading={loadingDetails|| deleteMut.isPending || restrictMut.isPending}
+        isDetailsLoading={loadingDetails}
       />
     </div>
   );

@@ -47,7 +47,7 @@ export default function RootLayout({
       <body className={`$ ${inter.className} antialiased`}>
         <QueryClientWrapper>
           <AuthProvider>{children}</AuthProvider>
-          <Toaster/>
+          <Toaster richColors  />
         </QueryClientWrapper>
       </body>
     </html>
