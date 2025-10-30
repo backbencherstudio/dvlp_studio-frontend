@@ -265,6 +265,7 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
         : `${BASE_URL}/avatar/${tutor.avatar}`
       : "https://i.pinimg.com/474x/05/f9/fa/05f9fa8e055a33e9e59ca51bca27e401.jpg"
   }
+  crossOrigin="anonymous"
   alt={tutor.username || "Tutor"}
 />
 
@@ -288,7 +289,7 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
 
           {/* Hourly Rate */}
           <h3 className="text-xl font-bold leading-7 text-[#6366F1] text-nowrap">
-            {tutor.priceRange}
+            ${tutor.priceRange}/hr
           </h3>
         </div>
 

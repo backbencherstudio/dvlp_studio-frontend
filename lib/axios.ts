@@ -8,6 +8,7 @@ export const publicAxios = axios.create({
 // Private Axios with interceptor
 export const privateAxios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
+  
 });
 
 // Add Authorization header automatically
