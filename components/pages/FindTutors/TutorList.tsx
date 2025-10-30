@@ -8,17 +8,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Clock4, MapPin, User, Video } from "lucide-react";
+import { Clock4, CloudCog, MapPin, User, Video } from "lucide-react";
 import BookingFlow from "./BookingFlow";
 import { useQuery } from "@tanstack/react-query";
 import { privateAxios, publicAxios } from "@/lib/axios";
 import { Tulpen_One } from "next/font/google";
 import { format } from "date-fns";
 import Link from "next/link";
+import ErrorState from "@/components/common/ErrorState";
 
 // Define the Tutor type
 interface TutorProps {
-  userid: string ;
+  userid: string;
   username: string;
   avatar: string | null; // Allowing 'null' as avatar can be null
   about_me: string;
@@ -75,7 +76,8 @@ const TutorList = () => {
   // }
 
   if (isError) {
-    return <div className="text-red-500">Error: {error?.message}</div>;
+    // return <div className="text-red-500">Error: {error?.message}</div>;
+    return <ErrorState message={error?.message || "Internal Error !"} />
   }
 
   return (
@@ -189,8 +191,9 @@ const TutorList = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value=" ">All Levels</SelectItem>
-                  <SelectItem value="a-level">A level</SelectItem>
-                  <SelectItem value="o-level">O level</SelectItem>
+                  <SelectItem value="k-5">Grades K–5</SelectItem>
+                  <SelectItem value="6-8">Grades 6–8</SelectItem>
+                  <SelectItem value="9-12">Grades 9–12</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -241,7 +244,11 @@ const TutorList = () => {
 
 export default TutorList;
 
+const BASE_URL = process.env.NEXT_PUBLIC_IMAGE_API_URL;
+
 const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
+
+  console.log("Tutor img", BASE_URL)
   return (
     <div className="bg-white rounded-lg shadow-lg p-5 max-w-[436px] flex flex-col justify-between">
       <div>
@@ -249,7 +256,18 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
           {/* Info */}
           <div className="flex">
             <div className="bg-gray-300 rounded-2xl w-16 h-16 md:w-20 md:h-20 mr-5 shrink-0 overflow-hidden">
-              <img className="w-full h-full object-cover" src={tutor.avatar || "https://placehold.co/600x400"} alt={tutor.username} />
+              <img
+  className="w-full h-full object-cover"
+  src={
+    tutor.avatar && tutor.avatar !== "null"
+      ? tutor.avatar.startsWith("http")
+        ? tutor.avatar
+        : `${BASE_URL}/avatar/${tutor.avatar}`
+      : "https://i.pinimg.com/474x/05/f9/fa/05f9fa8e055a33e9e59ca51bca27e401.jpg"
+  }
+  alt={tutor.username || "Tutor"}
+/>
+
             </div>
             <div>
               <h2 className="text-xl font-bold mb-2">{tutor.username}</h2>
@@ -310,11 +328,10 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
           {tutor?.modes.map((type: string, index: number) => (
             <div
               key={index}
-              className={`flex items-center gap-1 ${
-                type === "Virtual"
-                  ? "bg-[#EFF6FF] text-[#1D4ED8]"
-                  : "bg-[#F0FDF4] text-[#15803D]"
-              } px-3 py-1 rounded-full`}
+              className={`flex items-center gap-1 ${type === "Virtual"
+                ? "bg-[#EFF6FF] text-[#1D4ED8]"
+                : "bg-[#F0FDF4] text-[#15803D]"
+                } px-3 py-1 rounded-full`}
             >
               <Video className="w-3 h-3" />
               <span className="text-sm font-medium">{type}</span>
