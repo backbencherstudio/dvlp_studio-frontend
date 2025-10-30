@@ -263,7 +263,7 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
       ? tutor.avatar.startsWith("http")
         ? tutor.avatar
         : `${BASE_URL}/avatar/${tutor.avatar}`
-      : "https://i.pinimg.com/474x/05/f9/fa/05f9fa8e055a33e9e59ca51bca27e401.jpg"
+      : "\profile-placeholder.jpg"
   }
   crossOrigin="anonymous"
   alt={tutor.username || "Tutor"}
