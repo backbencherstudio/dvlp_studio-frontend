@@ -7,7 +7,7 @@ import AuthInput from "../reusable/AuthInput";
 import Link from "next/link";
 import { Checkbox } from "../ui/checkbox";
 import EyeIcon from "../icons/EyeIcon";
-import { EyeClosed, LockIcon } from "lucide-react";
+import { EyeClosed, Loader, LockIcon } from "lucide-react";
 import ErrorMessage from "../reusable/ErrorMessage";
 import ArrowIcon from "../icons/ArrowIcon";
 import { useAuth } from "@/context/AuthContext";
@@ -54,7 +54,7 @@ export default function StudentSignIn() {
     // console.log("payload:", data);
     const { email, password, rememberMe } = data;
     // console.log("🚀 StudentSignIn - redirectPath:", redirectPath);
-    await login(email, password, rememberMe, redirectPath);
+    await login(email, password, rememberMe, redirectPath, "student");
   };
 
   return (
@@ -146,8 +146,8 @@ export default function StudentSignIn() {
             disabled={isSubmitting}
             className="flex justify-center items-center gap-[7.637px] [background:linear-gradient(90deg,#6366F1_0%,#A855F7_100%)] px-0 py-4 rounded-xl text-white w-full cursor-pointer hover:[background:linear-gradient(90deg,#A855F7_0%,#6366F1_100%)] transition-colors duration-300 text-base font-bold leading-6 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Signing In..." : "Sign In"}
-            <ArrowIcon />
+            {isSubmitting ? <>{"Signing In..."}  <Loader className="w-5 h-5 animate-spin" /></> : <>{"Sign In"}  <ArrowIcon /></>}
+
           </button>
         </div>
       </form>

@@ -242,10 +242,10 @@ const BookingFlow = ({ tutor }: any) => {
       setIsPaymentSubmitting(true);
       setPaymentError(null);
 
-      await processPayment({
-        ...paymentDetails,
-        bookingId: createdBooking.id,
-      });
+      // await processPayment({
+      //   ...paymentDetails,
+      //   bookingId: createdBooking.id,
+      // });
 
       setIsPaymentModalOpen(false);
       setIsSuccessModalOpen(true);

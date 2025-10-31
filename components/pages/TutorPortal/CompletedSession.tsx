@@ -55,7 +55,7 @@ function CompletedSessionCard({ subject, username, session_date }: any) {
         <p className="text-sm text-gray-700">
           {startTime} to {endTime}
         </p>
-        <p className="text-sm font-medium text-gray-900">60 min (mock)</p>
+        <p className="text-sm font-medium text-gray-900">60 min </p>
       </div>
     </div>
   );

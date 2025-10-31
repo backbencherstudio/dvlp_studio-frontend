@@ -91,7 +91,7 @@ const ProfileCard = () => {
       {/* About Section */}
       <div className="px-6 py-9">
         <h3 className="font-semibold text-xl mb-5 text-[#1E293B]">About</h3>
-        <p className="text-gray-600 leading-6">{safe(student.about_me)}</p>
+        <p className="text-gray-600 leading-6">{student.about_me ?? "No information provided yet"}</p>
       </div>
 
       {/* Grade & Level Section */}

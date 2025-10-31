@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 
 export type User = {
   id: string;
-  name:string;
+  name: string;
   email: string;
   avatar: string | null;
   address: string | null;
@@ -33,7 +33,8 @@ type AuthContextType = {
     email: string,
     password: string,
     rememberMe: boolean,
-    callbackUrl?: string
+    callbackUrl?: string,
+    expectedRole?: string
   ) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -79,7 +80,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     email: string,
     password: string,
     rememberMe: boolean,
-    callbackUrl?: string
+    callbackUrl?: string,
+    expectedRole?: string
   ) => {
     setLoading(true);
     setError(null);
@@ -98,8 +100,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const inferredType = email.includes("admin")
           ? "admin"
           : email.includes("teacher") || email.includes("tutor")
-          ? "teacher"
-          : "student";
+            ? "teacher"
+            : "student";
+
+
+       
         const mockUser = {
           id: "mock-id",
           email,
@@ -114,7 +119,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } as User;
         setUser(mockUser);
         setError(null);
-        
+
         // Use callbackUrl if provided, otherwise redirect based on role
         if (callbackUrl) {
           router.push(callbackUrl);
@@ -147,9 +152,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
 
         await refreshUser();
-
         const userData = await privateAxios.get("/auth/me");
         const userType = userData.data.data.type;
+
+
+         // if an extepceted role is provided, validate it
+        if (expectedRole && userType !== expectedRole) {
+          Cookies.remove("access_token");
+          Cookies.remove("refresh_token");
+          setError("Credentials not valid for this account type.");
+          setLoading(false);
+          return;
+        }
+
+
+
 
         // Use callbackUrl if provided, otherwise redirect based on role
         if (callbackUrl) {

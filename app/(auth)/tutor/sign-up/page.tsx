@@ -37,11 +37,11 @@ export default function page() {
           {/* already have or new comers */}
           <div className="mb-[30px]">
             <p className="leading-6  text-gray-300">
-              New to teaching with us?{" "}
+              Already have an Account?{" "}
               <Link href={"/tutor/sign-in"}
                 className="font-semibold leading-6 text-teal-400"
               >
-                Apply to teach
+                Sign In
               </Link>
             </p>
            
