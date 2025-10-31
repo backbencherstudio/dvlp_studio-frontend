@@ -8,7 +8,8 @@ import { Download, FileDown, Users } from "lucide-react";
 import React from "react";
 
 const BASE_URL =
-  "https://justin-handmade-format-rich.trycloudflare.com/public/storage/material/";
+  `${process.env.NEXT_PUBLIC_IMAGE_API_URL}/material/`;
+
 
 // 🧩 Fetch session materials
 const useSessionMaterials = () => {
@@ -78,9 +79,9 @@ const SessionMaterials = () => {
             {/* Download All Button */}
             {session.sessionDetails.pdfAttachment?.length > 0 && (
               <button
-                // onClick={() =>
-                //   handleDownloadAll(session.sessionDetails.pdfAttachment)
-                // }
+                onClick={() =>
+                  handleDownloadAll(session.sessionDetails.pdfAttachment)
+                }
                 className="flex items-center space-x-2.5 px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 <Download className="w-4 h-4 sm:w-5 sm:h-5 text-[#141B34]" />

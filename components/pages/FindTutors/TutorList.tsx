@@ -30,7 +30,7 @@ interface TutorProps {
   priceRange: string;
   nextAvailability: string; // ISO 8601 string representation of the date
   grades: string;
-  rating: number;
+  avgRate: number;
   reviews: number;
   sessionsCompleted: number;
 }
@@ -212,12 +212,13 @@ const TutorList = () => {
               <div>
                 <h2 className="text-2xl font-bold">Available Tutors</h2>
                 <p className="text-gray-600 leading-6">
-                  Showing 4 of {tutorList?.length} tutors
+                  {/* Showing 4 of {tutorList?.length} tutors */}
+                  Showing all {tutorList?.length} tutors
                 </p>
               </div>
-              <button className="bg-white/50 py-3  rounded-3xl pl-[20.66px] pr-[32.67px] backdrop-blur-[2px] border-gray-300">
+              {/* <button className="bg-white/50 py-3  rounded-3xl pl-[20.66px] pr-[32.67px] backdrop-blur-[2px] border-gray-300">
                 Sort by Rating
-              </button>
+              </button> */}
             </div>
 
             {/* all tutors */}
@@ -275,9 +276,9 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
               <div className="text-sm text-yellow-500 mt-1">
                 <span>★</span>{" "}
                 <span className="text-black font-medium text-sm leading-5">
-                  {tutor?.rating}
+                  {tutor?.avgRate.toFixed(1)}  
                 </span>{" "}
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-500 text-nowrap">
                   ({tutor.reviews} reviews)
                 </span>
               </div>
@@ -343,7 +344,7 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
         <p className="text-sm text-green-500 mt-4 font-medium">
           Next availability:{"   "}
           {tutor?.nextAvailability
-            ? format(new Date(tutor.nextAvailability), "MMM dd, yyyy h:mm a")
+            ? format(new Date(tutor?.nextAvailability), "MMM dd, yyyy h:mm a")
             : "N/A"}
         </p>
       </div>

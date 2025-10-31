@@ -46,7 +46,7 @@ export default function TutorSignIn() {
   const onSubmit = async (data: FormValues) => {
     // console.log("payload:", data);
     const { email, password, remember } = data;
-    await login(email, password, remember, callbackUrl);
+    await login(email, password, remember, callbackUrl, "teacher");
   };
 
   return (

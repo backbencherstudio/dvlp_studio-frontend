@@ -60,7 +60,7 @@ export default function OurImpact() {
 
         {/* button */}
        <div className="flex items-center justify-center mt-16">
-       <Link href={"/"}>
+       <Link href={"/contact"}>
           <button className="px-[69px] py-5 rounded-2xl flex items-center justify-center bg-white gap-[19px] cursor-pointer">
             <span className="text-lg font-bold leading-7 text-purple-600">Get in Touch</span>
             <span>
