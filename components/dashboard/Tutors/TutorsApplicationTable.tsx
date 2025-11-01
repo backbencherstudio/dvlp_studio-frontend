@@ -9,21 +9,54 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { useapplications } from "./useApplication";
+import { useApplications, useTutorApplicationActions } from "./useApplication";
 import Breadcrumb from "@/components/reusable/Breadcrumb";
+import ErrorState from "@/components/common/ErrorState";
+import LoadingState from "@/components/common/LoadingState";
 
-const tutorsApplications: any = [];
+
+
+const formatTutorApplications = (apiData: any[] = []) => {
+  return apiData.map((item: any) => ({
+    application_id: item.id,
+    name: item.name || "N/A",
+    subject: Array.isArray(item.subjects_taught)
+      ? item.subjects_taught.join(", ").replaceAll('"', "")
+      : item.subjects_taught || "N/A",
+    email: item.email || "N/A",
+    hourly_rate: item.hourly_rate ? `$${item.hourly_rate}` : "N/A",
+    status: item.is_accepted || "pending",
+    location: item.city || item.country || "N/A",
+    certifications: item.certifications || [],
+  }));
+};
+
+const statusStyles: Record<string, string> = {
+  approved: "bg-green-100 text-green-800",
+  restricted: "bg-red-100 text-red-800",
+  pending: "bg-yellow-100 text-yellow-800",
+};
+
 
 const TutorApplicationTable = () => {
-  const { data, isFetching, isError } = useapplications();
+  const { data: tData, isLoading, isError } = useApplications();
+  const { approveMutation, rejectMutation } = useTutorApplicationActions();
 
-  console.log("Data", data);
+  const formattedData = formatTutorApplications(tData?.data || []);
+  console.log("Formatted Data", formattedData);
+
+
   // store which row popover is open
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const handleActionClick = (action: string, rowData: any) => {
     console.log(action, rowData);
     // do your API calls or logic here
+    if (action === "Approve") {
+      approveMutation.mutate(rowData.application_id);
+    } else if (action === "Restrict") {
+      rejectMutation.mutate(rowData.application_id);
+    }
 
     // ✅ close the popover after action
     setOpenIndex(null);
@@ -35,7 +68,15 @@ const TutorApplicationTable = () => {
     { id: "subject", label: "SUBJECT" },
     { id: "email", label: "Email" },
     { id: "hourly_rate", label: "HOURLY RATE" },
-    { id: "status", label: "STATUS" },
+    {
+      id: "status", label: "STATUS", renderRow: (row: any) => (
+        <td>
+          <span className={`px-3 py-1 rounded-full capitalize text-sm font-medium ${statusStyles[row.status] || "bg-gray-100 text-gray-800"}`}>
+            {row.status}
+          </span>
+        </td>
+      )
+    },
     { id: "location", label: "LOCATION" },
     {
       id: "action2",
@@ -50,7 +91,7 @@ const TutorApplicationTable = () => {
               View
             </Link>
 
-            {row.session_id === "1001" && (
+            {(
               <Popover
                 open={openIndex === index}
                 onOpenChange={(isOpen) => setOpenIndex(isOpen ? index : null)}
@@ -82,19 +123,28 @@ const TutorApplicationTable = () => {
     },
   ];
 
+
+
+
+
   return (
     <div className="p-6">
       {/* breadcrumb */}
 
       <Breadcrumb />
       {/* table  */}
-      <ReusableTable
-        tableTitle="Tutors Applications"
-        columns={columns}
-        data={tutorsApplications}
-        searchPlaceholder="Search Tutor"
-        onActionClick={handleActionClick}
-      />
+      {isLoading ? (
+        <LoadingState />
+      ) : isError ? (
+        <ErrorState />
+      ) : (
+        <ReusableTable
+          tableTitle="Tutors Applications"
+          columns={columns}
+          data={formattedData}
+          searchPlaceholder="Search Tutor"
+        />
+      )}
     </div>
   );
 };
