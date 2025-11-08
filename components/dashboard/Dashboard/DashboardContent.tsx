@@ -1,9 +1,12 @@
+"use client"
+
 import { BookOpen, Calendar, CreditCard, Users } from "lucide-react";
 import React from "react";
 import StatsCardSection from "./StatsCardSection";
 import RecentReviews from "@/components/pages/TutorPortal/RecentReviews";
 import RecentSessions from "./RecentSession";
 import PendingApplication from "./PendingApplication";
+import { useApplications } from "../Tutors/useApplication";
 const statsCards = [
   {
     title: "Total Tutor",
@@ -58,12 +61,26 @@ const recentSessions = [
   },
 ];
 
+
+
 const pendingApplications = [
   { name: "Jane Smith", subject: "Physics", submitted: "2025-08-18" },
   { name: "Jane Smith", subject: "Physics", submitted: "2025-08-18" },
 ];
 
 export default function DashboardContent() {
+
+  const {data:apsData, isLoading, isError } = useApplications();
+
+  if(isLoading) return <>Loading...</>;
+
+  // console.log(apsData.data);
+  const applicationsData = apsData?.data || [];
+  
+  console.log(applicationsData);
+  const applications = getPendingApplications(applicationsData);
+  const firstFourApplications = applications.slice(0, 5);
+  
   return (
     <section>
       {/* stats card */}
@@ -73,12 +90,32 @@ export default function DashboardContent() {
       {/* Recent session & Pending tutor */}
       <div className="flex gap-4 flex-col md:flex-row">
         <div className="w-full md:w-1/2">
-          <RecentSessions sessions={recentSessions} />
+      
+          <RecentSessions  />
         </div>
         <div className="w-full md:w-1/2">
-          <PendingApplication applications={pendingApplications} />
-        </div>
+          <PendingApplication applications={firstFourApplications} />
+             </div>
       </div>
     </section>
   );
+}
+
+
+
+export function getPendingApplications(teachers:any) {
+  return teachers.flatMap((teacher:any) => {
+    if (teacher.is_accepted !== "pending") return []; // ignore non-pending
+
+    // Clean subjects
+    const subjects = teacher.subjects_taught.map((s:any) => s.replace(/[\[\]"]+/g, '').trim());
+
+    // Map subjects to application objects
+    return subjects.map((subject:any) => ({
+      id: teacher.id,
+      name: teacher.name,
+      subject: subject,
+      submitted: new Date().toISOString().split('T')[0] // today's date
+    }));
+  });
 }

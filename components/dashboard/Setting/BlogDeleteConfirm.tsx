@@ -3,7 +3,8 @@ import CustomDialog from "@/components/reusable/CustomDialog";
 
 type DeleteConfirmProps = {
   isOpen: boolean;
-  post: { title: string } | null; // Minimal: just title for confirmation
+  post?: { title: string } | null; // Minimal: just title for confirmation
+  team?: { name: string } | null; 
   onConfirm: () => void;
   onCancel: () => void;
 };

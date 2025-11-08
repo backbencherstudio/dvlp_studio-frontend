@@ -85,7 +85,7 @@ const TutorApplicationTable = () => {
         <td className="text-sm text-gray-600">
           <div className="flex gap-2 items-center">
             <Link
-              href={`/admin-dashboard/tutors/${row.application_id}`}
+              href={`/admin-dashboard/tutors/all-application/${row.application_id}`}
               className="text-blue-500 px-2 py-1.5 rounded-md border border-gray-200 cursor-pointer"
             >
               View
@@ -130,7 +130,6 @@ const TutorApplicationTable = () => {
   return (
     <div className="p-6">
       {/* breadcrumb */}
-
       <Breadcrumb />
       {/* table  */}
       {isLoading ? (

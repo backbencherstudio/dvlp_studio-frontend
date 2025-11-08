@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 
 export default function PendingApplication({ applications }: any) {
@@ -28,9 +29,10 @@ export default function PendingApplication({ applications }: any) {
                       Submitted: {application.submitted}
                     </p>
                   </div>
-                  <button className="px-3 py-1 text-xs font-medium text-purple-600 hover:bg-purple-50 rounded border border-purple-200">
+                <Link href={`/admin-dashboard/tutors/${application.id}`}>
+                  <button className="px-3 py-1 text-xs font-medium text-purple-600 hover:bg-purple-50 rounded border border-purple-200 cursor-pointer">
                     View Details
-                  </button>
+                  </button></Link>
                 </div>
               </div>
             ))}
