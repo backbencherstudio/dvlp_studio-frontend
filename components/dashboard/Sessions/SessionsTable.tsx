@@ -33,7 +33,6 @@ const SessionTable = () => {
   const { data: sessionDetails, isLoading: loadingDetails } = useSessionDetails(
     modalAction === "view" ? selectedData?.id : undefined
   );
-
   const { deleteMut, restrictMut } = useSessionMutations();
 
   const handleActionClick = (

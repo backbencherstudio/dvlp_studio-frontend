@@ -33,16 +33,19 @@ const BlogModal: React.FC<BlogModalProps> = ({
   onClose,
   onSave,
 }) => {
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isDirty },
+    setValue,
+    watch,
   } = useForm<{
     title: string;
     description: string;
     category: string;
-    image: FileList | null;
+    image: File | null;
   }>({
     defaultValues: {
       title: "",
@@ -54,6 +57,7 @@ const BlogModal: React.FC<BlogModalProps> = ({
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const watchImage = watch("image");
 
   useEffect(() => {
     if (isOpen) {
@@ -66,18 +70,46 @@ const BlogModal: React.FC<BlogModalProps> = ({
         });
         setImagePreview(post.imageUrl || null);
       } else {
-        reset();
+        reset({
+          title: "",
+          description: "",
+          category: "Blog",
+          image: null,
+        });
         setImagePreview(null);
       }
     }
   }, [isOpen, mode, post, reset]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImagePreview(URL.createObjectURL(file));
+  // Handle image preview when image changes
+  useEffect(() => {
+    if (watchImage) {
+      const previewUrl = URL.createObjectURL(watchImage);
+      setImagePreview(previewUrl);
+
+      // Clean up the object URL when component unmounts or image changes
+      return () => {
+        URL.revokeObjectURL(previewUrl);
+      };
+    } else if (mode === "edit" && post?.imageUrl) {
+      setImagePreview(post.imageUrl);
     } else {
       setImagePreview(null);
+    }
+  }, [watchImage, mode, post]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        alert("Please select a valid image file");
+        return;
+      }
+      setValue("image", file, { shouldDirty: true });
+    } else {
+      setValue("image", null, { shouldDirty: true });
     }
   };
 
@@ -86,7 +118,7 @@ const BlogModal: React.FC<BlogModalProps> = ({
       title: data.title,
       description: data.description,
       category: data.category,
-      image: data.image?.[0] ?? null,
+      image: data.image,
     };
     onSave(submitData);
   };
@@ -97,8 +129,9 @@ const BlogModal: React.FC<BlogModalProps> = ({
     "self-stretch text-[color:var(--Text-black-2,#7C7D81)] text-sm font-medium leading-[140%] tracking-[0.07px]";
 
   const inputStyle =
-    "flex justify-end items-center gap-4 self-stretch border border-[color:var(--Color-border,#EBEBEB)] [background:#FFF] p-4 rounded-2xl border-solid w-full";
+    "flex justify-end items-center gap-4 self-stretch border border-[color:var(--Color-border,#EBEBEB)] [background:#FFF] p-3 rounded-xl border-solid w-full";
 
+    const errorInput = `text-sm text-red-500`
   return (
     <CustomDialog open={isOpen} setOpen={(open) => !open && onClose()}>
       <div>
@@ -109,12 +142,13 @@ const BlogModal: React.FC<BlogModalProps> = ({
               Title
             </label>
             <input
+              
               className={inputStyle}
               {...register("title", { required: "Title is required" })}
               id="title"
               placeholder="Title"
             />
-            {errors.title && <p className="error">{errors.title.message}</p>}
+            {errors.title && <p className={errorInput}>{errors.title.message}</p>}
           </div>
 
           <div>
@@ -130,7 +164,7 @@ const BlogModal: React.FC<BlogModalProps> = ({
               rows={4}
             />
             {errors.description && (
-              <p className="error">{errors.description.message}</p>
+              <p className={errorInput}>{errors.description.message}</p>
             )}
           </div>
 
@@ -138,66 +172,61 @@ const BlogModal: React.FC<BlogModalProps> = ({
             <label className={labelStyle} htmlFor="category">
               Category
             </label>
-            <input
-              className={inputStyle}
-              {...register("category")}
-              placeholder="Category"
-            />
+            <select className={inputStyle} {...register("category", {
+              required: "Category is required"
+            })}>
+              <option value="">Select Category</option>
+              <option value="Teacher">Teacher</option>
+              <option value="Student">Student</option>
+            </select>
+
+             {errors.category && (
+              <p className={errorInput}>{errors.category.message}</p>
+            )}
+
           </div>
 
           <div>
-  <label
-    htmlFor="image"
-    className="block mb-2 text-sm font-medium text-gray-700"
-  >
-    Image Upload
-  </label>
+            <label
+              htmlFor="image"
+              className="block mb-2 text-sm font-medium text-gray-700"
+            >
+              Image Upload
+            </label>
 
-  <label
-    htmlFor="image"
-    className="w-full border border-gray-300 flex items-center justify-center h-36 rounded-2xl cursor-pointer overflow-hidden hover:bg-gray-50 transition"
-  >
-    {imagePreview ? (
-      <img
-        src={imagePreview}
-        alt="Preview"
-        className="object-cover w-full h-full"
-      />
-    ) : (
-      <div className="flex flex-col items-center justify-center text-gray-500">
-        <ImageUpIcon className="w-6 h-6 mb-1" />
-        <span className="text-sm text-gray-600">Click to upload</span>
-      </div>
-    )}
+            <label
+              htmlFor="image"
+              className="w-full border border-gray-300 flex items-center justify-center h-36 rounded-2xl cursor-pointer overflow-hidden hover:bg-gray-50 transition"
+            >
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="object-cover w-full h-full"
+                />
+              ) : (
+                <div className="flex flex-col items-center justify-center text-gray-500">
+                  <ImageUpIcon className="w-6 h-6 mb-1" />
+                  <span className="text-sm text-gray-600">Click to upload</span>
+                </div>
+              )}
 
-    <input
-      id="image"
-      type="file"
-      accept="image/*"
-      className="hidden"
-      {...register("image", {
-        validate: (files) => {
-          if (files?.[0] && !files[0].type.startsWith("image/")) {
-            return "Please select a valid image file";
-          }
-          return true;
-        },
-      })}
-      onChange={handleImageChange}
-    />
-  </label>
+              <input
+                id="image"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageChange}
+                required
+              />
+            </label>
 
-  {errors.image && (
-    <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>
-  )}
-
-  <p className="text-xs text-gray-500 mt-1">
-    {mode === "edit" && post?.imageUrl
-      ? "(Current image shown; select new to replace)"
-      : "(Optional; preview above)"}
-  </p>
-</div>
-
+            <p className="text-xs text-gray-500 mt-1">
+              {mode === "edit" && post?.imageUrl
+                ? "(Current image shown; select new to replace)"
+                : "(Optional; preview above)"}
+            </p>
+          </div>
 
           <div className="flex items-center justify-between gap-2 ">
             <button

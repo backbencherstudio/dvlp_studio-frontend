@@ -1,8 +1,12 @@
 import EditPenIcon from "@/components/icons/EditPenIcon";
-import { PencilLineIcon } from "lucide-react";
+import { Delete, PencilLineIcon } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import TeamModal, { TeamFormData } from "./TeamModal";
+import { useTeamMembers, useTeamsMutations } from "./useTeam";
+import { useBlogMutations } from "./useBlog";
+import DeleteConfirmModal from "./BlogDeleteConfirm";
+import { toast } from "sonner";
 
 export interface TeamMemberType {
   id: string | number;
@@ -13,46 +17,24 @@ export interface TeamMemberType {
 }
 
 const fakeTeamMembers: TeamMemberType[] = [
-  {
-    id: 2,
-    name: "Miyad Rahman",
-    imageUrl: "https://randomuser.me/api/portraits/women/45.jpg",
-    designation: "UI/UX Designer",
-    description:
-      "Passionate about creating clean, user-centered interfaces with Figma and Adobe.",
-  },
-  {
-    id: 3,
-    name: "Esha Islam",
-    imageUrl: "https://randomuser.me/api/portraits/women/65.jpg",
-    designation: "Project Manager",
-    description:
-      "Ensures smooth communication between clients and the development team with .",
-  },
-  {
-    id: 4,
-    name: "Ridwan Ahmed",
-    imageUrl: "https://randomuser.me/api/portraits/women/41.jpg",
-    designation: "Backend Developer",
-    description:
-      "Expert in Node.js, Express, and database design for scalable, secure systems.",
-  },
-  {
-    id: 5,
-    name: "Akash Chowdhury",
-    imageUrl: "https://randomuser.me/api/portraits/women/47.jpg",
-    designation: "QA Engineer",
-    description:
-      "Responsible for maintaining product quality with manual and automated testing tools.",
-  },
+
 ];
 
 export default function TeamMember() {
+
+  const {data:tdata, isLoading, isError} = useTeamMembers();
+  const {addTeamMember, deleteTeamMember, deleteMutation} = useTeamsMutations(); 
+  console.log("Tdata", tdata);
+
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
   const [mode, setMode] = useState<"add" | "edit">("add");
   const [currentMember, setCurrentMember] = useState<TeamMemberType | null>(
     null
   );
+
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [memberToDelete, setMemberToDelete] = useState<any>(null);
+  
 
   const handleAddMember = () => {
     setMode("add");
@@ -71,10 +53,36 @@ export default function TeamMember() {
     setModalOpen(false);
   };
 
-  const handleSubmit = (data: TeamFormData) => {
-    // send it backend
-    console.log(data);
+  const handleDelete = (member:TeamMemberType) => {
+setMemberToDelete(member);
+setShowDeleteConfirm(true);
+  }
 
+  const handleConfirmDelete = () => {
+    if(!memberToDelete?.id) return; 
+    deleteMutation.mutate(memberToDelete?.id.toString(), {
+      onSuccess: () => {
+        setShowDeleteConfirm(false);
+        setMemberToDelete(null);
+      }
+    });
+    
+  }
+
+  const handleSubmit = async(data: TeamFormData) => {
+
+    const formData = new FormData();
+    formData.append("name", data.name)
+    formData.append("designation", data.designation)
+    formData.append("description", data.description)
+    if(data.image){
+      formData.append("image", data.image)
+    }
+    // send it backend
+   for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+    await addTeamMember(formData);
     // finally close modal
     handleCloseModal();
   };
@@ -101,7 +109,7 @@ export default function TeamMember() {
 
         {/* all members */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {fakeTeamMembers.map((member) => (
+          {tdata?.teams.map((member:any) => (
             <div
               key={member.id}
               className="pb-8 rounded-xl max-w-[298px] space-y-8 border overflow-hidden"
@@ -109,14 +117,23 @@ export default function TeamMember() {
               {/* img */}
               <div className="h-[211px] w-full overflow-hidden bg-red-300  relative">
                 <img
-                  src={member.imageUrl}
+                 src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}/${member.image}`}
                   alt={member.name}
                   className="w-full h-full object-cover"
-                  // width={100}
-                  // height={100}
+                 crossOrigin="anonymous"
+               
                 />
 
                 <button
+                  onClick={() => handleDelete(member)}
+                  className=" flex justify-center items-center gap-2.5 absolute border border-gray-300 [background:#FFF] px-4 py-1.5 rounded-[99px] border-solid right-[17.67px] top-[17px] cursor-pointer"
+                >
+                  <Delete className="w-4 h-4 " />{" "}
+                  <span className="text-sm font-medium leading-6 text-gray-700">
+                    Delete
+                  </span>
+                </button>
+                {/* <button
                   onClick={() => handleEditMember(member)}
                   className=" flex justify-center items-center gap-2.5 absolute border border-gray-300 [background:#FFF] px-4 py-1.5 rounded-[99px] border-solid right-[17.67px] top-[17px] cursor-pointer"
                 >
@@ -124,7 +141,7 @@ export default function TeamMember() {
                   <span className="text-sm font-medium leading-6 text-gray-700">
                     Edit
                   </span>
-                </button>
+                </button> */}
               </div>
               {/* info */}
               <div className="text-center">
@@ -151,6 +168,13 @@ export default function TeamMember() {
         member={currentMember}
         onClose={handleCloseModal}
         onSave={handleSubmit}
+      />
+
+       <DeleteConfirmModal
+        isOpen={showDeleteConfirm}
+        team={memberToDelete}
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setShowDeleteConfirm(false)}
       />
     </>
   );

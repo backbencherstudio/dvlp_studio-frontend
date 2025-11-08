@@ -207,12 +207,12 @@ function renderUser(user: User | null) {
   if (!user) {
     return (
       <>
-        <li className="transition hover:text-purple-400 text-lg text-gray-100">
+        <p className="transition hover:text-purple-400 text-lg text-gray-100">
           <Link href="/student/sign-in">Student Login</Link>
-        </li>
-        <li className="transition hover:text-purple-400 text-lg text-gray-100">
+        </p>
+        <p className="transition hover:text-purple-400 text-lg text-gray-100">
           <Link href="/tutor/sign-in">Tutor Login</Link>
-        </li>
+        </p>
       </>
     );
   }

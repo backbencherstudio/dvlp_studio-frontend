@@ -9,456 +9,37 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
+import { transformApiData, useTeachers, useTeachersMutations } from "./useTutors";
+import { is } from "date-fns/locale";
+import LoadingState from "@/components/common/LoadingState";
+import ErrorState from "@/components/common/ErrorState";
 
-const TutorData = [
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-  {
-    session_id: "1001",
-    name: "Marvin McKinney",
-    subject: "FRENCH",
-    hourly_rate: "$25/hr",
-    status: "Active",
-    location: "China",
-  },
-  {
-    session_id: "1002",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Inactive",
-    location: "USA",
-  },
-  {
-    session_id: "1003",
-    name: "Sarah Wilson",
-    subject: "MATH",
-    hourly_rate: "$30/hr",
-    status: "Active",
-    location: "USA",
-  },
-];
+
 
 const TutorTable = () => {
   // store which row popover is open
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const { data: tData, isError, isLoading } = useTeachers();
+  const { deleteMut, restrictMut } = useTeachersMutations();
+
+  console.log(tData?.data)
+
+  const tutorData = transformApiData(tData?.data || []);
 
   const handleActionClick = (action: string, rowData: any) => {
     console.log(action, rowData);
-    // do your API calls or logic here
-
-    // ✅ close the popover after action
+    // API calls or logic here
+    if (action === "Delete") {
+      deleteMut.mutate(rowData.tutor_id)
+    } else if (action === "Restrict") {
+      restrictMut.mutate(rowData.tutor_id);
+    }
+    //  close the popover after action
     setOpenIndex(null);
   };
 
   const columns = [
-    { id: "session_id", label: "SESSION ID" },
+    { id: "tutor_id", label: "TUTOR ID" },
     { id: "name", label: "NAME" },
     { id: "subject", label: "SUBJECT" },
     { id: "hourly_rate", label: "HOURLY RATE" },
@@ -471,13 +52,13 @@ const TutorTable = () => {
         <td className="text-sm text-gray-600">
           <div className="flex gap-2 items-center">
             <Link
-              href={`/admin-dashboard/tutors/${row.session_id}`}
+              href={`/admin-dashboard/tutors/${row.tutor_id}`}
               className="text-blue-500 px-2 py-1.5 rounded-md border border-gray-200 cursor-pointer"
             >
               View
             </Link>
 
-            {row.session_id === "1001" && (
+            {(
               <Popover
                 open={openIndex === index}
                 onOpenChange={(isOpen) =>
@@ -491,13 +72,13 @@ const TutorTable = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-28 p-2 space-y-2 mr-12">
                   <button
-                    className="w-full bg-black text-white rounded-md py-2"
+                    className="w-full bg-black text-white rounded-md py-2 cursor-pointer"
                     onClick={() => handleActionClick("Delete", row)}
                   >
                     Delete
                   </button>
                   <button
-                    className="w-full bg-red-400 text-white rounded-md py-2"
+                    className="w-full bg-red-400 text-white rounded-md py-2 cursor-pointer"
                     onClick={() => handleActionClick("Restrict", row)}
                   >
                     Restrict
@@ -511,16 +92,26 @@ const TutorTable = () => {
     },
   ];
 
+
+
+
   return (
     <div className="p-6">
-      {/* <h2 className="text-2xl font-bold mb-6">Tutors</h2> */}
-      <ReusableTable
-        tableTitle="Tutors Applications"
-        columns={columns}
-        data={TutorData}
-        searchPlaceholder="Search Tutor"
-        onActionClick={handleActionClick}
-      />
+
+      {
+        isLoading ? (
+          <LoadingState />
+        ) : isError ? (
+          <ErrorState />
+        ) : (
+          <ReusableTable
+            tableTitle="Tutors "
+            columns={columns}
+            data={tutorData}
+            searchPlaceholder="Search Tutor"
+            onActionClick={handleActionClick}
+          />)
+      }
     </div>
   );
 };

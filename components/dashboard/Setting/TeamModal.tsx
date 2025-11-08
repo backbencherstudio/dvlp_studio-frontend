@@ -14,7 +14,7 @@ type TeamModalProps = {
 
 export type TeamFormData = {
   name: string;
-  image: FileList | null;
+  image: File | null;
   designation: string;
   description: string;
 };
@@ -31,6 +31,9 @@ export default function TeamModal({
     handleSubmit,
     reset,
     formState: { errors, isDirty },
+    setValue,
+    watch,
+    trigger,
   } = useForm<TeamFormData>({
     defaultValues: {
       name: "",
@@ -42,6 +45,7 @@ export default function TeamModal({
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const watchImage = watch("image");
 
   useEffect(() => {
     if (isOpen) {
@@ -53,28 +57,61 @@ export default function TeamModal({
           description: member.description,
         });
         setImagePreview(member.imageUrl || null);
+      } else {
+        reset({
+          name: "",
+          image: null,
+          designation: "",
+          description: "",
+        });
+        setImagePreview(null);
       }
     }
   }, [isOpen, mode, member, reset]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImagePreview(URL.createObjectURL(file));
+  // Handle image preview when image changes
+  useEffect(() => {
+    if (watchImage) {
+      const previewUrl = URL.createObjectURL(watchImage);
+      setImagePreview(previewUrl);
+
+      // Clean up the object URL when component unmounts or image changes
+      return () => {
+        URL.revokeObjectURL(previewUrl);
+      };
+    } else if (mode === "edit" && member?.imageUrl) {
+      setImagePreview(member.imageUrl);
     } else {
       setImagePreview(null);
+    }
+  }, [watchImage, mode, member]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        alert("Please select a valid image file");
+        return;
+      }
+      setValue("image", file, { shouldDirty: true });
+      trigger("image"); // Trigger validation
+    } else {
+      setValue("image", null, { shouldDirty: true });
     }
   };
 
   const onSubmit = (data: FieldValues) => {
     const submitData: TeamFormData = {
       name: data.name,
-      image: data.image?.[0] ?? null,
+      image: data.image, // Fixed: directly use data.image instead of data.image?.[0]
       designation: data.designation,
       description: data.description,
     };
     onSave(submitData);
   };
+
   if (!isOpen) return null;
 
   const labelStyle =
@@ -82,11 +119,12 @@ export default function TeamModal({
 
   const inputStyle =
     "flex justify-end items-center gap-4 self-stretch border border-[color:var(--Color-border,#EBEBEB)] [background:#FFF] p-4 rounded-2xl border-solid w-full";
+
   return (
     <CustomDialog open={isOpen} setOpen={onClose}>
       <div>
-        <h2>{mode === "add" ? "Add New Member" : "Edit Memeber"}</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className=" space-y-5">
+        <h2>{mode === "add" ? "Add New Member" : "Edit Member"}</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
             <label
               htmlFor="image"
@@ -117,14 +155,6 @@ export default function TeamModal({
                 type="file"
                 accept="image/*"
                 className="hidden"
-                {...register("image", {
-                  validate: (files) => {
-                    if (files?.[0] && !files[0].type.startsWith("image/")) {
-                      return "Please select a valid image file";
-                    }
-                    return true;
-                  },
-                })}
                 onChange={handleImageChange}
               />
             </label>
@@ -138,21 +168,21 @@ export default function TeamModal({
             <p className="text-xs text-gray-500 mt-1">
               {mode === "edit" && member?.imageUrl
                 ? "(Current image shown; select new to replace)"
-                : "(Optional; preview above)"}
+                : "(Select an image)"}
             </p>
           </div>
 
           <div>
-            <label className={labelStyle} htmlFor="title">
-              Title
+            <label className={labelStyle} htmlFor="name">
+              Name
             </label>
             <input
               className={inputStyle}
               {...register("name", { required: "Name is required" })}
-              id="title"
-              placeholder="Title"
+              id="name"
+              placeholder="Name"
             />
-            {errors.name && <p className="error">{errors.name.message}</p>}
+            {errors.name && <p className="error text-sm text-red-500 mt-1">{errors.name.message}</p>}
           </div>
 
           <div>
@@ -178,21 +208,24 @@ export default function TeamModal({
             </label>
             <input
               className={inputStyle}
-              {...register("designation")}
+              {...register("designation", { required: "Designation is required" })}
               placeholder="Designation"
             />
+            {errors.designation && (
+              <p className="error text-sm text-red-500 mt-1">{errors.designation.message}</p>
+            )}
           </div>
 
-          <div className="flex items-center justify-between gap-2 ">
+          <div className="flex items-center justify-between gap-2">
             <button
-              className="flex-1 flex h-14 justify-center items-center gap-3  [background:var(--background-normal-25,#F6F8FA)] px-4 py-3 rounded-2xl"
+              className="flex-1 flex h-14 justify-center items-center gap-3 [background:var(--background-normal-25,#F6F8FA)] px-4 py-3 rounded-2xl"
               type="button"
               onClick={onClose}
             >
               Cancel
             </button>
             <button
-              className="flex-1 px-4 py-3 rounded-2xl flex  justify-center items-center gap-3 [background:var(--linear,linear-gradient(90deg,#6366F1_0%,#A855F7_100%))] text-white"
+              className="flex-1 px-4 py-3 rounded-2xl flex justify-center items-center gap-3 [background:var(--linear,linear-gradient(90deg,#6366F1_0%,#A855F7_100%))] text-white"
               type="submit"
               disabled={!isDirty}
             >

@@ -46,14 +46,14 @@ export default function Hero() {
 
         {/*  CTA buttons */}
         <div className=" flex flex-col md:flex-row items-center justify-center gap-4 mt-[38px]">
-          <Link href="/tutors">
+          <span>
             <Link href={"/find-tutors"} className=" px-[46px] py-5 shrink-0 [background:linear-gradient(90deg,#A855F7_0%,#EC4899_100%)] flex rounded-2xl gap-[19px] items-center text-lg font-bold">
               <span>Find a Tutor</span>
               <span>
                 <ArrowIcon className="h-5 w-5" />
               </span>
             </Link>
-          </Link>
+          </span>
 
           <Link href="/tutor/sign-up">
             <button className="py-5 px-[30px] cursor-pointer flex rounded-2xl gap-[19px] border border-[rgba(255,255,255,0.20)] items-center text-lg font-bold ">

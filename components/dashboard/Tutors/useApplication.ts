@@ -1,10 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { privateAxios } from "@/lib/axios";
+import { toast } from "sonner";
 
 const fetchApplications = async () => {
-//   const { data } = await privateAxios.get("/tutor/applications");
-  const { data } = await privateAxios.get("/tutor/all");
+  //   const { data } = await privateAxios.get("/tutor/applications");
+  const { data } = await privateAxios.get("/tutor/applications");
   return data;
 };
 
@@ -14,7 +15,7 @@ const fetchApplicationById = async (id: string) => {
 };
 
 const approveApplication = async (id: string) => {
-  const { data } = await privateAxios.delete(`/tutor/acceptApp/${id}`);
+  const { data } = await privateAxios.patch(`/tutor/acceptApp/${id}`);
   return data;
 };
 
@@ -24,8 +25,8 @@ const restrictapplication = async (id: string) => {
 };
 
 // ✅ Fetch all applications
-export const useapplications = () => {
-  return useQuery({ queryKey: ["applications"], queryFn: fetchApplications });
+export const useApplications = () => {
+  return useQuery({  queryKey: ["tutor-applications"], queryFn: fetchApplications });
 };
 
 // ✅ Fetch one application by ID
@@ -38,18 +39,48 @@ export const useapplicationDetails = (id: string | null) => {
 };
 
 // ✅ Delete / restrict mutations
-export const useapplicationMutations = () => {
+
+export const useTutorApplicationActions = () => {
   const queryClient = useQueryClient();
 
-  const deleteMut = useMutation({
+  const approveMutation = useMutation({
     mutationFn: approveApplication,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["applications"] }),
+    onSuccess: (data) => {
+      toast.success("Tutor approved successfully!");
+      queryClient.invalidateQueries({ queryKey: ["tutor-applications"] });
+    },
+    onError: (error: any) => {
+      toast.error("Failed to approve tutor");
+    },
   });
 
-  const restrictMut = useMutation({
+  const rejectMutation = useMutation({
     mutationFn: restrictapplication,
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["applications"] }),
+    onSuccess: (data) => {
+      toast.success("Tutor rejected successfully!");
+      queryClient.invalidateQueries({ queryKey: ["tutor-applications"] });
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Failed to reject tutor");
+    },
   });
 
-  return { deleteMut, restrictMut };
+  return { approveMutation, rejectMutation };
 };
+
+// method: 2
+// export const useapplicationMutations = () => {
+//   const queryClient = useQueryClient();
+
+//   const approveMut = useMutation({
+//     mutationFn: approveApplication,
+//     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["applications"] }) ,
+//   });
+
+//   const restrictMut = useMutation({
+//     mutationFn: restrictapplication,
+//     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["applications"] }),
+//   });
+
+//   return { approveMut, restrictMut };
+// };

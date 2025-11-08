@@ -1,153 +1,114 @@
+"use client";
+
 import React, { useState } from "react";
 import BlogModal from "./BlogModal";
-import { Trash, Trash2 } from "lucide-react";
 import DeleteConfirmModal from "./BlogDeleteConfirm";
+import { Trash2 } from "lucide-react";
+import { useBlogs, useBlogMutations } from "./useBlog";
+import Image from "next/image";
+
 type BlogPostType = {
-  id: number;
+  id?: number;
   title: string;
   description: string;
   category: string;
   imageUrl?: string;
 };
-const fakeBlogs = [
-  {
-    id: 1,
-    title: "AI-Powered Matching for Learners",
-    description:
-      "Discover how our intelligent system pairs students with the perfect tutor based on learning style and goals.",
-    category: "Technology",
-  },
-  {
-    id: 2,
-    title: "Top 10 Study Techniques for Online Learning",
-    description:
-      "Explore the most effective methods to retain knowledge and improve your learning efficiency in digital classrooms.",
-    category: "Education",
-  },
-  {
-    id: 3,
-    title: "The Future of AI in Education",
-    description:
-      "A deep dive into how artificial intelligence is transforming the way students learn and teachers instruct.",
-    category: "Innovation",
-  },
-  {
-    id: 4,
-    title: "Time Management Tips for Students",
-    description:
-      "Learn practical strategies to balance study, work, and personal life for maximum productivity.",
-    category: "Lifestyle",
-  },
-  {
-    id: 5,
-    title: "Gamification in Learning",
-    description:
-      "How adding game elements to education can motivate students and enhance engagement.",
-    category: "Education",
-  },
-  {
-    id: 6,
-    title: "Understanding Learning Styles",
-    description:
-      "A guide to identifying visual, auditory, and kinesthetic learning styles to optimize study habits.",
-    category: "Self-Improvement",
-  },
-];
 
 export default function BlogPost() {
-  const [posts, setPosts] = useState<BlogPostType[]>(fakeBlogs);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const { data, isLoading, isError } = useBlogs();
+  const { createMut, editMut, deleteMut } = useBlogMutations(null);
+
+  const blogs = data?.data?.blogs || [];
+
+  const [modalOpen, setModalOpen] = useState(false);
   const [mode, setMode] = useState<"add" | "edit">("add");
   const [currentPost, setCurrentPost] = useState<BlogPostType | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<boolean>(false);
+  
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [postToDelete, setPostToDelete] = useState<BlogPostType | null>(null);
-  const [isDeleting, setIsDeleting] = useState<number | null>(null);
 
+  // open create modal
   const handleCreate = () => {
     setMode("add");
     setCurrentPost(null);
     setModalOpen(true);
   };
 
+  // open edit modal
   const handleEdit = (post: BlogPostType) => {
     setMode("edit");
     setCurrentPost(post);
     setModalOpen(true);
   };
 
+  // close modal
   const handleCloseModal = () => {
-    setCurrentPost(null);
     setModalOpen(false);
+    setCurrentPost(null);
   };
 
+  // delete confirm modal open
   const handleDelete = (post: BlogPostType) => {
     setPostToDelete(post);
     setShowDeleteConfirm(true);
   };
 
-  const handleConfirmDelete = async () => {
-    if (!postToDelete) return;
-
-    setIsDeleting(postToDelete.id);
-    setShowDeleteConfirm(false); // Close modal first
-
-    try {
-      // API call (uncomment for real backend)
-      // await fetch(`/api/posts/${postToDelete.id}`, { method: 'DELETE' });
-
-      // Optimistic update
-      setPosts((prev) => prev.filter((p) => p.id !== postToDelete.id));
-
-      console.log(`Deleted post ${postToDelete.id}`);
-    } catch (error) {
-      console.error("Delete failed:", error);
-      alert("Failed to delete post. Try again?");
-      // Rollback: Could refetch here
-    } finally {
-      setIsDeleting(null);
-      setPostToDelete(null);
-    }
+  // delete confirm
+  const handleConfirmDelete = () => {
+    if (!postToDelete?.id) return;
+    deleteMut.mutate(postToDelete.id.toString(), {
+      onSuccess: () => {
+        setShowDeleteConfirm(false);
+        setPostToDelete(null);
+      },
+    });
   };
 
-  const handleSave = async (formData: {
+  // handle save (add or edit)
+  const handleSave = (data: {
     title: string;
     description: string;
     category: string;
     image: File | null;
   }) => {
-    console.log("Got formdata", formData);
-
-    if (mode === "add") {
-      const newPost: BlogPostType = {
-        id: posts.length + 1, // simple ID generation
-        title: formData.title,
-        description: formData.description,
-        category: formData.category,
-        // imageUrl: you can handle file upload to get URL
-      };
-      setPosts([...posts, newPost]);
-    } else if (mode === "edit" && currentPost) {
-      setPosts(
-        posts.map((p) =>
-          p.id === currentPost.id
-            ? {
-                ...p,
-                title: formData.title,
-                description: formData.description,
-                category: formData.category,
-              }
-            : p
-        )
-      );
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("category", data.category);
+    if (data.image) {
+      formData.append("image", data.image, data.image.name);
     }
 
-    handleCloseModal();
+
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+
+    if (mode === "add") {
+      createMut.mutate(
+        { payload: formData },
+        {
+          onSuccess: () => handleCloseModal(),
+        }
+      );
+
+    } else if (mode === "edit" && currentPost?.id) {
+      editMut.mutate(
+        { id: currentPost.id.toString(), payload: formData },
+        {
+          onSuccess: () => handleCloseModal(),
+        }
+      );
+    }
   };
 
-  // Generate a unique key for the modal to force remount on each open
-  const modalKey = modalOpen
-    ? `${mode}-${currentPost?.id ?? "new"}`
-    : undefined;
+
+  const modalKey = modalOpen ? `${mode}-${currentPost?.id ?? "new"}` : undefined;
+
+  if (isLoading) return <p>Loading blogs...</p>;
+  if (isError) return <p>Failed to load blogs.</p>;
 
   return (
     <div className="bg-white px-8 py-6 rounded-lg">
@@ -158,36 +119,41 @@ export default function BlogPost() {
 
         <button
           onClick={handleCreate}
-          className="bg-gradient-to-l to-[#6366F1] from-[#A855F7] text-white font-semibold px-3 py-2 rounded-lg cursor-pointer"
+          className="bg-gradient-to-l to-[#6366F1] from-[#A855F7] text-white font-semibold px-3 py-2 rounded-lg"
         >
           + Create Blog
         </button>
       </div>
 
-      {/* all blogs */}
-      <div>
-        {posts.map((post) => (
+      {/* All blogs */}
+      <div className="space-y-3">
+        {blogs.map((post: any) => (
           <div
             key={post.id}
             className="p-3 rounded-md flex items-start gap-5 justify-between bg-[#F6F8FA]"
           >
             <div className="flex gap-6">
-              {/* img */}
-              <div className="w-16 h-16 rounded overflow-hidden bg-red-300 shrink-0"></div>
+              {/* <div className="w-16w-16 h-16 rounded h-16 rounded overflow-hidden shrink-0"> */}
+              <img className="w-16 h-16 rounded shrink-0 overflow-hidden" src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}/${post.image}`} alt="" crossOrigin="anonymous" />
 
-              {/* info */}
+              {/* <img className="w-16 h-16 rounded-2xl overflow-hidden object-cover" src="https://rebecca-sig-softball-leading.trycloudflare.com/public/storage/blog/cfaf0b5f-10bb-4e15-8789-ff5dd8737489-lifestyle-.jpg" crossOrigin="anonymous" alt="no-img" /> */}
+
+              
+             
+
+              {/* </div> */}
               <div>
                 <h3 className="text-slate-800 text-lg font-medium leading-8">
                   {post.title}
                 </h3>
-                <p className="text-gray-600 text-sm font-normal leading-[29.25px]">
+                <p className="text-gray-600 text-sm leading-[29.25px]">
                   {post.description}
                 </p>
                 <p className="text-[#003466] text-sm font-medium leading-6">
                   Learn more
                 </p>
 
-                <div className="inline-block border border-[color:var(--background-pressed-100,#DFE1E7)] bg-white px-5 py-1.5 rounded-full mt-4">
+                <div className="inline-block border border-[#DFE1E7] bg-white px-5 py-1.5 rounded-full mt-4">
                   <p>Category: {post.category}</p>
                 </div>
               </div>
@@ -196,13 +162,13 @@ export default function BlogPost() {
             <div className="flex flex-col gap-2">
               <button
                 onClick={() => handleEdit(post)}
-                className="flex justify-center items-center gap-2.5 border border-[color:var(--background-pressed-100,#DFE1E7)] bg-white px-4 py-1 rounded-[99px] cursor-pointer"
+                className="border border-[#DFE1E7] bg-white px-4 py-1 rounded-[99px]"
               >
                 Edit
               </button>
               <button
                 onClick={() => handleDelete(post)}
-                className="flex justify-center items-center gap-2.5 border border-[color:var(--background-pressed-100,#DFE1E7)] bg-white px-4 py-1 rounded-[99px] cursor-pointer"
+                className="border border-[#DFE1E7] bg-white px-4 py-1 rounded-[99px]"
               >
                 <Trash2 className="w-5 h-5" />
               </button>
@@ -211,7 +177,7 @@ export default function BlogPost() {
         ))}
       </div>
 
-      {/* blog modal */}
+      {/* modals */}
       <BlogModal
         key={modalKey}
         isOpen={modalOpen}
@@ -225,10 +191,7 @@ export default function BlogPost() {
         isOpen={showDeleteConfirm}
         post={postToDelete}
         onConfirm={handleConfirmDelete}
-        onCancel={() => {
-          setShowDeleteConfirm(false);
-          setPostToDelete(null);
-        }}
+        onCancel={() => setShowDeleteConfirm(false)}
       />
     </div>
   );
