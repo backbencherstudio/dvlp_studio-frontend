@@ -3,17 +3,17 @@ import { privateAxios } from "@/lib/axios";
 import { toast } from "sonner";
 
 const fetchStudents = async () => {
-  const { data } = await privateAxios.get("/tutor/all");
+  const { data } = await privateAxios.get("/student/all-students");
   return data;
 };
 
 const fetchStudentById = async (id: string) => {
-  const { data } = await privateAxios.get(`/tutor/application/${id}`);
+  const { data } = await privateAxios.get(`/student/student/${id}`);
   return data;
 };
 
 const deleteStudent = async (id: string) => {
-  const { data } = await privateAxios.delete(`/tutor/acceptApp/${id}`);
+  const { data } = await privateAxios.delete(`/student/${id}`);
   return data;
 };
 

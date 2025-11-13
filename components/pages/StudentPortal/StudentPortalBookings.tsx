@@ -35,11 +35,7 @@ export default function StudentPortalContents() {
   if (isPending) return <LoadingState />;
   if (isError) return <ErrorState />;
 
-  if (bookings.length === 0) {
-    return (
-      <div className="p-6 text-center text-gray-600">No sessions found.</div>
-    );
-  }
+ 
 
   return (
     <div>
@@ -47,7 +43,8 @@ export default function StudentPortalContents() {
         Upcoming Sessions
       </h3>
 
-      <div className="space-y-5">
+   {
+    bookings.length === 0 ? <p className="text-center py-4 text-gray-500">No Session Available !</p> :    <div className="space-y-5">
         {bookings.map((item: any) => (
           <SessionCard
             key={item.bookingId}
@@ -62,7 +59,8 @@ export default function StudentPortalContents() {
             rescheduleDetails={item.rescheduleDetails}
           />
         ))}
-      </div>
+      </div> 
+   }
     </div>
   );
 }

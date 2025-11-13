@@ -3,11 +3,13 @@ import Cookies from "js-cookie";
 
 export const publicAxios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
+    withCredentials: false, 
 });
 
 // Private Axios with interceptor
 export const privateAxios = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
+    withCredentials: false, 
   
 });
 

@@ -17,7 +17,7 @@ import LoadingState from "@/components/common/LoadingState";
 
 
 const formatTutorApplications = (apiData: any[] = []) => {
-  return apiData.map((item: any) => ({
+  return apiData?.map((item: any) => ({
     application_id: item.id,
     name: item.name || "N/A",
     subject: Array.isArray(item.subjects_taught)

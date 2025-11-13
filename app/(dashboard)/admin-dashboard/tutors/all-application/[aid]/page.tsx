@@ -24,7 +24,7 @@ export default function ApplicatonDeatailsPage() {
     error,
     isLoading,
   } = useQuery({
-    queryKey: ["tutorApplicationDetails", aid],
+    queryKey: ["tutor-applications"],
     queryFn: () => getApplicationDetails(aid),
   });
   const { approveMutation, rejectMutation } = useTutorApplicationActions();
@@ -55,21 +55,26 @@ export default function ApplicatonDeatailsPage() {
           <h3 className="text-lg font-medium leading-[160%] tracking-[0.1px]">
             Application Details
           </h3>
-          <div className=" space-x-2">
-            <Button
-              onClick={() => handleActionClick("approve")}
-              className=" cursor-pointer"
-            >
-              Approve
-            </Button>
-            <Button
-              onClick={() => handleActionClick("reject")}
-              className=" cursor-pointer"
-              variant="destructive"
-            >
-              Reject
-            </Button>
-          </div>
+          {applicationData?.data?.is_accepted === "pending" ? (
+            <div className=" space-x-2">
+              <Button
+                onClick={() => handleActionClick("approve")}
+                className=" cursor-pointer"
+              >
+                Approve
+              </Button>
+              <Button
+                onClick={() => handleActionClick("reject")}
+                className=" cursor-pointer"
+                variant="destructive"
+              >
+                Reject
+              </Button>
+            </div>
+          ) : (
+            <>
+            </>
+          )}
         </div>
         <div>
           {applicationData && (

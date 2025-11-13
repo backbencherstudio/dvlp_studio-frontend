@@ -1,3 +1,6 @@
+"use client";
+
+import { useTeamMembers } from "@/components/dashboard/Setting/useTeam";
 import BookIcon from "@/components/icons/BookIcon";
 import Image from "next/image";
 import React from "react";
@@ -9,7 +12,8 @@ const teamMembers = [
     role: "Founder & CEO",
     description:
       "Former MIT professor with 20+ years in educational technology",
-    imageUrl: "https://img.freepik.com/free-photo/business-owner-working-their-strategy_23-2149241318.jpg",
+    imageUrl:
+      "https://img.freepik.com/free-photo/business-owner-working-their-strategy_23-2149241318.jpg",
   },
   {
     id: "2",
@@ -17,7 +21,8 @@ const teamMembers = [
     role: "Head of Operations",
     description:
       "Experienced operations leader with expertise in scaling EdTech companies",
-    imageUrl: "https://img.freepik.com/free-photo/portrait-young-smiling-woman-looking-camera_23-2148187139.jpg?semt=ais_incoming&w=740&q=80",
+    imageUrl:
+      "https://img.freepik.com/free-photo/portrait-young-smiling-woman-looking-camera_23-2148187139.jpg?semt=ais_incoming&w=740&q=80",
   },
   {
     id: "3",
@@ -25,11 +30,42 @@ const teamMembers = [
     role: "Academic Director",
     description:
       "PhD in Educational Psychology, passionate about personalized learning systems",
-    imageUrl: "https://img.freepik.com/free-photo/business-man-working-laptop_23-2148908918.jpg",
+    imageUrl:
+      "https://img.freepik.com/free-photo/business-man-working-laptop_23-2148908918.jpg",
   },
 ];
 
+// description
+// :
+// "Former MIT professor with 20+ years in educational technology"
+// designation
+// :
+// "Head of Operations"
+// id
+// :
+// "cmhuezo6y000treg8adfs2l1p"
+// image
+// :
+// "/team/5bb73191-e393-4764-9903-43331628fc20-portrait-young-smiling-woman-looking-camera_23-2148187139.webp"
+// name
+// :
+// "Jessica Lee"
+
 export default function OurTeam() {
+  const { data: tData, isLoading, isError } = useTeamMembers();
+
+  const formatedData = tData?.teams?.map((member: any) => {
+    return {
+      id: member.id,
+      name: member.name,
+      role: member.designation,
+      description: member.description,
+      imageUrl: member.image,
+    };
+  });
+
+  console.log({ formatedData });
+
   return (
     <section className="bg-white lg:py-[128px] md:py-25 sm:py-20 py-15 ">
       <div className="max-w-[1280px] mx-auto md:px-6 px-4 ">
@@ -54,16 +90,25 @@ export default function OurTeam() {
 
         {/* teams */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[33.8px]">
-          {teamMembers?.map((member) => (
+          {formatedData?.slice(0, 3)?.map((member: any) => (
             <div
               key={member?.id}
               className=" shrink-0 border border-gray-100 [background:#FFF] shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] rounded-3xl border-solid"
             >
               {/* img */}
               <div className=" h-80 relative rounded-t-3xl overflow-hidden ">
-                <Image className="w-full h-full object-cover " src={member.imageUrl} alt={member.name} width={382} height={320} />
-                <div className=" absolute inset-0 [background:linear-gradient(0deg,rgba(0,0,0,0.60)_0%,rgba(0,0,0,0.00)_100%)] object-cover
-                " />
+                <img
+                  className="w-full h-full object-cover "
+                  src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${member.imageUrl}`}
+                  alt={member.name}
+                  crossOrigin=""
+                  // width={382}
+                  // height={320}
+                />
+                <div
+                  className=" absolute inset-0 [background:linear-gradient(0deg,rgba(0,0,0,0.60)_0%,rgba(0,0,0,0.00)_100%)] object-cover
+                "
+                />
               </div>
               {/* info */}
               <div className="text-center pt-8 pb-9 px-[28px]">

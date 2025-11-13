@@ -30,7 +30,7 @@ interface SessionData {
 interface ActionModalProps {
   open: boolean;
   onClose: () => void;
-  actionType: "view" | "delete" | "restrict" | null;
+  actionType: "view" | "delete" | "restrict" | "unrestrict" | null;
   data?: SessionData | null;
   onConfirm?: () => void;
   loading?: boolean;
@@ -77,9 +77,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
                   <strong>Status:</strong>{" "}
                   <span
                     className={`px-2 py-1 rounded text-white ${
-                      data.status === "active"
-                        ? "bg-green-500"
-                        : "bg-gray-400"
+                      data.status === "active" ? "bg-green-500" : "bg-gray-400"
                     }`}
                   >
                     {data.status}
@@ -139,8 +137,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
                 )}
 
                 <p>
-                  <strong>Completed:</strong>{" "}
-                  {data.is_completed ? "Yes" : "No"}
+                  <strong>Completed:</strong> {data.is_completed ? "Yes" : "No"}
                 </p>
 
                 {data.pdf_attachment?.length ? (
@@ -169,7 +166,9 @@ const ActionModal: React.FC<ActionModalProps> = ({
             )}
 
             {/* DELETE / RESTRICT MODE */}
-            {(actionType === "delete" || actionType === "restrict") && (
+            {(actionType === "delete" ||
+              actionType === "restrict" ||
+              actionType === "unrestrict") && (
               <div className="text-center space-y-4 mt-6">
                 <p>
                   Are you sure you want to{" "}
@@ -197,8 +196,8 @@ const ActionModal: React.FC<ActionModalProps> = ({
                         ? "Deleting..."
                         : "Restricting..."
                       : actionType === "delete"
-                      ? "Delete"
-                      : "Restrict"}
+                        ? "Delete"
+                        : "Restrict"}
                   </Button>
                 </div>
               </div>

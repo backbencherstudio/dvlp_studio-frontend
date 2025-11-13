@@ -26,17 +26,17 @@ const SessionTable = () => {
   // unified modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [modalAction, setModalAction] = useState<
-    "view" | "delete" | "restrict" | null
+    "view" | "delete" | "restrict" | "unrestrict" | null
   >(null);
   const [selectedData, setSelectedData] = useState<any>(null);
 
   const { data: sessionDetails, isLoading: loadingDetails } = useSessionDetails(
     modalAction === "view" ? selectedData?.id : undefined
   );
-  const { deleteMut, restrictMut } = useSessionMutations();
+  const { deleteMut, restrictMut, unRestrictMut } = useSessionMutations();
 
   const handleActionClick = (
-    action: "view" | "delete" | "restrict",
+    action: "view" | "delete" | "restrict" | "unrestrict",
     rowData: any
   ) => {
     setOpenIndex(null);
@@ -60,6 +60,13 @@ const SessionTable = () => {
 
     if (modalAction === "restrict") {
       restrictMut.mutate(selectedData?.id, {
+        onSuccess: () => toast.success("Session restricted successfully!"),
+        onError: () => toast.error("Failed to restrict session"),
+      });
+    }
+
+    if (modalAction === "unrestrict") {
+      unRestrictMut.mutate(selectedData?.id, {
         onSuccess: () => toast.success("Session restricted successfully!"),
         onError: () => toast.error("Failed to restrict session"),
       });
@@ -111,7 +118,13 @@ const SessionTable = () => {
         </p>
       ),
     },
-    { id: "status", label: "STATUS" },
+    {
+      id: "status",
+      label: "STATUS",
+      renderRow: (row: any) => (
+        <p>{row.status === "active" ? <span>Active</span> : <p>Restrict</p>}</p>
+      ),
+    },
     {
       id: "action",
       label: "Action",
@@ -141,12 +154,32 @@ const SessionTable = () => {
                 >
                   Delete
                 </button>
-                <button
+                {/* <button
                   className="w-full cursor-pointer bg-red-400 text-white rounded-md py-2"
                   onClick={() => handleActionClick("restrict", row)}
                 >
-                  Restrict
-                </button>
+                  {row.status === "active" ? (
+                    <span>Restrict</span>
+                  ) : (
+                    <span>UnRestrict</span>
+                  )}
+                </button> */}
+
+                {row.status === "active" ? (
+                  <button
+                    className="w-full cursor-pointer bg-red-400 text-white rounded-md py-2"
+                    onClick={() => handleActionClick("restrict", row)}
+                  >
+                    Restrict
+                  </button>
+                ) : (
+                  <button
+                    className="w-full cursor-pointer bg-green-600 text-white rounded-md py-2"
+                    onClick={() => handleActionClick("unrestrict", row)}
+                  >
+                    UnRestrict
+                  </button>
+                )}
               </PopoverContent>
             </Popover>
           </div>
@@ -177,7 +210,7 @@ const SessionTable = () => {
         actionType={modalAction}
         data={modalAction === "view" ? sessionDetails : selectedData}
         onConfirm={handleConfirm}
-        loading={loadingDetails|| deleteMut.isPending || restrictMut.isPending}
+        loading={loadingDetails || deleteMut.isPending || restrictMut.isPending}
         isDetailsLoading={loadingDetails}
       />
     </div>

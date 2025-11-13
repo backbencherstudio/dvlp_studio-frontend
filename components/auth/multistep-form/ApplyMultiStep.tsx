@@ -24,6 +24,7 @@ export type FormValues = {
 
   // Step 2
   educationLevel: string;
+  gradeLevel: string;
   experience: string;
   subjects: string[]; // multi-select
   hourlyRate: string; // keep string for easier input
@@ -39,7 +40,7 @@ export type FormValues = {
 
 const STEP_FIELDS: (keyof FormValues)[][] = [
   ["firstName", "lastName", "email", "phone", "password", "confirmPassword"],
-  ["educationLevel", "experience", "subjects", "hourlyRate", "location"],
+  ["educationLevel", "gradeLevel","experience", "subjects", "hourlyRate", "location"],
   ["about", "availability", "documents", "consentBackground", "agreeTerms"],
 ];
 
@@ -70,6 +71,7 @@ export default function ApplyMultiStep() {
       confirmPassword: "",
       // step 2
       educationLevel: "",
+      gradeLevel: "",
       experience: "",
       subjects: [],
       hourlyRate: "",
@@ -155,6 +157,7 @@ export default function ApplyMultiStep() {
     // formData.append('avatar', data.avatar);
     // formData.append('certifications', data.documents);
     formData.append("highest_education_level", data.educationLevel);
+    formData.append("grades_taught", data.gradeLevel);
     formData.append("teching_experience", data.experience);
     formData.append("subjects_taught", JSON.stringify(data.subjects)); // Ensure it's a stringified array
     formData.append("hourly_rate", data.hourlyRate);
@@ -176,13 +179,13 @@ export default function ApplyMultiStep() {
       const msg =
         res?.data?.message ?? "Registration successful. Check your email.";
       setServerMessage(msg);
-      toast.success(msg);
+      // toast.success(msg);
       setStep(total - 1);
     } catch (error: any) {
       const errMsg =
         error?.response?.data?.message ||
         "Registration failed. Please try again.";
-      toast.error(errMsg);
+      // toast.error(errMsg);
       setServerMessage(errMsg);
     }
   };

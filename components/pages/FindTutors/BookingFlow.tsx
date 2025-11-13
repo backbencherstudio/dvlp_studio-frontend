@@ -1,27 +1,14 @@
 "use client";
 
 import CustomDialog from "@/components/reusable/CustomDialog";
-import ErrorMessage from "@/components/reusable/ErrorMessage";
-import Image from "next/image";
-import Link from "next/link";
 import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
+import { useForm} from "react-hook-form";
 import CustomInputField from "@/components/reusable/CustomInput";
 import CustomSelectField from "@/components/reusable/CustomSelect";
-import DatePickerField from "@/components/reusable/CustomDateInput";
-
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { privateAxios, publicAxios } from "@/lib/axios";
-import CustomTimePicker from "@/components/reusable/CustomTimePicker";
-import { useQuery } from "@tanstack/react-query";
+import PaymentSuccessModal from "./SuccessModal";
 
 // Mock API calls
 type BookingFormValues = {
@@ -29,14 +16,12 @@ type BookingFormValues = {
   subject: string;
   slot: string;
 };
-
 type PaymentFormValues = {
   cardName: string;
   cardNumber: string;
   expiry: string;
   cvc: string;
 };
-
 // Separate API calls for booking and payment
 type BookingApiPayload = {
   name: string;
@@ -49,7 +34,7 @@ type BookingApiPayload = {
 };
 
 const createBooking = async (bookingData: BookingApiPayload) => {
-  const { sessionId, ...body } = bookingData; 
+  const { sessionId, ...body } = bookingData;
   return privateAxios.post(`/students/sessions/${sessionId}/book`, body);
 };
 
@@ -58,7 +43,6 @@ const processPayment = async (
 ) => {
   return privateAxios.post("/payments", paymentData);
 };
-
 
 // booking form component
 
@@ -162,8 +146,6 @@ const BookingFlow = ({ tutor }: any) => {
       value: slot,
     }));
   };
-
-  // sign-in?callbackUrl=/tutor-portal/profile
 
   // Step 4: Booking Form Submission
   const onBookingSubmit = async (data: BookingFormValues) => {
@@ -326,30 +308,6 @@ const BookingFlow = ({ tutor }: any) => {
             }
           />
 
-          {/* <div className="flex flex-col sm:flex-row gap-4">
-
-            <div className="flex-1">
-              <DatePickerField
-                label="Date"
-                name="date"
-                register={registerBooking}
-                control={bookingControl}
-                required={true}
-              />
-            </div>
-
-            <div className="flex-1">
-
-              <CustomTimePicker
-                label="Time"
-                name="time"
-                register={registerBooking}
-                control={bookingControl}
-                required={true}
-              />
-            </div>
-          </div> */}
-
           {/* Error Display */}
           {bookingError && (
             <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
@@ -468,34 +426,10 @@ const BookingFlow = ({ tutor }: any) => {
       </CustomDialog>
 
       {/* Success Modal */}
-      <CustomDialog
-        open={isSuccessModalOpen}
-        setOpen={setIsSuccessModalOpen}
-        width={true}
-      >
-        <div className=" flex flex-col items-center ">
-          <Image
-            className="w-[137px] h-[72.377px]"
-            width={150}
-            height={75}
-            src={"./others/success.svg"}
-            alt="success"
-          />
-
-          <h2 className="text-center  mb-2 text-xl font-semibold">
-            Payment Successful
-          </h2>
-          <p className="mb-9 max-w-[339px] mx-auto text-gray-400  text-center">
-            Your session with Dr. Jessica Miller has been successfully booked.
-          </p>
-          <div className="mt-4 flex justify-center">
-            <Link className="text-[#A855F7] underline" href={"/"}>
-              {" "}
-              Back to Home{" "}
-            </Link>
-          </div>
-        </div>
-      </CustomDialog>
+      <PaymentSuccessModal
+        isSuccessModalOpen={isSuccessModalOpen}
+        setIsSuccessModalOpen={setIsSuccessModalOpen}
+      />
     </div>
   );
 };
