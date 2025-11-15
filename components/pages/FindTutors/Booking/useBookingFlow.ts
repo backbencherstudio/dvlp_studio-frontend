@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/context/AuthContext";
 import { privateAxios, publicAxios } from "@/lib/axios";
+import { toast } from "sonner";
 
 type BookingFormValues = {
   name: string;
@@ -116,6 +117,12 @@ export const useBookingFlow = (tutor: any) => {
       };
 
       const res = await createBooking(payload);
+
+      console.log("Res is", res.data);
+      if (res.data.status === 409) {
+        toast.error(res.data.message);
+      } else {
+      }
       setCreatedBooking({ id: res.data.id || res.data._id });
       setStep("payment");
     } catch (err: any) {
@@ -129,7 +136,13 @@ export const useBookingFlow = (tutor: any) => {
     try {
       setIsSubmitting(true);
       setError(null);
-      // await privateAxios.post("/payments", {...paymentForm.getValues(), bookingId: createdBooking?.id});
+      console.log("hiiiiiiiiii", {
+        bookingId: createdBooking?.id,
+      });
+      await privateAxios.post("/payments", {
+        ...paymentForm.getValues(),
+        bookingId: createdBooking?.id,
+      });
       setStep("success");
     } catch (err: any) {
       setError(err.response?.data?.message || err.message);
