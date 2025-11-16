@@ -44,6 +44,7 @@ export const useBookingFlow = (tutor: any) => {
   const [createdBooking, setCreatedBooking] = useState<{ id: string } | null>(
     null
   );
+  const [sessionId, setSessionId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -124,6 +125,7 @@ export const useBookingFlow = (tutor: any) => {
       } else {
       }
       setCreatedBooking({ id: res.data.id || res.data._id });
+      setSessionId(session.id);
       setStep("payment");
     } catch (err: any) {
       setError(err.response?.data?.message || err.message);
@@ -166,5 +168,7 @@ export const useBookingFlow = (tutor: any) => {
     getAvailableSlots,
     submitBooking,
     submitPayment,
+    createdBooking,
+    sessionId,
   };
 };

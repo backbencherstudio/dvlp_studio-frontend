@@ -2,6 +2,8 @@
 
 import { useTeamMembers } from "@/components/dashboard/Setting/useTeam";
 import BookIcon from "@/components/icons/BookIcon";
+import { publicAxios } from "@/lib/axios";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import React from "react";
 
@@ -35,24 +37,22 @@ const teamMembers = [
   },
 ];
 
-// description
-// :
-// "Former MIT professor with 20+ years in educational technology"
-// designation
-// :
-// "Head of Operations"
-// id
-// :
-// "cmhuezo6y000treg8adfs2l1p"
-// image
-// :
-// "/team/5bb73191-e393-4764-9903-43331628fc20-portrait-young-smiling-woman-looking-camera_23-2148187139.webp"
-// name
-// :
-// "Jessica Lee"
+
+
+const fetchTeamMembers = async () => {
+  const res = await publicAxios.get("/web-infro/public/teams");
+  return res.data;
+};
 
 export default function OurTeam() {
-  const { data: tData, isLoading, isError } = useTeamMembers();
+  const {
+    data: tData,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryFn: fetchTeamMembers,
+    queryKey: ["teams"],
+  });
 
   const formatedData = tData?.teams?.map((member: any) => {
     return {
@@ -64,7 +64,9 @@ export default function OurTeam() {
     };
   });
 
-  console.log({ formatedData });
+  // console.log({ formatedData });
+
+
 
   return (
     <section className="bg-white lg:py-[128px] md:py-25 sm:py-20 py-15 ">

@@ -13,12 +13,21 @@ import { loadStripe } from "@stripe/stripe-js";
 import CustomDialog from "@/components/reusable/CustomDialog";
 import CustomInputField from "@/components/reusable/CustomInput";
 import { Input } from "@/components/ui/input";
+import { privateAxios } from "@/lib/axios";
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
 
-function PaymentForm({ onPaymentSuccess }: { onPaymentSuccess: () => void }) {
+function PaymentForm({
+  onPaymentSuccess,
+  sessionId,
+  bookingId,
+}: {
+  onPaymentSuccess: () => void;
+  sessionId: string;
+  bookingId: string;
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const [cardName, setCardName] = useState("");
@@ -36,20 +45,40 @@ function PaymentForm({ onPaymentSuccess }: { onPaymentSuccess: () => void }) {
       const cardElement = elements.getElement(CardNumberElement);
       if (!cardElement) throw new Error("Card element not found");
 
-      const { error: stripeError, paymentMethod } =
+      // 1. Create payment method
+      const { error: pmError, paymentMethod } =
         await stripe.createPaymentMethod({
           type: "card",
           card: cardElement,
           billing_details: { name: cardName },
         });
 
-      if (stripeError) throw stripeError;
+      if (pmError) throw pmError;
 
-      console.log("✅ Payment Method Created:", paymentMethod);
+      // 2. Send to backend
+      const res = await privateAxios.post(`/payment/stripe/pay`, {
+        paymentMethodId: paymentMethod.id,
+        sessionId: sessionId,
+        bookingId: bookingId,
+      });
 
-      // Normally, you’d send `paymentMethod.id` to your backend
-      // for confirmation or saving it for future use.
-      onPaymentSuccess();
+      const clientSecret = res.data.clientSecret;
+
+      // 3. Confirm the payment
+      const { error: confirmError, paymentIntent } =
+        await stripe.confirmCardPayment(clientSecret);
+
+      if (confirmError) {
+        throw confirmError;
+      }
+
+      console.log("PaymentIntent:", paymentIntent);
+
+      if (paymentIntent.status === "succeeded") {
+        onPaymentSuccess();
+      } else {
+        setError("Payment failed or requires additional steps");
+      }
     } catch (err: any) {
       console.error("Stripe error:", err);
       setError(err.message || "Failed to process payment");
@@ -128,16 +157,24 @@ export default function PaymentModal({
   open,
   onClose,
   onPaymentSuccess,
+  sessionId,
+  bookingId,
 }: {
   open: boolean;
   onClose: () => void;
   onPaymentSuccess: () => void;
+  sessionId: string;
+  bookingId: string;
 }) {
   return (
     <CustomDialog open={open} setOpen={onClose}>
       <h2 className="text-2xl font-semibold mb-4">Complete Your Payment</h2>
       <Elements stripe={stripePromise}>
-        <PaymentForm onPaymentSuccess={onPaymentSuccess} />
+        <PaymentForm
+          onPaymentSuccess={onPaymentSuccess}
+          sessionId={sessionId}
+          bookingId={bookingId}
+        />
       </Elements>
 
       <button

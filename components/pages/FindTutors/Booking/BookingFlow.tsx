@@ -38,6 +38,8 @@ export default function BookingFlow2({ tutor }: any) {
           open
           onClose={() => flow.setStep("idle")}
           onPaymentSuccess={() => flow.setStep("success")}
+          sessionId={flow.sessionId || ""}
+          bookingId={flow.createdBooking?.id || ""}
         />
       )}
 
