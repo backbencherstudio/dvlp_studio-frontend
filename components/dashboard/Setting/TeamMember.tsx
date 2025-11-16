@@ -16,14 +16,12 @@ export interface TeamMemberType {
   description: string;
 }
 
-const fakeTeamMembers: TeamMemberType[] = [
-
-];
+const fakeTeamMembers: TeamMemberType[] = [];
 
 export default function TeamMember() {
-
-  const {data:tdata, isLoading, isError} = useTeamMembers();
-  const {addTeamMember, deleteTeamMember, deleteMutation} = useTeamsMutations(); 
+  const { data: tdata, isLoading, isError } = useTeamMembers();
+  const { addTeamMember, deleteTeamMember, deleteMutation } =
+    useTeamsMutations();
   console.log("Tdata", tdata);
 
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
@@ -32,9 +30,8 @@ export default function TeamMember() {
     null
   );
 
-    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const [memberToDelete, setMemberToDelete] = useState<any>(null);
-  
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [memberToDelete, setMemberToDelete] = useState<any>(null);
 
   const handleAddMember = () => {
     setMode("add");
@@ -53,33 +50,31 @@ export default function TeamMember() {
     setModalOpen(false);
   };
 
-  const handleDelete = (member:TeamMemberType) => {
-setMemberToDelete(member);
-setShowDeleteConfirm(true);
-  }
+  const handleDelete = (member: TeamMemberType) => {
+    setMemberToDelete(member);
+    setShowDeleteConfirm(true);
+  };
 
   const handleConfirmDelete = () => {
-    if(!memberToDelete?.id) return; 
+    if (!memberToDelete?.id) return;
     deleteMutation.mutate(memberToDelete?.id.toString(), {
       onSuccess: () => {
         setShowDeleteConfirm(false);
         setMemberToDelete(null);
-      }
+      },
     });
-    
-  }
+  };
 
-  const handleSubmit = async(data: TeamFormData) => {
-
+  const handleSubmit = async (data: TeamFormData) => {
     const formData = new FormData();
-    formData.append("name", data.name)
-    formData.append("designation", data.designation)
-    formData.append("description", data.description)
-    if(data.image){
-      formData.append("image", data.image)
+    formData.append("name", data.name);
+    formData.append("designation", data.designation);
+    formData.append("description", data.description);
+    if (data.image) {
+      formData.append("image", data.image);
     }
     // send it backend
-   for (const [key, value] of formData.entries()) {
+    for (const [key, value] of formData.entries()) {
       console.log(key, value);
     }
     await addTeamMember(formData);
@@ -109,7 +104,7 @@ setShowDeleteConfirm(true);
 
         {/* all members */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {tdata?.teams.map((member:any) => (
+          {tdata?.teams.map((member: any) => (
             <div
               key={member.id}
               className="pb-8 rounded-xl max-w-[298px] space-y-8 border overflow-hidden"
@@ -117,11 +112,10 @@ setShowDeleteConfirm(true);
               {/* img */}
               <div className="h-[211px] w-full overflow-hidden bg-red-300  relative">
                 <img
-                 src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}/${member.image}`}
+                  src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${member.image}`}
                   alt={member.name}
                   className="w-full h-full object-cover"
-                 crossOrigin="anonymous"
-               
+                  crossOrigin="anonymous"
                 />
 
                 <button
@@ -170,7 +164,7 @@ setShowDeleteConfirm(true);
         onSave={handleSubmit}
       />
 
-       <DeleteConfirmModal
+      <DeleteConfirmModal
         isOpen={showDeleteConfirm}
         team={memberToDelete}
         onConfirm={handleConfirmDelete}

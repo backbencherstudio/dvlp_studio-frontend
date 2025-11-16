@@ -9,28 +9,52 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "@/components/ui/popover";
-import { transformApiData, useTeachers, useTeachersMutations } from "./useTutors";
+import {
+  transformApiData,
+  useTeachers,
+  useTeachersMutations,
+} from "./useTutors";
 import { is } from "date-fns/locale";
 import LoadingState from "@/components/common/LoadingState";
 import ErrorState from "@/components/common/ErrorState";
-
-
+import RestrictModal from "../RestrictModal";
 
 const TutorTable = () => {
   // store which row popover is open
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [showRestrictModal, setShowRestrictModal] = useState(false);
+  const [selectedTutor, setSelectedTutor] = useState<any>(null);
+
   const { data: tData, isError, isLoading } = useTeachers();
   const { deleteMut, restrictMut } = useTeachersMutations();
 
-  console.log(tData?.data)
-
   const tutorData = transformApiData(tData?.data || []);
+
+  const handleRestrictClick = (row: any) => {
+    setSelectedTutor(row);
+    setShowRestrictModal(true);
+    setOpenIndex(null);
+  };
+
+  const handleRestrictSubmit = (formData: any) => {
+    console.log("Restricting tutor", selectedTutor, formData);
+
+    // console.log("Selected Id", selectedTutor?.tutor_id)
+
+    restrictMut.mutate({
+      id: selectedTutor?.tutor_id,
+      payload: {
+        restriction_period: formData.restriction_period,
+        restriction_reason: formData.restriction_reason,
+      },
+    })
+  };
 
   const handleActionClick = (action: string, rowData: any) => {
     console.log(action, rowData);
     // API calls or logic here
     if (action === "Delete") {
-      deleteMut.mutate(rowData.tutor_id)
+      deleteMut.mutate(rowData.tutor_id);
     } else if (action === "Restrict") {
       restrictMut.mutate(rowData.tutor_id);
     }
@@ -58,12 +82,10 @@ const TutorTable = () => {
               View
             </Link>
 
-            {(
+            {
               <Popover
                 open={openIndex === index}
-                onOpenChange={(isOpen) =>
-                  setOpenIndex(isOpen ? index : null)
-                }
+                onOpenChange={(isOpen) => setOpenIndex(isOpen ? index : null)}
               >
                 <PopoverTrigger asChild>
                   <button className="text-blue-500 p-1.5 rounded-md border border-gray-200 cursor-pointer">
@@ -79,39 +101,42 @@ const TutorTable = () => {
                   </button>
                   <button
                     className="w-full bg-red-400 text-white rounded-md py-2 cursor-pointer"
-                    onClick={() => handleActionClick("Restrict", row)}
+                    onClick={() => handleRestrictClick(row)}
                   >
                     Restrict
                   </button>
                 </PopoverContent>
               </Popover>
-            )}
+            }
           </div>
         </td>
       ),
     },
   ];
 
-
-
-
   return (
     <div className="p-6">
+      {isLoading ? (
+        <LoadingState />
+      ) : isError ? (
+        <ErrorState />
+      ) : (
+        <ReusableTable
+          tableTitle="Tutors "
+          columns={columns}
+          data={tutorData}
+          searchPlaceholder="Search Tutor"
+          onActionClick={handleActionClick}
+        />
+      )}
 
-      {
-        isLoading ? (
-          <LoadingState />
-        ) : isError ? (
-          <ErrorState />
-        ) : (
-          <ReusableTable
-            tableTitle="Tutors "
-            columns={columns}
-            data={tutorData}
-            searchPlaceholder="Search Tutor"
-            onActionClick={handleActionClick}
-          />)
-      }
+      {/* Modal */}
+      <RestrictModal
+        title={"Student"}
+        open={showRestrictModal}
+        onClose={() => setShowRestrictModal(false)}
+        onSubmit={handleRestrictSubmit}
+      />           
     </div>
   );
 };

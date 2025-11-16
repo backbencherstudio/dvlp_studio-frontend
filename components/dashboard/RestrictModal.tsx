@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 
 interface RestrictModalProps {
+    title: string;
     open: boolean;
     onClose: () => void;
     onSubmit: (data: RestrictFormData) => void;
@@ -16,7 +17,7 @@ export interface RestrictFormData {
     restriction_reason: string;
 }
 
-const RestrictModal: React.FC<RestrictModalProps> = ({ open, onClose, onSubmit }) => {
+const RestrictModal: React.FC<RestrictModalProps> = ({title, open, onClose, onSubmit }) => {
     const { register, handleSubmit, reset } = useForm<RestrictFormData>({
         defaultValues: {
             restriction_period: "One_Month",
@@ -34,7 +35,7 @@ const RestrictModal: React.FC<RestrictModalProps> = ({ open, onClose, onSubmit }
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Restrict Tutor</DialogTitle>
+                    <DialogTitle>Restrict {title}</DialogTitle>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">

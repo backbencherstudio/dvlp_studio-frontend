@@ -11,9 +11,21 @@ export function useCreateSession() {
 
   return useMutation({
     mutationFn: createSession,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["sessions"] });
-      toast.success("Session created successfully!");
+
+      if (data.success) {
+        toast.success("Session created successfully!");
+      } else {
+        toast.error(data?.message, {
+          position: "top-center",
+          style: {
+            background: "#ef4444", // red-500
+            color: "white",
+            fontWeight: 600,
+          },
+        });
+      }
     },
     onError: (error: any) => {
       console.error("Create session error", error);
@@ -25,12 +37,11 @@ export function useCreateSession() {
 // Get all teacher session
 export function useGetTeacherSessions() {
   return useQuery({
-    queryKey: ["sessions", ],
+    queryKey: ["sessions"],
     queryFn: () => getTeacherSessions(),
     // enabled: !!, // ensures the query only runs when teacherId
   });
 }
-
 
 // Edit session
 export const useUpdateSession = () => {

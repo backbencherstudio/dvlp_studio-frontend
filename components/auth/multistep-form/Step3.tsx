@@ -95,7 +95,7 @@ export function Step3({ serverMsg }: { serverMsg: string | null }) {
       {serverMsg && (
         <div className="rounded-xl border border-yellow-300/30 bg-yellow-500/10 p-2">
           <p className="text-sm  text-yellow-300 mb-1 text-center">
-            {serverMsg}!
+            {typeof serverMsg === 'string' ? serverMsg : JSON.stringify(serverMsg)}!
           </p>
         </div>
       )}

@@ -48,22 +48,31 @@ export default function SessionHistory() {
   return (
     <section className=" divide-y divide-[#E5E7EB] rounded-2xl border bg-white overflow-hidden">
       <div className="p-4 md:p-8 ">
-        <h3 className="text-2xl font-semibold leading-8">Session History</h3>
+        <h3 className="text-2xl font-semibold leading-8 ">Session History</h3>
       </div>
-      {data?.completedSessions?.map((s: any) => (
-        <SessionCard
-          key={s.sessionId}
-          sessionId={s.sessionId}
-          subject={s.sessionDetails.subject}
-          teacherName={s.sessionDetails.teacherName}
-          teacherId={s.sessionDetails.teacherId}
-          sessionDate={s.sessionDate}
-          sessionPeriod={s.sessionDetails.sessionPeriod}
-          charge={s.sessionDetails.charge}
-          rating={s.sessionDetails.sessionRate}
-          avatar={s.sessionDetails.avatar}
-        />
-      ))}
+
+      {data?.completedSessions.length === 0 ? (
+        <p className="text-center text-gray-500 py-6">
+          No Seassion History Available!
+        </p>
+      ) : (
+        <div className=" divide-y divide-[#E5E7EB] rounded-2xl border bg-white overflow-hidden">
+          {data?.completedSessions?.map((s: any) => (
+            <SessionCard
+              key={s.sessionId}
+              sessionId={s.sessionId}
+              subject={s.sessionDetails.subject}
+              teacherName={s.sessionDetails.teacherName}
+              teacherId={s.sessionDetails.teacherId}
+              sessionDate={s.sessionDate}
+              sessionPeriod={s.sessionDetails.sessionPeriod}
+              charge={s.sessionDetails.charge}
+              rating={s.sessionDetails.sessionRate}
+              avatar={s.sessionDetails.avatar}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

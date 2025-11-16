@@ -34,9 +34,9 @@ export default function AdminSignIn() {
     watch,
   } = useForm<FormValues>({
     defaultValues: {
-      email: "soysov@gmail.com",
+      email: "rjtopu6645@gmail.com",
       // email: "admin@example.com",
-      password: "12345678",
+      password: "gbvyhfddb",
       remember: false,
     },
   });

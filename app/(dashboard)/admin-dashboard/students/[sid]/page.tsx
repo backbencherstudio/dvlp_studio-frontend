@@ -1,3 +1,5 @@
+"use client"
+
 import { privateAxios } from "@/lib/axios";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
@@ -5,63 +7,59 @@ import React from "react";
 
 // server side data fetching
 
-async function getTutorData(tid: string) {
+async function getStudentData(sid: string) {
   try {
-    const res = await privateAxios.get(`/teacher/get/${tid}`);
+    const res = await privateAxios.get(`/student/student/${sid}`);
     return res.data;
   } catch (error) {
     console.log("Error fetching tutor data", error);
     return null;
   }
+
 }
 
-async function getTutorStats(tid: string) {
-  try {
-    const res = await privateAxios.get(`/teacher/get/${tid}`);
-    return res.data;
-  } catch (error) {
-    console.log("Error fetching tutor data", error);
-    return null;
-  }
-}
+export default function page({ params }: { params: { sid: string } }) {
 
-export default async function page({ params }: { params: { tid: string } }) {
-  const { tid } = params;
+  const { sid } = params ;
 
-  // fetch tutor data
-  const tutorData = await getTutorData(tid);
-  console.log(tutorData);
+  const {data, isLoading, isError} = useStudentnDetails(sid);
+  const studentData = data?.data;
+
+  console.log(data)
+ 
 
   return (
     <section className="md:p-6">
       <p className="mb-4 flex">
-        <Link href={"/admin-dashboard/tutors/"}>Tutors</Link> <ChevronRight />
-        <span className="text-gray-500">Tutors Details</span>
-      </p>
+        <Link href={"/admin-dashboard/tutors/"}>Students</Link>  <ChevronRight /><span className="text-gray-500">Student Details: {sid}</span></p>
       <div className="p-4 rounded-md">
         <h3 className=" text-black [font-family:Inter] text-xl font-medium leading-[160%] tracking-[0.1px] mb-4">
-          {/* Tutor Details: {params.tid} */}
+          {/* Tutor Details: {params.sid} */}
         </h3>
 
         <div className="p-6 border rounded-lg">
-          {tutorData ? (
-            // <pre>{JSON.stringify(tutorData, null, 2)}</pre>
-            <TutorDetails data={tutorData.data} />
-          ) : (
-            <p>No data found for this tutor.</p>
-          )}
+          {
+            studentData ? (
+              <pre>{JSON.stringify(studentData, null, 2)}</pre>
+              // <TutorDetails data={studentData.data} />
+            ) : (
+              <p>No data found for this tutor.</p>
+            )
+          }
         </div>
       </div>
     </section>
   );
 }
 
+
+
+
+
 import { User } from "lucide-react";
-import TutorDetailStats from "./TutorDetailStats";
-import { TutorSessionTable } from "./TutorSessionTable";
+import { useStudentnDetails } from "@/components/dashboard/Students/useStudent";
 
 type Tutor = {
-  id: string;
   first_name: string;
   last_name: string;
   email: string | null;
@@ -76,12 +74,14 @@ type Tutor = {
   created_at: string;
 };
 
-function TutorDetails({ data }: { data: Tutor }) {
+function TutorDetails({
+  data,
+}: {
+  data: Tutor;
+}) {
   return (
     <section className="">
-      <h2 className="text-lg font-semibold mb-4 text-gray-900">
-        Tutor Details
-      </h2>
+      <h2 className="text-lg font-semibold mb-4 text-gray-900">Tutor Details</h2>
 
       <div className="shadow-sm rounded-lg">
         <div className="p-4 md:p-6 space-y-4 ">
@@ -122,21 +122,43 @@ function TutorDetails({ data }: { data: Tutor }) {
           <div>
             <h4 className="font-semibold text-gray-900 mb-1">About Herself:</h4>
             <p className="text-gray-700 text-sm leading-relaxed">
-              {data.about_me || "No description provided by the tutor."}
+              {data.about_me ||
+                "No description provided by the tutor."}
             </p>
           </div>
+
         </div>
       </div>
 
-      <TutorDetailStats id={data.id} />
 
-      <TutorSessionTable id={data.id} />
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5  mt-5 gap-6">
+
+        <div className="bg-white p-4 md:p-6 rounded-2xl space-y-4">
+          <p className="text-[color:var(--Gray-Black-400,#4A4C56)]  [font-family:Inter] text-base font-medium leading-[160%] tracking-[0.08px]">Total Sessions</p>
+          <p className="text-[color:var(--Gray-Black-400,#4A4C56)]  [font-family:Inter] text-2xl font-semibold leading-[130%]">{data.totalSessions ?? 0}</p>
+        </div>
+        <div className="bg-white p-4 md:p-6 rounded-2xl space-y-4">
+          <p className="text-[color:var(--Gray-Black-400,#4A4C56)]  [font-family:Inter] text-base font-medium leading-[160%] tracking-[0.08px]">Pending</p>
+          <p className="text-[color:var(--Gray-Black-400,#4A4C56)]  [font-family:Inter] text-2xl font-semibold leading-[130%]">{0}</p>
+        </div>
+        <div className="bg-white p-4 md:p-6 rounded-2xl space-y-4">
+          <p className="text-[color:var(--Gray-Black-400,#4A4C56)]  [font-family:Inter] text-base font-medium leading-[160%] tracking-[0.08px]">Completed</p>
+          <p className="text-[color:var(--Gray-Black-400,#4A4C56)]  [font-family:Inter] text-2xl font-semibold leading-[130%]">32</p>
+        </div>
+        <div className="bg-white p-4 md:p-6 rounded-2xl space-y-4">
+          <p className="text-[color:var(--Gray-Black-400,#4A4C56)]  [font-family:Inter] text-base font-medium leading-[160%] tracking-[0.08px]">Cancelled</p>
+          <p className="text-[color:var(--Gray-Black-400,#4A4C56)]  [font-family:Inter] text-2xl font-semibold leading-[130%]">1</p>
+        </div>
+        <div className="bg-white p-4 md:p-6 rounded-2xl space-y-4">
+          <p className="text-[color:var(--Gray-Black-400,#4A4C56)]  [font-family:Inter] text-base font-medium leading-[160%] tracking-[0.08px]">Revenue</p>
+          <p className="text-[color:var(--Gray-Black-400,#4A4C56)]  [font-family:Inter] text-2xl font-semibold leading-[130%]">$ {data.totalEarnings ?? 0}</p>
+        </div>
+
+      </div>
     </section>
   );
 }
-{
-  /* Extra Info */
-}
+{/* Extra Info */ }
 // <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mt-4">
 //   <div>
 //     <span className="font-medium text-gray-800">Joined:</span>

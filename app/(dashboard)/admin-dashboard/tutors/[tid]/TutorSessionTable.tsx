@@ -9,17 +9,24 @@ import {
 } from "@/components/ui/popover";
 import ReusableTable from "@/components/reusable/ReusableTable";
 import ActionModal from "@/components/reusable/AdminActionModal";
-import {
-  useSessionDetails,
-  useSessionMutations,
-  useSessions,
-} from "./useSessions";
 import { toast } from "sonner";
 import LoadingState from "@/components/common/LoadingState";
 import ErrorState from "@/components/common/ErrorState";
 
-const SessionTable = () => {
-  const { data: sessionss, isFetching, isError } = useSessions();
+import {
+  useSessions,
+  useSessionDetails,
+  useSessionMutations,
+  useSessionsById,
+} from "@/components/dashboard/Sessions/useSessions";
+
+export const TutorSessionTable = ({id}:any) => {
+
+    console.log(id)
+
+  const { data: sessionss, isFetching, isError } = useSessionsById(id);
+
+  console.log(sessionss)
 
   //
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -81,7 +88,7 @@ const SessionTable = () => {
       label: "SESSION ID",
       renderRow: (row: any) => (
         <p className="cursor-default" title={row.id}>
-          {row.id.slice(0, 5)}...{row.id.slice(20)}
+          {row?.id?.slice(0, 5)}...{row?.id?.slice(20)}
         </p>
       ),
     },
@@ -94,8 +101,8 @@ const SessionTable = () => {
       label: "AVAILABLE SLOTS",
       renderRow: (row: any) => (
         <p className="text-sm text-gray-600">
-          {row.available_slots_time_and_date.length > 0
-            ? `${row.available_slots_time_and_date.length} slots`
+          {row.available_slots_time_and_date?.length > 0
+            ? `${row.available_slots_time_and_date?.length} slots`
             : "No slots"}
         </p>
       ),
@@ -105,11 +112,11 @@ const SessionTable = () => {
       label: "BOOKED BY",
       renderRow: (row: any) => (
         <p className="text-sm text-gray-600">
-          {row.Book_Session.length > 0 ? (
+          {row.Book_Session?.length > 0 ? (
             <>
               {row.Book_Session[0].name}
-              {row.Book_Session.length > 1 && (
-                <span> +{row.Book_Session.length - 1} more</span>
+              {row.Book_Session?.length > 1 && (
+                <span> +{row.Book_Session?.length - 1} more</span>
               )}
             </>
           ) : (
@@ -217,4 +224,4 @@ const SessionTable = () => {
   );
 };
 
-export default SessionTable;
+

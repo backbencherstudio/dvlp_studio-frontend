@@ -17,11 +17,22 @@ const deleteTeacher = async (id: string) => {
   return data;
 };
 
-const restrictTeacher = async (id: string) => {
-  const { data } = await privateAxios.patch(`/student/restricted-user/${id}`);
+const restrictTeacher = async ({
+  id,
+  payload,
+}: {
+  id: string;
+  payload: {
+    restriction_period: string;
+    restriction_reason: string;
+  };
+}) => {
+  const { data } = await privateAxios.patch(
+    `/student/restricted-user/${id}`,
+    payload
+  );
   return data;
 };
-
 
 /*---------------------------------
           ALL USEFUL HOOKS
@@ -49,27 +60,26 @@ export const useTeachersMutations = () => {
     mutationFn: deleteTeacher,
     onSuccess: () => {
       toast.success("Teacher deleted successfully!");
-      queryClient.invalidateQueries({ queryKey: ["applications"] })
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
     },
     onError: (error: any) => {
       toast.error("Failed to delete teacher");
-    }
+    },
   });
 
   const restrictMut = useMutation({
     mutationFn: restrictTeacher,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["applications"] })
+      queryClient.invalidateQueries({ queryKey: ["applications"] });
       toast.success("Teacher restricted successfully!");
     },
     onError: (error: any) => {
       toast.error("Failed to restrict teacher");
-    }
+    },
   });
 
   return { deleteMut, restrictMut };
 };
-
 
 //---------------- Helper function---------------
 export const transformApiData = (apiData: any): any[] => {

@@ -11,11 +11,11 @@ import {
 import { Clock4, CloudCog, MapPin, User, Video } from "lucide-react";
 import BookingFlow from "./BookingFlow";
 import { useQuery } from "@tanstack/react-query";
-import { privateAxios, publicAxios } from "@/lib/axios";
-import { Tulpen_One } from "next/font/google";
+import {  publicAxios } from "@/lib/axios";
 import { format } from "date-fns";
 import Link from "next/link";
 import ErrorState from "@/components/common/ErrorState";
+import BookingFlow2 from "./Booking/BookingFlow";
 
 // Define the Tutor type
 interface TutorProps {
@@ -77,7 +77,7 @@ const TutorList = () => {
 
   if (isError) {
     // return <div className="text-red-500">Error: {error?.message}</div>;
-    return <ErrorState message={error?.message || "Internal Error !"} />
+    return <ErrorState message={error?.message || "Internal Error !"} />;
   }
 
   return (
@@ -222,20 +222,26 @@ const TutorList = () => {
             </div>
 
             {/* all tutors */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-8 gap-4  p-4">
-              {isPending ? (
-                <>
-                  <TutorLoaderCard />
-                  <TutorLoaderCard />
-                  <TutorLoaderCard />
-                  <TutorLoaderCard />
-                </>
-              ) : (
-                tutorList?.map((tutor, index) => (
-                  <TutorCard key={index} tutor={tutor} />
-                ))
-              )}
-            </div>
+            {tutorList?.length === 0 ? (
+              <div>
+                There is no Tutor availbe
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-8 gap-4  p-4">
+                {isPending ? (
+                  <>
+                    <TutorLoaderCard />
+                    <TutorLoaderCard />
+                    <TutorLoaderCard />
+                    <TutorLoaderCard />
+                  </>
+                ) : (
+                  tutorList?.map((tutor, index) => (
+                    <TutorCard key={index} tutor={tutor} />
+                  ))
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -248,8 +254,7 @@ export default TutorList;
 const BASE_URL = process.env.NEXT_PUBLIC_IMAGE_API_URL;
 
 const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
-
-  console.log("Tutor img", BASE_URL)
+  console.log("Tutor img", BASE_URL);
   return (
     <div className="bg-white rounded-lg shadow-lg p-5 max-w-[436px] flex flex-col justify-between">
       <div>
@@ -258,25 +263,24 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
           <div className="flex">
             <div className="bg-gray-300 rounded-2xl w-16 h-16 md:w-20 md:h-20 mr-5 shrink-0 overflow-hidden">
               <img
-  className="w-full h-full object-cover"
-  src={
-    tutor.avatar && tutor.avatar !== "null"
-      ? tutor.avatar.startsWith("http")
-        ? tutor.avatar
-        : `${BASE_URL}/avatar/${tutor.avatar}`
-      : "\profile-placeholder.jpg"
-  }
-  crossOrigin="anonymous"
-  alt={tutor.username || "Tutor"}
-/>
-
+                className="w-full h-full object-cover"
+                src={
+                  tutor.avatar && tutor.avatar !== "null"
+                    ? tutor.avatar.startsWith("http")
+                      ? tutor.avatar
+                      : `${BASE_URL}/avatar/${tutor.avatar}`
+                    : "\profile-placeholder.jpg"
+                }
+                crossOrigin="anonymous"
+                alt={tutor.username || "Tutor"}
+              />
             </div>
             <div>
               <h2 className="text-xl font-bold mb-2">{tutor.username}</h2>
               <div className="text-sm text-yellow-500 mt-1">
                 <span>★</span>{" "}
                 <span className="text-black font-medium text-sm leading-5">
-                  {tutor?.avgRate.toFixed(1)}  
+                  {tutor?.avgRate.toFixed(1)}
                 </span>{" "}
                 <span className="text-sm text-gray-500 text-nowrap">
                   ({tutor.reviews} reviews)
@@ -330,10 +334,11 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
           {tutor?.modes.map((type: string, index: number) => (
             <div
               key={index}
-              className={`flex items-center gap-1 ${type === "Virtual"
-                ? "bg-[#EFF6FF] text-[#1D4ED8]"
-                : "bg-[#F0FDF4] text-[#15803D]"
-                } px-3 py-1 rounded-full`}
+              className={`flex items-center gap-1 ${
+                type === "Virtual"
+                  ? "bg-[#EFF6FF] text-[#1D4ED8]"
+                  : "bg-[#F0FDF4] text-[#15803D]"
+              } px-3 py-1 rounded-full`}
             >
               <Video className="w-3 h-3" />
               <span className="text-sm font-medium">{type}</span>
@@ -350,9 +355,12 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
       </div>
 
       <div className="mt-5 flex justify-between gap-3">
-        <BookingFlow tutor={tutor} />
+        <BookingFlow2 tutor={tutor} />
         {/* <div className="border w-full"> hi</div> */}
-        <Link href={`find-tutors/${tutor.userid}`} className="border border-gray-300 text-gray-700 px-5 py-3.5 rounded-xl font-medium hover:opacity-80 text-nowrap cursor-pointer ">
+        <Link
+          href={`find-tutors/${tutor.userid}`}
+          className="border border-gray-300 text-gray-700 px-5 py-3.5 rounded-xl font-medium hover:opacity-80 text-nowrap cursor-pointer "
+        >
           View Profile
         </Link>
       </div>
@@ -404,20 +412,12 @@ function TutorLoaderCard() {
   );
 }
 
-
-
-
-
-
-
-
-
-
 const tutors: any = [
   {
     username: "sarah_j",
     avatar: "https://randomuser.me/api/portraits/women/45.jpg",
-    about_me: "Passionate English tutor with 5+ years of experience helping students improve writing and speaking skills.",
+    about_me:
+      "Passionate English tutor with 5+ years of experience helping students improve writing and speaking skills.",
     country: "USA",
     city: "New York",
     subjects: ["English", "Literature", "Creative Writing"],
@@ -432,7 +432,8 @@ const tutors: any = [
   {
     username: "ahmed_math",
     avatar: null, // No avatar
-    about_me: "Mathematics specialist focusing on algebra, calculus, and SAT preparation. I make math simple and fun!",
+    about_me:
+      "Mathematics specialist focusing on algebra, calculus, and SAT preparation. I make math simple and fun!",
     country: "Egypt",
     city: "Cairo",
     subjects: ["Mathematics", "Algebra", "Calculus"],
@@ -447,7 +448,8 @@ const tutors: any = [
   {
     username: "maria_sci",
     avatar: "https://randomuser.me/api/portraits/women/32.jpg",
-    about_me: "Science tutor with expertise in biology and chemistry. Love to engage students with experiments and real-world examples.",
+    about_me:
+      "Science tutor with expertise in biology and chemistry. Love to engage students with experiments and real-world examples.",
     country: "Spain",
     city: "Madrid",
     subjects: ["Biology", "Chemistry"],
@@ -462,7 +464,8 @@ const tutors: any = [
   {
     username: "john_coding",
     avatar: "https://randomuser.me/api/portraits/men/18.jpg",
-    about_me: "Software developer and tutor with a focus on teaching Python, JavaScript, and web development.",
+    about_me:
+      "Software developer and tutor with a focus on teaching Python, JavaScript, and web development.",
     country: "UK",
     city: "London",
     subjects: ["Python", "JavaScript", "Web Development"],

@@ -76,7 +76,7 @@ export default function UpcomingSessions() {
 
       {/* no sessions found */}
       {!isFetching && !isError && sessions?.length === 0 && (
-        <div className="text-gray-500 text-lg text-center">
+        <div className="text-gray-500 text-lg text-center py-6">
           No sessions found!
         </div>
       )}

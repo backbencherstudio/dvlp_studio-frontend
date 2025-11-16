@@ -8,12 +8,12 @@ const fetchSessions = async () => {
 };
 
 const fetchSessionById = async (id: string) => {
-  const { data } = await privateAxios.get(`/teacher/session/${id}`);
+  const { data } = await privateAxios.get(`/tutor/session-info/${id}`);
   return data;
 };
 
 const deleteSession = async (id: string) => {
-  const { data } = await privateAxios.delete(`/sessions/delelte/${id}`);
+  const { data } = await privateAxios.delete(`/sessions/delete/${id}`);
   return data;
 };
 
@@ -21,10 +21,23 @@ const restrictSession = async (id: string) => {
   const { data } = await privateAxios.patch(`/sessions/restrict-session/${id}`);
   return data;
 };
+const unRestrictSession = async (id: string) => {
+  const { data } = await privateAxios.patch(
+    `/sessions/unrestrict-session/${id}`
+  );
+  return data;
+};
 
 // ✅ Fetch all sessions
 export const useSessions = () => {
   return useQuery({ queryKey: ["sessions"], queryFn: fetchSessions });
+};
+
+export const useSessionsById = (id: string) => {
+  return useQuery({
+    queryKey: ["user-sessions"],
+    queryFn: () => fetchSessionById(id),
+  });
 };
 
 // ✅ Fetch one session by ID
@@ -50,5 +63,10 @@ export const useSessionMutations = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["sessions"] }),
   });
 
-  return { deleteMut, restrictMut };
+  const unRestrictMut = useMutation({
+    mutationFn: unRestrictSession,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["sessions"] }),
+  });
+
+  return { deleteMut, restrictMut, unRestrictMut };
 };
