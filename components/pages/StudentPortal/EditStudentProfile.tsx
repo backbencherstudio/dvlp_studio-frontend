@@ -5,11 +5,13 @@ import { ArrowLeft, Save, Upload } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 type ProfileFormValues = {
-  name: string;
+  firstname: string;
+  lastname: string;
   role: string;
-  image?: File; // 👈 store File, not string
+  image?: File | string | null; // 👈 store File, not string
   location: string;
   about: string;
   sessionGrade: string;
@@ -49,9 +51,10 @@ export const EditStudentProfile = ({
 
   const onSubmit = async (data: ProfileFormValues) => {
     const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("role", data.role);
-    formData.append("location", data.location);
+    formData.append("first_name", data.firstname);
+    formData.append("last_name", data.lastname);
+
+    formData.append("Co", data.location);
     formData.append("about", data.about);
     formData.append("sessionGrade", data.sessionGrade);
 
@@ -59,8 +62,6 @@ export const EditStudentProfile = ({
       formData.append("image", file); // ✅ actual file
     }
 
-
-    
     // Example API call
     const res = await fetch("/api/students/update", {
       method: "POST",
@@ -69,8 +70,10 @@ export const EditStudentProfile = ({
 
     if (res.ok) {
       console.log("Profile updated successfully");
+      toast.success("Profile Updated Successfully!");
     } else {
       console.error("Update failed");
+      toast.error("Profile Update failed!");
     }
   };
 
@@ -124,14 +127,27 @@ export const EditStudentProfile = ({
       {/* Name */}
       <div className="px-6 py-8">
         <label className="block text-sm font-medium text-gray-600 mb-1">
-          Name
+          First Name
         </label>
         <input
-          {...register("name", { required: "Name is required" })}
+          {...register("firstname", { required: "Name is required" })}
           className="w-full border rounded-lg px-4 py-3"
         />
-        {errors.name && (
-          <p className="text-red-500 text-sm">{errors.name.message}</p>
+        {errors.firstname && (
+          <p className="text-red-500 text-sm">{errors.firstname.message}</p>
+        )}
+      </div>
+      {/* Name */}
+      <div className="px-6 py-8">
+        <label className="block text-sm font-medium text-gray-600 mb-1">
+          Last Name
+        </label>
+        <input
+          {...register("lastname", { required: "Name is required" })}
+          className="w-full border rounded-lg px-4 py-3"
+        />
+        {errors.lastname && (
+          <p className="text-red-500 text-sm">{errors.lastname.message}</p>
         )}
       </div>
 

@@ -160,7 +160,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (expectedRole && userType !== expectedRole) {
           Cookies.remove("access_token");
           Cookies.remove("refresh_token");
-          setError("Credentials not valid for this account type.");
+          setUser(null);
+          setError(" Oops! This account can’t use these credentials.");
           setLoading(false);
           return;
         }

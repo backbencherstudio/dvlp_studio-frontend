@@ -62,7 +62,16 @@ function PaymentForm({
         bookingId: bookingId,
       });
 
+      // Check if backend returned an error response in the body (even with 200 status)
+      if (res.data.status === 400 || res.data.status === 409) {
+        throw new Error(res.data.message || "Payment request failed");
+      }
+
       const clientSecret = res.data.clientSecret;
+
+      if (!clientSecret) {
+        throw new Error("No client secret received from server");
+      }
 
       // 3. Confirm the payment
       const { error: confirmError, paymentIntent } =
@@ -80,8 +89,14 @@ function PaymentForm({
         setError("Payment failed or requires additional steps");
       }
     } catch (err: any) {
-      console.error("Stripe error:", err);
-      setError(err.message || "Failed to process payment");
+      console.error("Payment error:", err);
+      // Extract error message from axios response or use the error message
+      // Handle both cases: axios throws error (4xx/5xx) or backend returns error in body
+      const errorMessage =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to process payment";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
