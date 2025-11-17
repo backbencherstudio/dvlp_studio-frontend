@@ -13,6 +13,7 @@ import {
 } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 type FormValues = {
   name: string;
@@ -31,15 +32,20 @@ const useResheduleSession = (id: string) => {
     },
 
     onSuccess: () => {
+      toast.success("R  Req success")
       queryClient.invalidateQueries({
         queryKey: ["studentSessions"],
       });
     },
+    onError: () => {
+    toast.error("R is failded")
+    }
   });
 };
 
 export default function RescheduleModal({ data, color }: any) {
   const { tutor, subject, id } = data;
+  console.log("this reshehdfdfdfdf",id);
   // handle modal
   const [open, setOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);

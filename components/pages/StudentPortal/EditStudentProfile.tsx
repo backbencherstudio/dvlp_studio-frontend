@@ -5,12 +5,15 @@ import { ArrowLeft, Save, Upload } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { privateAxios } from "@/lib/axios";
 
 type ProfileFormValues = {
-  name: string;
-  role: string;
-  image?: File; // 👈 store File, not string
-  location: string;
+  firstname: string;
+  lastname: string;
+  image?: File | string | null; // 👈 store File, not string
+  country: string;
+  city: string;
   about: string;
   sessionGrade: string;
 };
@@ -49,28 +52,31 @@ export const EditStudentProfile = ({
 
   const onSubmit = async (data: ProfileFormValues) => {
     const formData = new FormData();
-    formData.append("name", data.name);
-    formData.append("role", data.role);
-    formData.append("location", data.location);
-    formData.append("about", data.about);
+    formData.append("first_name", data.firstname);
+    formData.append("last_name", data.lastname);
+    formData.append("city", data.city);
+    formData.append("country", data.country);
+    formData.append("about_me", data.about);
     formData.append("sessionGrade", data.sessionGrade);
 
     if (file) {
-      formData.append("image", file); // ✅ actual file
+      formData.append("avatar", file); // ✅ actual file
     }
 
-
-    
     // Example API call
-    const res = await fetch("/api/students/update", {
-      method: "POST",
-      body: formData,
+
+    const res = await privateAxios.patch("/auth/update", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
 
-    if (res.ok) {
+    if (res.data.success) {
       console.log("Profile updated successfully");
+      toast.success("Profile Updated Successfully!");
     } else {
       console.error("Update failed");
+      toast.error("Profile Update failed!");
     }
   };
 
@@ -82,7 +88,7 @@ export const EditStudentProfile = ({
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-6">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()}>
+          <button type="button" onClick={() => router.back()}>
             <ArrowLeft className="w-6 h-6 cursor-pointer" />
           </button>
           <h2 className="text-xl font-semibold">Edit Profile</h2>
@@ -121,28 +127,44 @@ export const EditStudentProfile = ({
         </div>
       </div>
 
-      {/* Name */}
-      <div className="px-6 py-8">
-        <label className="block text-sm font-medium text-gray-600 mb-1">
-          Name
-        </label>
-        <input
-          {...register("name", { required: "Name is required" })}
-          className="w-full border rounded-lg px-4 py-3"
-        />
-        {errors.name && (
-          <p className="text-red-500 text-sm">{errors.name.message}</p>
-        )}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-6 py-8">
+        {" "}
+        {/* Name */}
+        <div>
+          <label className="block text-sm font-medium text-gray-600 mb-1">
+            First Name
+          </label>
+          <input
+            {...register("firstname", { required: "Name is required" })}
+            className="w-full border rounded-lg px-4 py-3"
+          />
+          {errors.firstname && (
+            <p className="text-red-500 text-sm">{errors.firstname.message}</p>
+          )}
+        </div>
+        {/* Name */}
+        <div>
+          <label className="block text-sm font-medium text-gray-600 mb-1">
+            Last Name
+          </label>
+          <input
+            {...register("lastname", { required: "Name is required" })}
+            className="w-full border rounded-lg px-4 py-3"
+          />
+          {errors.lastname && (
+            <p className="text-red-500 text-sm">{errors.lastname.message}</p>
+          )}
+        </div>
       </div>
 
       {/* Role & Location */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-6 py-8">
         <div>
           <label className="block text-sm font-medium text-gray-600 mb-1">
-            Designation
+            City
           </label>
           <input
-            {...register("role")}
+            {...register("city")}
             className="w-full border rounded-lg px-4 py-3"
           />
         </div>
@@ -151,7 +173,7 @@ export const EditStudentProfile = ({
             Country
           </label>
           <input
-            {...register("location")}
+            {...register("country")}
             className="w-full border rounded-lg px-4 py-3"
           />
         </div>

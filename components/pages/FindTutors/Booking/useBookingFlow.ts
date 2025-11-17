@@ -76,7 +76,7 @@ export const useBookingFlow = (tutor: any) => {
   };
 
   const getUniqueSubjects = () => {
-    const subjects = tutorSessions.map((s) => s.subject);
+    const subjects = tutorSessions?.map((s) => s.subject);
     return [...new Set(subjects)].map((subject) => ({
       label: subject,
       value: subject,
@@ -84,7 +84,7 @@ export const useBookingFlow = (tutor: any) => {
   };
 
   const getAvailableSlots = (subject: string) => {
-    const session = tutorSessions.find((s) => s.subject === subject);
+    const session = tutorSessions?.find((s) => s.subject === subject);
     return (
       session?.available_slots_time_and_date?.map((slot: string) => ({
         label: new Date(slot).toLocaleString("en-US", {
@@ -104,7 +104,7 @@ export const useBookingFlow = (tutor: any) => {
     try {
       setIsSubmitting(true);
       setError(null);
-      const session = tutorSessions.find((s) => s.subject === data.subject);
+      const session = tutorSessions?.find((s) => s.subject === data.subject);
       if (!session) throw new Error("Session not found");
 
       const payload: BookingApiPayload = {
