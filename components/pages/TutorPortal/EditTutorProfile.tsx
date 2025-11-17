@@ -121,7 +121,7 @@ export const EditTutorProfile = ({
     formData.append("country", data.country);
     formData.append("city", data.city);
     formData.append("about_me", data.aboutMe);
-    formData.append("grade_level", JSON.stringify(data.gradesTaught));
+    formData.append("grades_taught ", JSON.stringify(data.gradesTaught));
     // formData.append("certifications", JSON.stringify(data.certifications));
 
     if (file) {

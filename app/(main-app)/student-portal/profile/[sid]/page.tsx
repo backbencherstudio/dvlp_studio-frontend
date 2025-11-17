@@ -49,8 +49,10 @@ export default async function Page({ params }: Props) {
     lastname: data.last_name,
     role: "Student", // static unless API gives a role
     image: data.avatar === "null" ? null : data.avatar,
-    location:
-      data.country && data.city ? `${data.city}, ${data.country}` : "",
+    country: data.country,
+    city: data.city,
+    // location:
+    //   data.country && data.city ? `${data.city}, ${data.country}` : "",
     about: data.about_me,
     sessionGrade: data.grade_level,
   };

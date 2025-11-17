@@ -112,7 +112,7 @@ const BookingFlow = ({ tutor }: any) => {
 
   // Helper functions to extract data from tutorSessions
   const getUniqueSubjects = () => {
-    const subjects = tutorSessions.map((session: any) => session.subject);
+    const subjects = tutorSessions?.map((session: any) => session.subject);
     return [...new Set(subjects)].map((subject) => ({
       label: subject as string,
       value: subject as string,

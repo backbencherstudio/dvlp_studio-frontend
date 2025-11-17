@@ -122,11 +122,11 @@ const SessionCard = ({
           {/* Avatar */}
           <div className="w-14 h-14 rounded-xl bg-gray-200 flex items-center justify-center overflow-hidden shrink-0">
             {avatar && avatar !== "null" ? (
-              <Image
+              <img
                 src={avatar}
                 alt={teacherName}
-                width={56}
-                height={56}
+                // width={56}
+                // height={56}
                 className="object-cover w-full h-full"
               />
             ) : (

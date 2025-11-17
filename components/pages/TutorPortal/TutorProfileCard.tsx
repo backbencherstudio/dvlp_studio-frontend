@@ -74,7 +74,7 @@ const TutorProfileCard = ({ id, isEdit = true }: TutorProfileCardProps) => {
       day: "numeric",
     });
 
-  console.log("Teacher", teacher)
+  console.log("Teacher", teacher);
 
   const profile: TutorProfile = {
     id: teacher.id ?? "N/A",
@@ -91,8 +91,7 @@ const TutorProfileCard = ({ id, isEdit = true }: TutorProfileCardProps) => {
     earningAmount: "N/A",
     about: teacher.about_me ?? "N/A",
     sessionGrade: teacher.grades_taught ?? "N/A",
-    profilePicture:
-      teacher.avatar_url ?? "/profile-placeholder.jpg",
+    profilePicture: teacher.avatar_url ?? "/profile-placeholder.jpg",
     qualifications: teacher.qualifications ?? [],
     certifications: teacher.certifications ?? [],
     phone: teacher.phone_number,
@@ -103,23 +102,24 @@ const TutorProfileCard = ({ id, isEdit = true }: TutorProfileCardProps) => {
 
   return (
     <>
-
-
-
       <div className="py-6 sm:py-10 max-w-[902px] mx-auto bg-white rounded-2xl divide-y divide-[#E5E7EB] border">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between px-4 sm:px-6 py-6 sm:py-9 gap-6 sm:gap-0">
           <div className="flex flex-col sm:flex-row gap-6 sm:gap-9">
             <img
               className="w-[80px] h-[80px] sm:w-[92px] sm:h-[92px] rounded-[20px] object-cover mx-auto sm:mx-0"
-              src={profile.profilePicture}
+              // src={profile.profilePicture}
+                src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${profile.profilePicture}`}
               alt={profile.name}
+              crossOrigin=""
             />
             <div className="space-y-1.5 sm:space-y-2 text-center sm:text-left">
               <h2 className="text-2xl sm:text-[28px] font-semibold text-[#1E293B]">
                 {profile.name}
               </h2>
-              <p className="text-gray-600 text-sm sm:text-base  capitalize ">{profile.role}</p>
+              <p className="text-gray-600 text-sm sm:text-base  capitalize ">
+                {profile.role}
+              </p>
               <p className="text-gray-500 text-sm sm:text-base">
                 {profile.location}
               </p>
@@ -160,7 +160,6 @@ const TutorProfileCard = ({ id, isEdit = true }: TutorProfileCardProps) => {
                 </button>
               </Link>
             ) : (
-
               <div>
                 <BookingFlow />
 
@@ -205,13 +204,16 @@ const TutorProfileCard = ({ id, isEdit = true }: TutorProfileCardProps) => {
               profile.certifications.map((url, i) => (
                 <img
                   key={i}
-                  src={url}
+                  src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}/certificate/${url}`}
                   alt={`Certificate ${i + 1}`}
                   className="h-[200px] sm:h-[264px] w-full md:w-1/2 rounded-xl object-cover border"
+                  crossOrigin=""
                 />
               ))
             ) : (
-              <p className="text-gray-500 text-sm">No certifications uploaded.</p>
+              <p className="text-gray-500 text-sm">
+                No certifications uploaded.
+              </p>
             )}
           </div>
         </div>
@@ -222,14 +224,13 @@ const TutorProfileCard = ({ id, isEdit = true }: TutorProfileCardProps) => {
             Session Grades & Levels
           </h3>
           <p className="text-gray-700 text-sm sm:text-base">
-
-
             {profile.sessionGrade && profile.sessionGrade.length > 0
               ? profile.sessionGrade.toString()
               : "No grades available"}
           </p>
         </div>
-      </div></>
+      </div>
+    </>
   );
 };
 

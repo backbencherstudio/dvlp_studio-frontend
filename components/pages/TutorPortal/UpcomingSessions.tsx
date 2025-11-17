@@ -11,44 +11,14 @@ import SessionForm from "./CreateSessionForm";
 import { transformSession } from "@/lib/utils";
 import ErrorState from "@/components/common/ErrorState";
 import LoadingState from "@/components/common/LoadingState";
-
-// Example fake data
-const fakeSessions = [
-  {
-    id: 1,
-    title: "Calculus",
-    studentsCount: "24 Students",
-    sessionDetails: "1/15/2024 at 3:00 PM • 60 min • Virtual",
-    icon: UsersIcon,
-  },
-  {
-    id: 2,
-    title: "Physics",
-    studentsCount: "18 Students",
-    sessionDetails: "1/16/2024 at 10:00 AM • 45 min • In-person",
-    icon: UserIcon,
-  },
-  {
-    id: 3,
-    title: "Chemistry",
-    studentsCount: "20 Students",
-    sessionDetails: "1/17/2024 at 2:00 PM • 50 min • Virtual",
-    icon: UsersIcon,
-  },
-];
-// Fake methods to pass into onStartSession and onEdit
-const onStartSession = () => {
-  console.log("Starting session...");
-};
-
-const onEdit = () => {
-  console.log("Editing session...");
-};
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { privateAxios } from "@/lib/axios";
+import { toast } from "sonner";
 
 export default function UpcomingSessions() {
-  const { data: sessions, isFetching, isError } = useGetTeacherSessions();
+  const { data: sData, isFetching, isError } = useGetTeacherSessions();
 
-  console.log(sessions);
+  const sessions = sData?.data;
 
   const [isCreate, setIsCreate] = useState(false);
   const onClose = () => setIsCreate(false);
@@ -108,15 +78,51 @@ interface SessionData {
   available_slots_time_and_date: string[];
   join_link: string;
   session_type: string;
+  // sessionStarted: boolean;
+  is_started: any;
+
 }
 
 interface SessionCardProps {
   session: SessionData;
 }
 
+const useStartSession = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (sessionId: string) => {
+      const res = await privateAxios.patch(
+        `/teacher/start-session/${sessionId}`
+      );
+      return res.data;
+    },
+
+    onSuccess: (data) => {
+      if (data?.success) {
+        toast.success("Session Started Successfully");
+
+        // refresh sessions list
+        // queryClient.invalidateQueries({ queryKey: ["studentSessions"] });
+      } else {
+        toast.error(data?.message || "Failed to start session.");
+      }
+    },
+
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || "Something went wrong.");
+    },
+  });
+};
+
 function SessionCard({ session }: SessionCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentSession, setCurrentSession] = useState<any | null>(null);
+  const { mutate: startSession, isPending } = useStartSession();
+
+  const handleStartSession = (id: string) => {
+    startSession(id);
+  };
 
   const handleEdit = (session: SessionData) => {
     setIsModalOpen(true);
@@ -185,20 +191,27 @@ function SessionCard({ session }: SessionCardProps) {
       </div>
 
       {/* Right Side */}
-      <div className="space-x-3 flex flex-wrap gap-4 justify-center sm:justify-end">
-        <button
-          onClick={() => alert("Session Started")}
-          className="bg-gradient-to-r from-[#6366F1] to-[#A855F7] px-5 py-3 text-center rounded-xl text-white cursor-pointer"
-        >
-          Start Session
-        </button>
+      <div>
 
-        <button
-          onClick={() => handleEdit(session)}
-          className="px-5 py-[10px] border-gray-300 rounded-xl text-slate-800 border cursor-pointer"
-        >
-          Edit
-        </button>
+        {
+          session?.is_started ? <div className="bg-green-100 text-green-500 rounded-md px-4 py-2 font-semibold text-sm">Session Started</div> :  <div className="space-x-3 flex flex-wrap gap-4 justify-center sm:justify-end">
+          <button
+            disabled={isPending}
+            onClick={() => handleStartSession(session.id)}
+            className="bg-gradient-to-r from-[#6366F1] to-[#A855F7] px-5 py-3 text-center rounded-xl text-white cursor-pointer"
+          >
+            Start Session
+          </button>
+
+          <button
+            onClick={() => handleEdit(session)}
+            className="px-5 py-[10px] border-gray-300 rounded-xl text-slate-800 border cursor-pointer"
+          >
+            Edit
+          </button>
+        </div>
+        }
+       
       </div>
 
       {/* Edit Modal */}
