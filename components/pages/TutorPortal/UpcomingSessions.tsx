@@ -192,7 +192,6 @@ function SessionCard({ session }: SessionCardProps) {
 
       {/* Right Side */}
       <div>
-
         {
           session?.is_started ? <div className="bg-green-100 text-green-500 rounded-md px-4 py-2 font-semibold text-sm">Session Started</div> :  <div className="space-x-3 flex flex-wrap gap-4 justify-center sm:justify-end">
           <button

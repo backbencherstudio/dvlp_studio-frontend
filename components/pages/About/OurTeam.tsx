@@ -54,7 +54,7 @@ export default function OurTeam() {
     queryKey: ["teams"],
   });
 
-  const formatedData = tData?.teams?.map((member: any) => {
+  const formatedData = tData?.data?.teams?.map((member: any) => {
     return {
       id: member.id,
       name: member.name,
@@ -64,7 +64,7 @@ export default function OurTeam() {
     };
   });
 
-  // console.log({ formatedData });
+  // console.log(formatedData);
 
 
 

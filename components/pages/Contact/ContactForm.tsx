@@ -3,58 +3,70 @@
 import CustomInputField from "@/components/reusable/CustomInput";
 import CustomSelectField from "@/components/reusable/CustomSelect";
 import ErrorMessage from "@/components/reusable/ErrorMessage";
+import { privateAxios, publicAxios } from "@/lib/axios";
+import { parseApiError } from "@/lib/universalErrorHandler";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 export default function ContactForm() {
   const {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm({
-    defaultValues: { fullName: "", email: "", subject: "", message: "" },
+    defaultValues: { full_name: "", email: "", subject: "", message: "" },
   });
 
-  const onSubmit = (data: any) => {
-    console.log("Form Data Submited", data);
+  const onSubmit = async (data: any) => {
+    // console.log("Form Data Submited", data);
+    try {
+      const res = await publicAxios.post(
+        "/help-and-support/support-message",
+        data
+      );
+      if (res.data?.success) {
+        toast.success("Submitted Successfully!");
+        reset();
+      } else {
+        toast.error("Submission failed");
+      }
+    } catch (error: any) {
+      toast.error(parseApiError(error));
+    }
   };
-  1;
+
   return (
     <div className="p-8 md:w-[576px] shadow-xs bg-white/80 border-white/50 backdrop-blur-[2px] rounded-3xl">
       <h3 className="text-3xl font-bold leading-9 mb-8">Send us a Message</h3>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 ">
         <CustomInputField
           label="Full Name"
-          name="fullName"
+          name="full_name"
           placeholder="Enter your full name"
           register={register}
-          errors={errors.fullName}
+          errors={errors.full_name}
           required={true}
         />
         <CustomInputField
           label="Email Address"
           name="email"
-          placeholder="Enter "
+          placeholder="Enter Your Email"
           register={register}
           errors={errors.email}
           required={true}
         />
+        <CustomInputField
+          label="Subject"
+          name="subject"
+          placeholder="Enter Your Subject"
+          register={register}
+          errors={errors.subject}
+          required={true}
+        />
 
-        <div>
-          {/* Subject */}
-          <CustomSelectField
-            label="Subject"
-            name="subject"
-            register={register}
-            control={control}
-            options={[
-              { label: "Math", value: "Math" },
-              { label: "Science", value: "Science" },
-            ]}
-            required={true}
-          />
-        </div>
         <div>
           <label
             className="block text-sm font-medium text-[#374151]"
@@ -64,7 +76,7 @@ export default function ContactForm() {
           </label>
 
           <textarea
-            className="mt-2 px-4 py-4 w-full border border-gray-300 rounded-lg  h-[177.33px]"
+            className="mt-2 px-4 py-4 w-full border border-gray-300 rounded-lg  h-[177.33px] resize-none"
             id="message"
             placeholder="Tell us how we can help you..."
             {...register("message", {

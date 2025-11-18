@@ -1,82 +1,79 @@
 "use client";
 
 import { privateAxios } from "@/lib/axios";
-import { useQuery } from "@tanstack/react-query";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
-import React from "react";
 
-// ✅ React Query Hook
+// ----------- Fetch Single Support -----------
 const useOneSupport = (id: string) => {
   return useQuery({
     queryKey: ["support", id],
     queryFn: async () => {
-      const { data } = await privateAxios.get(
-        `/help-and-support/one-support/${id}`
-      );
-      return data?.data; // assuming response shape: { data: { ... } }
+      const res = await privateAxios.get(`/help-and-support/one-support/${id}`);
+      return res.data.data;
     },
     enabled: !!id,
   });
 };
-// mutaion for update
 
-const useMarkAsSolved = () => {
+// ----------- Mutation to Toggle Status -----------
+const useToggleStatus = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data } = await privateAxios.patch(
+      const res = await privateAxios.patch(
         `/help-and-support/toggle-support-status/${id}`
       );
-      return data;
+      return res.data;
     },
+
     onSuccess: (_, id) => {
-      // update the cached data instantly
-      queryClient.setQueryData(["support", id], (oldData: any) => ({
-        ...oldData,
-        status: "solved",
+      // Update the current page instantly
+      queryClient.setQueryData(["support", id], (prev: any) => ({
+        ...prev,
+        status: prev?.status === "unsolved" ? "solved" : "unsolved",
       }));
+
+      // Refresh messages list
+      queryClient.invalidateQueries({ queryKey: ["messages"] });
     },
   });
 };
 
-// ✅ Component
+// ----------- UI Component -----------
 export default function EmailDetails() {
   const { id } = useParams<{ id: string }>();
   const { data, isFetching, isError } = useOneSupport(id);
-  const { mutate: markAsSolved, isPending } = useMarkAsSolved();
+  const { mutate: toggleStatus, isPending } = useToggleStatus();
 
-  if (isFetching) {
+  if (isFetching)
     return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-gray-500">Loading...</p>
+      <div className="flex items-center justify-center h-64 text-gray-500">
+        Loading...
       </div>
     );
-  }
 
-  if (isError) {
+  if (isError)
     return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-red-500">Failed to load support details.</p>
+      <div className="flex items-center justify-center h-64 text-red-500">
+        Failed to load support details.
       </div>
     );
-  }
 
-  if (!data) {
+  if (!data)
     return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-gray-500">No details found.</p>
+      <div className="flex items-center justify-center h-64 text-gray-500">
+        No details found.
       </div>
     );
-  }
 
-  // ✅ Card UI
   return (
-    <div className="mx-auto mt-10 bg-white rounded-xl shadow-md p-6 space-y-4 border border-gray-100">
+    <div className="mx-auto mt-10 bg-white rounded-xl shadow-md p-6 border border-gray-100 space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold text-gray-900">{data.subject}</h2>
-        <div className="flex items-center gap-2">
+
+        <div className="flex items-center gap-3">
           <span
             className={`px-3 py-1 rounded-full text-sm font-medium capitalize ${
               data.status === "solved"
@@ -87,19 +84,21 @@ export default function EmailDetails() {
             {data.status}
           </span>
 
-          {data.status !== "solved" && (
-            <button
-              onClick={() => markAsSolved(id)}
-              disabled={isPending}
-              className="px-3 py-1 text-sm bg-blue-500/95 text-white rounded-md hover:bg-blue-500 disabled:opacity-60  cursor-pointer"
-            >
-              {isPending ? "Updating..." : "Mark as Solved"}
-
-            </button>
-          )}
+          <button
+            onClick={() => toggleStatus(id)}
+            disabled={isPending}
+            className="px-3 py-1 text-sm bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-60 cursor-pointer"
+          >
+            {isPending
+              ? "Updating..."
+              : data.status === "solved"
+                ? "Mark as Solved"
+                : "Mark as Unsolved"}
+          </button>
         </div>
       </div>
 
+      {/* User & Time */}
       <div className="text-gray-700 text-sm space-y-1">
         <p>
           <span className="font-medium">Name:</span> {data.full_name}
@@ -119,6 +118,7 @@ export default function EmailDetails() {
         </p>
       </div>
 
+      {/* Message */}
       <div className="text-gray-800 text-sm">
         <h3 className="font-medium mb-1">Message:</h3>
         <p className="whitespace-pre-line">{data.message}</p>
