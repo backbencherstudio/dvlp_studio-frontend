@@ -130,7 +130,7 @@ export default function AdminSignIn() {
                 Remember me
               </p>
             </div>
-            <Link className="text-[#C084FC] text-sm leading-5" href={"/"}>
+            <Link className="text-[#C084FC] text-sm leading-5" href={"/auth/forgot-password"}>
               Forgot Password
             </Link>
           </div>
