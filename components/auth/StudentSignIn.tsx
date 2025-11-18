@@ -135,7 +135,7 @@ export default function StudentSignIn() {
                 Remember me
               </p>
             </div>
-            <Link className="text-[#C084FC] text-sm leading-5" href={"/auth/forgot-password"}>
+            <Link className="text-[#C084FC] text-sm leading-5" href={"/auth/forgot-password?type=student"}>
               Forgot Password
             </Link>
           </div>

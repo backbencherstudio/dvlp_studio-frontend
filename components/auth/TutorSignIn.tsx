@@ -127,7 +127,8 @@ export default function TutorSignIn() {
                 Remember me
               </p>
             </div>
-            <Link className="text-teal-400 text-sm leading-5" href={"/auth/forgot-password"}>
+          
+             <Link className="text-[#C084FC] text-sm leading-5" href={"/auth/forgot-password?type=tutor"}>
               Forgot Password
             </Link>
           </div>
