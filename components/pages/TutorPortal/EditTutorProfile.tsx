@@ -287,7 +287,7 @@ export const EditTutorProfile = ({
               type="text"
               value={newGrade}
               onChange={(e) => setNewGrade(e.target.value)}
-              placeholder="Add a grade level (e.g., Grade 5, High School, College)"
+              placeholder="Add a grade level (e.g., Grade_K, Grade_5, Grade_8)"
               className="flex-1 border rounded-lg px-4 py-3"
               onKeyPress={(e) => {
                 if (e.key === "Enter") {

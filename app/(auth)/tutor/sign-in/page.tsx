@@ -8,20 +8,19 @@ import TutorSignIn from "@/components/auth/TutorSignIn";
 import { Suspense } from "react";
 
 export default function page() {
-
-
-
   return (
     <div className="w-full h-full flex flex-col  items-center justify-center ">
       <div className=" w-[min(448px,90vw)] mx-auto  border- red-500/50 f flex-col flex items-center justify-center ">
-        {/* logo */}
-        <Image
-          className="w-[clamp(140px,12vw,225.055px)] h-auto"
-          src="/evolve-logo.png"
-          alt=""
-          width={225}
-          height={100}
-        />
+        <Link href={"/"}>
+          {/* logo */}
+          <Image
+            className="w-[clamp(140px,12vw,225.055px)] h-auto"
+            src="/evolve-logo.png"
+            alt=""
+            width={225}
+            height={100}
+          />
+        </Link>
 
         <PageTag
           icon={<CapIcon className="text-teal-400 " />}
@@ -29,13 +28,13 @@ export default function page() {
         />
         <AuthTitle
           title="Welcome Back, Educator!"
-          subTitle="Sign in to inspire and teach students"
+          // subTitle="Sign in to inspire and teach students"
         />
 
         {/* sign in form  */}
-            <Suspense fallback={<div>Loading sign in...</div>}>
-              <TutorSignIn />
-            </Suspense>
+        <Suspense fallback={<div>Loading sign in...</div>}>
+          <TutorSignIn />
+        </Suspense>
 
         <div className=" gap-2  mt-[26px]">
           {/* already have or new comers */}
@@ -49,7 +48,6 @@ export default function page() {
                 Apply to teach
               </Link>
             </p>
-           
           </div>
 
           {/* go back */}

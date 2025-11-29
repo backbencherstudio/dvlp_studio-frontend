@@ -24,6 +24,7 @@ import {
   PenTool,
   PentagonIcon,
 } from "lucide-react";
+import Link from "next/link";
 
 export const subjects: SubjectProps[] = [
   {
@@ -119,15 +120,15 @@ export default function SubjectMastery() {
       </div>
 
       {/* button */}
-      <div className="mt-16">
-        <button className="flex items-center gap-[7.67px] [background:linear-gradient(90deg,#3B82F6_0%,#06B6D4_100%)] pl-8 pr-[32.011px] py-4 rounded-2xl mx-auto cursor-pointer hover:shadow">
+      <div className="mt-16 flex items-center">
+        <Link href="/find-tutors" className="inline-flex  items-center gap-[7.67px] [background:linear-gradient(90deg,#3B82F6_0%,#06B6D4_100%)] pl-8 pr-[32.011px] py-4 rounded-2xl mx-auto cursor-pointer hover:shadow">
           <span className="text-white text-center font-bold leading-6">
             Explore All Sujects
           </span>
           <span>
             <ArrowIcon className="text-white" />
           </span>
-        </button>
+        </Link>
       </div>
     </section>
   );

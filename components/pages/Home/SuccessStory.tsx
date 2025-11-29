@@ -135,7 +135,11 @@ const TestimonialsSlider = () => {
       slidesPerView={2}
       pagination={{ clickable: true }}
       loop={true}
-      autoplay={{ delay: 3000, disableOnInteraction: false }}
+      autoplay={{
+        delay: 3000,
+        pauseOnMouseEnter: true,
+        disableOnInteraction: false,
+      }}
       breakpoints={{
         1024: { slidesPerView: 2 },
         0: { slidesPerView: 1 },

@@ -1,50 +1,51 @@
-
-import TutorSignUp from '@/components/auth/TutorSignUp'
-import ArrowIcon from '@/components/icons/ArrowIcon'
-import CapIcon from '@/components/icons/CapIcon'
-import AuthTitle from '@/components/reusable/AuthTitle'
-import PageTag from '@/components/reusable/PageTag'
-import Image from 'next/image'
-import Link from 'next/link'
-import React from 'react'
+import TutorSignUp from "@/components/auth/TutorSignUp";
+import ArrowIcon from "@/components/icons/ArrowIcon";
+import CapIcon from "@/components/icons/CapIcon";
+import AuthTitle from "@/components/reusable/AuthTitle";
+import PageTag from "@/components/reusable/PageTag";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 
 export default function page() {
   return (
     <div className="w-full h-full flex flex-col  items-center justify-center ">
       <div className=" w-[min(448px,90vw)] mx-auto  border- red-500/50 f flex-col flex items-center justify-center ">
         {/* logo */}
-        <Image
-          className="w-[clamp(140px,12vw,225.055px)] h-auto"
-          src="/evolve-logo.png"
-          alt=""
-          width={225}
-          height={100}
-        />
+        <Link href={"/"}>
+          <Image
+            className="w-[clamp(140px,12vw,225.055px)] h-auto"
+            src="/evolve-logo.png"
+            alt=""
+            width={225}
+            height={100}
+          />
+        </Link>
 
         <PageTag
           icon={<CapIcon className="text-teal-400 " />}
           title="Tutor Portal"
         />
         <AuthTitle
-          title="Welcome Back, Educator!"
+          title="Welcome , Educator!"
           subTitle="Sign in to inspire and teach students"
         />
 
         {/* sign in form  */}
-        <TutorSignUp/>
+        <TutorSignUp />
 
         <div className=" gap-2  mt-[26px]">
           {/* already have or new comers */}
           <div className="mb-[30px]">
             <p className="leading-6  text-gray-300">
               Already have an Account?{" "}
-              <Link href={"/tutor/sign-in"}
+              <Link
+                href={"/tutor/sign-in"}
                 className="font-semibold leading-6 text-teal-400"
               >
                 Sign In
               </Link>
             </p>
-           
           </div>
 
           {/* go back */}
@@ -57,5 +58,5 @@ export default function page() {
         </div>
       </div>
     </div>
-  )
+  );
 }

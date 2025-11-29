@@ -2,7 +2,7 @@ import React from "react";
 
 interface AuthTitleProps {
   title: string;
-  subTitle: string;
+  subTitle?: string;
   className?: string;
   isDarkMode?: boolean;  // Optional prop to switch between light and dark modes
 }

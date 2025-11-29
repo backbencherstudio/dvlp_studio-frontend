@@ -84,7 +84,7 @@ const TutorProfile = () => {
   return (
     <div className="py-30 md:py-50 px-4 lg:px-0">
       {/* Profile info */}
-      <div className="max-w-[902px] mx-auto bg-white rounded-2xl divide-y divide-[#E5E7EB] border mx-4 lg:mx-auto">
+      <div className="max-w-[902px] mx-auto bg-white rounded-2xl divide-y divide-[#E5E7EB] border  lg:mx-auto">
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between px-4 lg:px-6 py-6 lg:py-9 gap-6 lg:gap-0">
           <div className="flex flex-col sm:flex-row gap-4 lg:gap-9 w-full lg:w-auto">
@@ -111,9 +111,9 @@ const TutorProfile = () => {
                 </span>
               </p>
               <p className="text-gray-500 text-sm sm:text-base">
-                Total Earnings:{" "}
+                Ratting:{" "}
                 <span className="text-gray-800 font-medium">
-                  {profile.earningAmount}
+                  {/* {profile.rating} */}
                 </span>
               </p>
             </div>

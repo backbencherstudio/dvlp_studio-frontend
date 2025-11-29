@@ -4,6 +4,7 @@ import { FormValues } from "./ApplyMultiStep";
 import AuthInput from "@/components/reusable/AuthInput";
 import { AuthSelect } from "@/components/reusable/AuthSelect";
 import { Checkbox } from "@/components/ui/checkbox";
+import { formatPhoneNumber } from "@/lib/formatePhoneNumber";
 
 // text input
 type TextInputProps = {
@@ -151,17 +152,20 @@ function TextArea({
 // checkbox using shadcn
 type CheckboxProps = {
   name: keyof FormValues;
-  label: string;
+  label: string | any;
   rules?: RegisterOptions<FormValues, keyof FormValues>;
 };
 
-function FormCheckbox({ name, label, rules }: CheckboxProps) {
+function FormCheckbox({ name, label, rules, onToggle }: CheckboxProps & {
+  onToggle?: (checked: boolean) => void;
+}) {
   const {
     register,
     formState: { errors },
     watch,
     setValue,
   } = useFormContext<FormValues>();
+
   const isChecked = watch(name) as boolean;
 
   return (
@@ -170,15 +174,24 @@ function FormCheckbox({ name, label, rules }: CheckboxProps) {
         <Checkbox
           id={name}
           checked={isChecked}
-          onCheckedChange={(checked) =>
-            setValue(name, checked as boolean, { shouldDirty: true })
-          }
+          onCheckedChange={(checked) => {
+            setValue(name, checked as boolean, { shouldDirty: true });
+
+            // 🔥 fire optional callback
+            if (onToggle) onToggle(checked as boolean);
+          }}
           className="mt-1"
         />
-        <label htmlFor={name} className="text-sm text-white leading-relaxed">
-          {label}
-        </label>
+
+        {typeof label === "string" ? (
+          <label className="text-white text-sm font-medium mb-2 block">
+            {label}
+          </label>
+        ) : (
+          label
+        )}
       </div>
+
       {errors[name] && (
         <p className="mt-1 text-xs text-red-300">
           {errors[name]?.message as string}
@@ -188,4 +201,45 @@ function FormCheckbox({ name, label, rules }: CheckboxProps) {
   );
 }
 
-export { TextInput, SelectInput, TextArea, FormCheckbox };
+// =====================TEXT INPUT2===================
+
+const TextInput2 = ({ name, label, icon, rules, placeholder }: any) => {
+  const { register, setValue, watch } = useFormContext();
+  const value = watch(name) || "";
+
+  const handleChange = (e: any) => {
+    const formatted = formatPhoneNumber(e.target.value);
+    setValue(name, formatted, { shouldValidate: true });
+  };
+
+  return (
+    <div>
+      <label className="text-white text-sm font-medium mb-2 block">
+        {label}
+      </label>
+
+      <div className="relative">
+        {/* icon */}
+        {icon && (
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+            {icon}
+          </span>
+        )}
+
+        <input
+          {...register(name, rules)}
+          value={value}
+          onChange={handleChange}
+          placeholder={placeholder}
+          className={[
+            "w-full h-[57.33px] rounded-xl",
+            "text-white placeholder:text-gray-400 border border-[rgba(255,255,255,0.20)]",
+            `focus:outline-none focus:ring-0 ${icon ? "pl-[48.66px]" : "pl-4"}`,
+          ].join(" ")}
+        />
+      </div>
+    </div>
+  );
+};
+
+export { TextInput, TextInput2, SelectInput, TextArea, FormCheckbox };

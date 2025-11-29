@@ -1,6 +1,8 @@
 import { useFormContext } from "react-hook-form";
 import { FormValues } from "./ApplyMultiStep";
 import { SelectInput, TextArea, FormCheckbox } from "./InputHelpers";
+import Link from "next/link";
+import { toast } from "sonner";
 
 /* ---------- Step 3: Final steps ---------- */
 export function Step3({ serverMsg }: { serverMsg: string | null }) {
@@ -15,6 +17,7 @@ export function Step3({ serverMsg }: { serverMsg: string | null }) {
   const AVAILABILITY_OPTIONS = [
     { label: "Weekdays", value: "Weekdays" },
     { label: "Weekends", value: "Weekends" },
+    { label: "Weeknights", value: "Weeknights" },
     { label: "Evenings", value: "Evenings" },
     { label: "Flexible", value: "Flexible" },
   ];
@@ -43,7 +46,13 @@ export function Step3({ serverMsg }: { serverMsg: string | null }) {
 
       {/* Documents */}
       <div className="rounded-2xl border border-dashed border-white/30 bg-white/5 p-4">
-        <p className="mb-2 text-white font-medium">Document Upload</p>
+        <p className="mb-1 text-white font-medium">Document Upload</p>
+
+        {/* 👇 Add this line here */}
+        <p className="mb-3 text-xs text-white/60">
+          (We are looking for: resume, transcript, teaching history)
+        </p>
+
         <label
           htmlFor="documents"
           className="block cursor-pointer rounded-xl py-8 text-center text-white hover:bg-white/20"
@@ -71,7 +80,6 @@ export function Step3({ serverMsg }: { serverMsg: string | null }) {
           </ul>
         )}
 
-        {/* Error message for documents */}
         {errors.documents && isSubmitted && (
           <p className="mt-2 text-xs text-red-300">
             Please upload at least one document
@@ -84,18 +92,41 @@ export function Step3({ serverMsg }: { serverMsg: string | null }) {
         name="consentBackground"
         label="I consent to a background check as part of the application process"
         rules={{ required: "You must consent to a background check" }}
+        onToggle={(checked) => {
+          if (checked) {
+            toast.info(
+              "You are fiscally responsible to pay for the background check, but it is inexpensive and will pay for itself after 1-2 sessions.",
+              {
+                position: "top-center", // 👈 this puts the toast in the center
+                duration: 5000, // optional
+              }
+            );
+          }
+        }}
       />
 
       <FormCheckbox
         name="agreeTerms"
-        label="I agree to the Terms of Service and Privacy Policy"
+        label=<p className="text-white text-sm font-medium mb-2 block">
+          I agree to the{" "}
+          <Link className="underline" href="/privacy-policy/#terms-service">
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link href={"/"} className="underline">
+            Privacy Policy
+          </Link>
+        </p>
         rules={{ required: "You must agree to the terms and conditions" }}
       />
 
       {serverMsg && (
         <div className="rounded-xl border border-yellow-300/30 bg-yellow-500/10 p-2">
           <p className="text-sm  text-yellow-300 mb-1 text-center">
-            {typeof serverMsg === 'string' ? serverMsg : JSON.stringify(serverMsg)}!
+            {typeof serverMsg === "string"
+              ? serverMsg
+              : JSON.stringify(serverMsg)}
+            !
           </p>
         </div>
       )}

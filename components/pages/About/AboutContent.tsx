@@ -11,7 +11,7 @@ export default function AboutContent() {
     <div>
       <AboutHero/>
       <OurMission/>
-      <OurJourney/>
+      {/* <OurJourney/> */}
       <OurValue/>
       <OurTeam/>
       <OurImpact/>

@@ -3,6 +3,7 @@
 import { Bell } from "lucide-react";
 import UserIcon from "../icons/UserIcon";
 import { useAuth } from "@/context/AuthContext";
+import NotificationListener from "../NotificationListener";
 
 interface HeaderCardProps {
   type: "teacher" | "student";
@@ -17,6 +18,9 @@ const PortalHero: React.FC<HeaderCardProps> = ({
 }) => {
   const { user } = useAuth();
   console.log("User info", user);
+
+  // soket
+
   return (
     <div className="md:h-[495px] shrink-0 [background:linear-gradient(135deg,rgba(49,46,129,0.95)_0%,rgba(88,28,135,0.95)_50%,rgba(131,24,67,0.95)_100%)] relative">
       <div className="max-w-[1216px] mx-auto relative flex flex-col sm:flex-row items-center justify-between py-28 sm:pt-[182px]  z-20">
@@ -42,6 +46,8 @@ const PortalHero: React.FC<HeaderCardProps> = ({
           </p>
         </div>
 
+        {/*  */}
+        <NotificationListener userId={user?.id} />
         <div className="flex items-center gap-6 sm:gap-10">
           <div className="relative">
             <Bell className="w-11 h-11 text-[#D1D5DB]" />

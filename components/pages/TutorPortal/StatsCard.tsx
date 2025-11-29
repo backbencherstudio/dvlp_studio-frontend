@@ -74,3 +74,4 @@ const InfoCard: React.FC<InfoCardProps> = ({
     </div>
   );
 };
+ 

@@ -32,7 +32,8 @@ const ReadyToTransform = () => {
 
           <div className="flex items-center justify-center gap-5 mt-[51px] px-4 md:px-0">
             <Link href={"/find-tutors"}>
-              <button className="flex md:gap-3 items-center cursor-pointer py-4 md:py-[21px] px-5 md:px-[40px] bg-white text-[#003466] text-lg leading-7 rounded-2xl">
+              <button className="flex md:gap-3 items-center cursor-pointer py-4 md:py-[21px] px-5 md:px-[40px] bg-white text-[#003466] text-lg leading-7 rounded-2xl hover:scale-[1.03] transition-transform duration-200
+">
                 <span>
                   <CurosrIcon />
                 </span>
@@ -43,7 +44,8 @@ const ReadyToTransform = () => {
               </button>
             </Link>
             <Link href={"/tutor/sign-up"}>
-              <button className="flex  gap-3 items-center cursor-pointer py-4 md:py-[21px] px-5 md:px-[40px] text-white text-lg leading-7 rounded-2xl bg-white/20 border border-white/30 ">
+              <button className="flex  gap-3 items-center cursor-pointer py-4 md:py-[21px] px-5 md:px-[40px] text-white text-lg leading-7 rounded-2xl bg-white/20 border border-white/30 hover:scale-[1.03] transition-transform duration-200
+">
                 <span>
                   <StackIcon className="w-5 h-5" />
                 </span>

@@ -14,6 +14,7 @@ import ArrowIcon from "../icons/ArrowIcon";
 import PhoneIcon from "../icons/PhoneIcon";
 import { publicAxios } from "@/lib/axios";
 import { toast } from "sonner";
+import { formatPhoneNumber } from "@/lib/formatePhoneNumber";
 
 type FormValues = {
   firstName: string;
@@ -79,15 +80,21 @@ export default function StudentSignUp() {
     }
   };
 
-  const gradeOptions = [
-    { label: "6th Grade", value: "grade_6" },
-    { label: "7th Grade", value: "grade_7" },
-    { label: "8th Grade", value: "grade_8" },
-    { label: "9th Grade", value: "grade_9" },
-    { label: "10th Grade", value: "grade_10" },
-    { label: "11th Grade", value: "grade_11" },
-    { label: "12th Grade", value: "grade_12" },
-  ];
+ const gradeOptions = [
+  { label: "Kindergarten (K)", value: "grade_k" },
+  { label: "1st Grade", value: "grade_1" },
+  { label: "2nd Grade", value: "grade_2" },
+  { label: "3rd Grade", value: "grade_3" },
+  { label: "4th Grade", value: "grade_4" },
+  { label: "5th Grade", value: "grade_5" },
+  { label: "6th Grade", value: "grade_6" },
+  { label: "7th Grade", value: "grade_7" },
+  { label: "8th Grade", value: "grade_8" },
+  { label: "9th Grade", value: "grade_9" },
+  { label: "10th Grade", value: "grade_10" },
+  { label: "11th Grade", value: "grade_11" },
+  { label: "12th Grade", value: "grade_12" },
+];
 
   return (
     <section className="border [background:rgba(255,255,255,0.10)] backdrop-blur-[5px] rounded-3xl border-solid border-[rgba(255,255,255,0.20)] mt-8 p-8 w-full">
@@ -175,18 +182,27 @@ export default function StudentSignUp() {
             </label>
             <AuthInput
               id="phonenumber"
-              type="phonenumber"
+              type="text"
               placeholder="Enter your phone number"
               icon={<PhoneIcon />}
               {...register("phoneNumber", {
-                required: "Phonenumber is required",
-                pattern: {
-                  value:
-                    /^\+?[0-9]{1,4}?[-.\s]?(\(?\d{2,4}\)?)[-.\s]?\d{3,4}[-.\s]?\d{3,4}$/,
-                  message: "Enter a valid phonenumber",
+                required: "Phone number is required",
+                validate: (value) => {
+                  const digits = value.replace(/\D/g, "").length;
+                  return digits === 10 || "Enter a valid 10-digit phone number";
                 },
               })}
+              onChange={(e) => {
+                const formatted = formatPhoneNumber(e.target.value);
+
+                // update UI
+                e.target.value = formatted;
+
+                // tell RHF about the change
+                register("phoneNumber").onChange(e);
+              }}
             />
+
             <ErrorMessage error={errors.phoneNumber} />
           </div>
 
@@ -306,7 +322,10 @@ export default function StudentSignUp() {
                 Remember me
               </p>
             </div>
-            <Link className="text-[#C084FC] text-sm leading-5" href={"/auth/forgot-password"}>
+            <Link
+              className="text-[#C084FC] text-sm leading-5"
+              href={"/auth/forgot-password"}
+            >
               Forgot Password
             </Link>
           </div>
