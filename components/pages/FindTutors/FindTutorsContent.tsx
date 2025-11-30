@@ -1,19 +1,21 @@
-"use client"
+"use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import FindTutorHero from "./FindTutorHero";
 import TutorList from "./TutorList";
 
 export default function FindTutorsContent() {
-
   const [search, setSearch] = useState("");
 
-  console.log("Search", search)
+  console.log("Search", search);
 
   return (
     <div>
-     <FindTutorHero search={search} setSearch={setSearch} />
-      <TutorList search={search} />
+      <FindTutorHero search={search} setSearch={setSearch} />
+
+      <Suspense fallback={<div>Loading sign in...</div>}>
+        <TutorList search={search} />
+      </Suspense>
     </div>
   );
 }
