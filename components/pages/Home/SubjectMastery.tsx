@@ -121,7 +121,10 @@ export default function SubjectMastery() {
 
       {/* button */}
       <div className="mt-16 flex items-center">
-        <Link href="/find-tutors" className="inline-flex  items-center gap-[7.67px] [background:linear-gradient(90deg,#3B82F6_0%,#06B6D4_100%)] pl-8 pr-[32.011px] py-4 rounded-2xl mx-auto cursor-pointer hover:shadow">
+        <Link
+          href={"/find-tutors"}
+          className="inline-flex  items-center gap-[7.67px] [background:linear-gradient(90deg,#3B82F6_0%,#06B6D4_100%)] pl-8 pr-[32.011px] py-4 rounded-2xl mx-auto cursor-pointer hover:shadow"
+        >
           <span className="text-white text-center font-bold leading-6">
             Explore All Sujects
           </span>
@@ -182,7 +185,10 @@ const SubjectCard = ({
           {description}
         </p>
 
-        <p className="flex justify-between items-center">
+        <Link
+          href={`/find-tutors?subject=${title}`}
+          className="flex justify-between items-center"
+        >
           <span className="text-[#003466] font-bold leading-6">
             Explore Tutors
           </span>
@@ -203,7 +209,7 @@ const SubjectCard = ({
               />
             </svg>
           </span>
-        </p>
+        </Link>
       </div>
     </div>
   );

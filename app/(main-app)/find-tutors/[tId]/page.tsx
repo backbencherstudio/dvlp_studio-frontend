@@ -5,12 +5,13 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { Diamond } from "lucide-react";
 import ReportButton from "@/components/common/ReportButton";
-import BookingFlow from "@/components/pages/FindTutors/BookingFlow";
+
 import LoadingState from "@/components/common/LoadingState";
 import ErrorState from "@/components/common/ErrorState";
 import { privateAxios } from "@/lib/axios";
 import FindTutorHero from "@/components/pages/FindTutors/FindTutorHero";
 import TutorDetailsHero from "@/components/pages/FindTutors/TutorDetailsHero";
+import BookingFlow2 from "@/components/pages/FindTutors/Booking/BookingFlow";
 
 interface TutorProfile {
   id: string;
@@ -122,7 +123,7 @@ const TutorProfile = () => {
           {/* Booking and Report Section */}
           <div className="w-full lg:w-1/4 space-y-4 flex flex-col items-center sm:items-end">
             <div className="w-full max-w-xs">
-              <BookingFlow />
+              <BookingFlow2 tutor={tutorData} />
             </div>
             {/* {tId && <ReportButton tutorId={tId} />} */}
           </div>
