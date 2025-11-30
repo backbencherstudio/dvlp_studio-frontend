@@ -14,13 +14,14 @@ export default function page() {
     <div className="w-full h-full flex flex-col  items-center justify-center ">
       <div className=" w-[min(448px,90vw)] mx-auto  border- red-500/50 f flex-col flex items-center justify-center ">
         {/* logo */}
+      <Link href={"/"}>
         <Image
           className="w-[clamp(140px,12vw,225.055px)] h-auto"
           src="/evolve-logo.png"
           alt=""
           width={225}
           height={100}
-        />
+        /></Link>
 
         <PageTag
           icon={<BookIcon className="text-[#C084FC]" />}

@@ -22,9 +22,7 @@ export default function AboutHero() {
           </span>
         </h1>
         <p className="text-xl font-normal leading-8 max-w-[854.84px] text-gray-300 text-center sm:text-lg md:text-2xl">
-          Since 2019, we've been on a mission to make quality education
-          accessible, personalized, and effective for students of all ages and
-          backgrounds.
+        Since 2024, we've been on a mission to make high-quality education accessible, personalized, and effective for all K-12 students.
         </p>
       </div>
 

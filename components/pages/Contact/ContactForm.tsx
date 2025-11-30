@@ -9,6 +9,15 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+const issueOptions = [
+  { label: "Login or Access Issue", value: "login_issue" },
+  { label: "Connectivity Problem", value: "connectivity_problem" },
+  { label: "Software or Application Issue", value: "software_issue" },
+  { label: "Mobile Device Problem", value: "mobile_problem" },
+  { label: "File a Complaint", value: "complaint" },
+  { label: "Other", value: "other" },
+];
+
 export default function ContactForm() {
   const {
     register,
@@ -58,13 +67,14 @@ export default function ContactForm() {
           errors={errors.email}
           required={true}
         />
-        <CustomInputField
-          label="Subject"
+
+        <CustomSelectField
+          label="Issue Type"
           name="subject"
-          placeholder="Enter Your Subject"
+          control={control}
           register={register}
-          errors={errors.subject}
-          required={true}
+          options={issueOptions}
+          required
         />
 
         <div>
@@ -74,15 +84,19 @@ export default function ContactForm() {
           >
             Message <span className="text-red-500/80">*</span>
           </label>
-
           <textarea
-            className="mt-2 px-4 py-4 w-full border border-gray-300 rounded-lg  h-[177.33px] resize-none"
+            className="mt-2 px-4 py-4 w-full border border-gray-300 rounded-lg h-[177.33px] resize-none"
             id="message"
-            placeholder="Tell us how we can help you..."
+            placeholder="Tell us how we can help you  (max. 500 characters)"
             {...register("message", {
               required: "Message is required",
+              maxLength: {
+                value: 500,
+                message: "Maximum 500 characters allowed",
+              },
             })}
           />
+
           <ErrorMessage error={errors.message} />
         </div>
 

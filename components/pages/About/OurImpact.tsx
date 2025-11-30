@@ -18,7 +18,7 @@ const data = [
   },
   {
     label: "Countries Served",
-    value: "8+",
+    value: "5+",
   },
 ];
 

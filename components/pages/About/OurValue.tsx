@@ -1,4 +1,5 @@
 import BookIcon from "@/components/icons/BookIcon";
+import { Heart, Slack, Users } from "lucide-react";
 import React from "react";
 
 type ValueProps = {
@@ -12,29 +13,30 @@ type ValueProps = {
 const valuesList = [
   {
     title: "accountability",
-    description: "We strive for the highest standards in everything we do",
-    icon: <BookIcon />,
+    description: "We hold ourselves responsible for our actions. ",
+    icon: <Slack className="w-8 h-8" />,
     gradientStart: "#6366F1",
     gradientEnd: "#A855F7",
   },
   {
     title: "kindness",
-    description: "We care deeply about each student's journey and success",
-    icon: <BookIcon />,
+    description: "We are not here to judge, we are here to help. ",
+    icon: <Heart className="w-8 h-8" />,
     gradientStart: "#EC4899",
     gradientEnd: "#F43F5E",
   },
   {
     title: "perseverance",
-    description: "Building connections between students, tutors, and families",
-    icon: <BookIcon className="w-8 h-8" />,
+    description: "We encourage students to push through when it gets hard.",
+    icon: <Users className="w-8 h-8" />,
     gradientStart: "#3B82F6",
     gradientEnd: "#06B6D4",
   },
   {
     title: "patience",
-    description: "Continuously evolving our methods to enhance learning",
-    icon: <BookIcon />,
+    description:
+      "We have all experienced the frustration of learning, so our tutors provide a calm space for growth.",
+    icon: <BookIcon className="w-8 h-8" />,
     gradientStart: "#22C55E",
     gradientEnd: "#10B981",
   },

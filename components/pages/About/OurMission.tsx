@@ -40,7 +40,7 @@ export default function OurMission() {
           {/* Bullet Points */}
           <ul className="space-y-4 text-gray-700 list-none">
             {[
-              "Proven track record of success",
+              "Personalized learning approach",
               "Flexible and convenient scheduling",
               "Qualified and passionate tutors",
               "Proven track record of success",

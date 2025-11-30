@@ -99,12 +99,16 @@ export default function Navbar() {
             {/* Conditional Link for Tutor/Student */}
 
             <div className="flex gap-2 items-center">
-              <Link
-                href="/find-tutors"
-                className="rounded-lg [background:#F97316] px-3 md:px-6.5 py-2 text-lg font-normal text-white leading-5 hover:bg-orange-600 transition-colors"
-              >
-                Book Session
-              </Link>
+              {user?.type !== "teacher" ? (
+                <Link
+                  href="/find-tutors"
+                  className="rounded-lg [background:#F97316] px-3 md:px-6.5 py-2 text-lg font-normal text-white leading-5 hover:bg-orange-600 transition-colors"
+                >
+                  Book Session
+                </Link>
+              ) : (
+                <></>
+              )}
               {user && (
                 <button
                   onClick={logout}

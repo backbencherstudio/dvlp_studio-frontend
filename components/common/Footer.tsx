@@ -31,18 +31,20 @@ const socials = [
 ];
 
 const quickLinks = [
-  { label: "About Us", href: "#" },
-  { label: "Find Tutors", href: "#" },
-  { label: "Contact", href: "#" },
-  { label: "Book Session", href: "#" },
+  { label: "About Us", href: "/about" },
+  { label: "Find Tutors", href: "/find-tutors" },
+  { label: "Contact", href: "/contact" },
+  // { label: "Book Session", href: "#" },
 ];
 
 const supportLinks = [
-  { label: "Help Center", href: "#" },
-  { label: "Privacy Policy", href: "#" },
-  { label: "Terms of Service", href: "#" },
-  { label: "FAQ", href: "#" },
+  { label: "Help Center", href: "/contact/#send-message" },
+  { label: "Privacy Policy", href: "/privacy-policy/" },
+  { label: "Terms of Service", href: "/privacy-policy/#terms-service" },
+  { label: "FAQ", href: "/contact/#faq" },
 ];
+
+
 
 export default function Footer() {
   return (
@@ -63,8 +65,9 @@ export default function Footer() {
                 />
               </div>
               <p className="w-[302px] text-gray-300  text-base font-normal leading-6 font-arial">
-                Empowering students to reach their full potential through
-                personalized tutoring and innovative learning solutions.
+                {/* Empowering students to reach their full potential through
+                personalized tutoring and innovative learning solutions. */}
+                Be your own hero
               </p>
             </div>
             <div className="flex items-center gap-4 pt-2">
@@ -87,16 +90,16 @@ export default function Footer() {
               Our Commitment to you
             </h3>
             <p className="mt-3 text-xs leading-6 text-[#9DB0C3]">
-              We believe in a few things: you, us, and every product we make. If
-              at any time within 30 days after your purchase, for any reason,
-              you’re not happy— we’ll refund your money + 10% (minus shipping
-              costs). See full details{" "}
-              <Link
+              At Evolve, we believe that learning isn’t just a process – it’s a
+              transformation. that’s why we’re committed to creating an
+              environment where every student can grow with confidence, clarity,
+              and purpose.
+              {/* <Link
                 href="#"
                 className="underline underline-offset-2 hover:text-white"
               >
                 here
-              </Link>
+              </Link> */}
               .
               <br />
               *Purchasing gift cards or digital items does not count toward the

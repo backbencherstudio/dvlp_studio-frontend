@@ -64,6 +64,9 @@ const BookingFlow = ({ tutor }: any) => {
   const router = useRouter();
   const { user } = useAuth();
 
+
+  console.log("User name", tutor)
+
   // Step 2: React Hook Form setup for booking and payment forms
   const {
     register: registerBooking,
@@ -106,9 +109,9 @@ const BookingFlow = ({ tutor }: any) => {
     }
   };
 
-  console.log("tutorSessions:", tutorSessions);
-  console.log("bookingErrors:", bookingErrors);
-  console.log("selectedSubject:", selectedSubject);
+  // console.log("tutorSessions:", tutorSessions);
+  // console.log("bookingErrors:", bookingErrors);
+  // console.log("selectedSubject:", selectedSubject);
 
   // Helper functions to extract data from tutorSessions
   const getUniqueSubjects = () => {
@@ -176,10 +179,10 @@ const BookingFlow = ({ tutor }: any) => {
         throw new Error("Selected session not found");
       }
 
-      console.log("Selected session:", selectedSession);
-      console.log("Slot date:", slotDate);
-      console.log("Slot date type:", typeof slotDate);
-      console.log("Slot date instanceof Date:", slotDate instanceof Date);
+      // console.log("Selected session:", selectedSession);
+      // console.log("Slot date:", slotDate);
+      // console.log("Slot date type:", typeof slotDate);
+      // console.log("Slot date instanceof Date:", slotDate instanceof Date);
 
       const bookingPayload = {
         name: data.name,

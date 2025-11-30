@@ -20,6 +20,7 @@ const CustomInputField: React.FC<InputFieldProps> = ({
   errors,
   required = false,
   readonly = false,
+  
 }) => {
   return (
     <div>
@@ -34,11 +35,12 @@ const CustomInputField: React.FC<InputFieldProps> = ({
       <input
         id={name}
         placeholder={placeholder}
-        className="mt-2 px-4 py-4 w-full border border-gray-300 rounded-lg"
+        className="mt-2 px-4 py-4 w-full border border-gray-300 rounded-lg "
         {...register(name, {
           required: required ? `${label} is required` : false,
         })}
         readOnly={readonly}
+        
       />
 
       <ErrorMessage error={errors} />

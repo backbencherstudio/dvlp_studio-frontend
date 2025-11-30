@@ -2,7 +2,7 @@ import SearchIcon from "@/components/icons/SearchIcon";
 import SparkIcon from "@/components/icons/SparkIcon";
 import React from "react";
 
-export default function FindTutorHero() {
+export default function FindTutorHero({ search, setSearch }: any) {
   return (
     <section className="lg:pt-56 md:pt-40 pt-36  lg:pb-30 md:pb-20 pb-12 shrink-0 [background:linear-gradient(135deg,rgba(49,46,129)_0%,rgba(88,28,135)_50%,rgba(131,24,67)_100%)] relative">
       {/* content */}
@@ -31,6 +31,8 @@ export default function FindTutorHero() {
         {/* search input */}
         <div className="relative ">
           <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="flex lg:min-w-[672px] justify-center items-start gap-[8.34px] border bg-white/10 backdrop-blur-[5px] pl-[58.33px] pr-[24.33px] py-[22.34px]  rounded-2xl border-solid border-white/20 text-lg text-white placeholder:text-gray-300 focus:ring-0 focus:outline-0 "
             placeholder="Search by name, subject, or keyword..."
           />

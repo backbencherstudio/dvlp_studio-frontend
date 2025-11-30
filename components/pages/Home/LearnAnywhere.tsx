@@ -17,7 +17,7 @@ const deviceFeatures = [
     id: 3,
     icon: <Smartphone />, // Icon to represent Mobile
     title: "Mobile First",
-    description: "Learn anywhere with our mobile app.",
+    description: "Learn anywhere with our mobile compatibility.",
   },
 
   {

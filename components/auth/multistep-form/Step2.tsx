@@ -21,7 +21,14 @@ export function Step2() {
     setValue("subjects", next, { shouldDirty: true, shouldValidate: true });
   };
 
-  const SUBJECT_OPTIONS: string[] = ["Math", "Music", "Art", "History", "CS"];
+  const SUBJECT_OPTIONS: string[] = [
+    "Math",
+    "English",
+    "Test Prep",
+    "History",
+    "Languages",
+    "Science",
+  ];
 
   // Education level options
   const EDUCATION_OPTIONS = [

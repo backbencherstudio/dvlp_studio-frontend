@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Select,
   SelectContent,
@@ -11,11 +11,12 @@ import {
 import { Clock4, CloudCog, MapPin, User, Video } from "lucide-react";
 import BookingFlow from "./BookingFlow";
 import { useQuery } from "@tanstack/react-query";
-import {  publicAxios } from "@/lib/axios";
+import { publicAxios } from "@/lib/axios";
 import { format } from "date-fns";
 import Link from "next/link";
 import ErrorState from "@/components/common/ErrorState";
 import BookingFlow2 from "./Booking/BookingFlow";
+import { useSearchParams } from "next/navigation";
 
 // Define the Tutor type
 interface TutorProps {
@@ -40,7 +41,7 @@ const fetchTutors = async () => {
   return res.data?.teacherIds;
 };
 
-const TutorList = () => {
+const TutorList = ({ search }: any) => {
   const {
     data: tutorList,
     isPending,
@@ -51,9 +52,15 @@ const TutorList = () => {
     queryFn: fetchTutors,
   });
 
+  // get query subject
+  const searchParams = useSearchParams();
+  const querySubject = searchParams.get("subject");
+
+  console.log("Subject", querySubject);
+
   // State to store filter values
   const [filters, setFilters] = useState({
-    subject: "",
+    subject: querySubject || "",
     sessionType: "",
     gradeLevel: "",
     priceRange: "",
@@ -68,6 +75,95 @@ const TutorList = () => {
       [name]: value,
     }));
   };
+
+  const filteredTutors = useMemo(() => {
+    if (!tutorList) return [];
+
+    const term = search ? search.toLowerCase().trim() : "";
+
+    return tutorList.filter((tutor) => {
+      // SEARCH BY NAME
+      if (term) {
+        const matchesName = tutor.username.toLowerCase().includes(term);
+        const matchesSubject = tutor.subjects.some((s) =>
+          s.toLowerCase().includes(term)
+        );
+        // const matchesKeyword = tutor.keywords?.some((k) =>
+        //   k.toLowerCase().includes(term)
+        // );
+
+        if (!matchesName && !matchesSubject) {
+          return false;
+        }
+      }
+
+      // SUBJECT FILTER
+      if (filters.subject && filters.subject !== " ") {
+        const selected = filters.subject.toLowerCase();
+
+        const match = tutor.subjects.some(
+          (sub) => sub.toLowerCase() === selected
+        );
+
+        if (!match) return false;
+      }
+
+      // SESSION TYPE
+      if (filters.sessionType && filters.sessionType !== " ") {
+        if (!tutor.modes.includes(filters.sessionType)) {
+          return false;
+        }
+      }
+
+      // GRADE
+      if (filters.gradeLevel && filters.gradeLevel !== " ") {
+        if (tutor.grades !== filters.gradeLevel) {
+          return false;
+        }
+      }
+
+      // PRICE
+      if (filters.priceRange && filters.priceRange !== " ") {
+        // Parse tutor price range (format: "65 - 85" or "65-85")
+        const tutorPriceParts = tutor.priceRange
+          .split("-")
+          .map((part) => parseInt(part.trim()));
+        const tutorPriceMin = tutorPriceParts[0];
+        const tutorPriceMax = tutorPriceParts[1] || tutorPriceMin;
+
+        // Parse filter price range (format: "$30-$50" or "$75+")
+        let filterMin = 0;
+        let filterMax = Infinity;
+
+        if (filters.priceRange.includes("+")) {
+          // Handle "$75+" case
+          filterMin = parseInt(filters.priceRange.replace(/[^0-9]/g, ""));
+        } else {
+          // Handle "$30-$50" case
+          const filterParts = filters.priceRange
+            .replace(/\$/g, "")
+            .split("-")
+            .map((part) => parseInt(part.trim()));
+          filterMin = filterParts[0];
+          filterMax = filterParts[1] || Infinity;
+        }
+
+        // Check if tutor's price range overlaps with filter range
+        // Tutor is included if their min is within range OR their max is within range
+        if (tutorPriceMin > filterMax || tutorPriceMax < filterMin)
+          return false;
+      }
+
+      // RATING
+      if (filters.rating && filters.rating !== " ") {
+        if (tutor.avgRate < Number(filters.rating)) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [tutorList, filters, search]);
 
   console.log("Data", tutorList);
 
@@ -105,9 +201,12 @@ const TutorList = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={" "}>All Subjects</SelectItem>
+
+                  <SelectItem value="science">Science</SelectItem>
+                  <SelectItem value="english">English</SelectItem>
                   <SelectItem value="Math">Math</SelectItem>
-                  <SelectItem value="Science">Science</SelectItem>
-                  <SelectItem value="English">English</SelectItem>
+                  <SelectItem value="Node Js">Node Js</SelectItem>
+                  <SelectItem value="Go">Go</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -127,7 +226,7 @@ const TutorList = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value={" "}>All Types</SelectItem>
-                  <SelectItem value="virtual">Virtual</SelectItem>
+                  <SelectItem value="Virtual">Virtual</SelectItem>
                   <SelectItem value="in-person">In-person</SelectItem>
                 </SelectContent>
               </Select>
@@ -213,7 +312,8 @@ const TutorList = () => {
                 <h2 className="text-2xl font-bold">Available Tutors</h2>
                 <p className="text-gray-600 leading-6">
                   {/* Showing 4 of {tutorList?.length} tutors */}
-                  Showing all {tutorList?.length} tutors
+                  Showing {filteredTutors?.length || 0} of{" "}
+                  {tutorList?.length || 0} tutors
                 </p>
               </div>
               {/* <button className="bg-white/50 py-3  rounded-3xl pl-[20.66px] pr-[32.67px] backdrop-blur-[2px] border-gray-300">
@@ -222,10 +322,8 @@ const TutorList = () => {
             </div>
 
             {/* all tutors */}
-            {tutorList?.length === 0 ? (
-              <div>
-                There is no Tutor availbe
-              </div>
+            {filteredTutors?.length === 0 ? (
+              <div>There is no Tutor availbe</div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-8 gap-4  p-4">
                 {isPending ? (
@@ -236,7 +334,7 @@ const TutorList = () => {
                     <TutorLoaderCard />
                   </>
                 ) : (
-                  tutorList?.map((tutor, index) => (
+                  filteredTutors?.map((tutor, index) => (
                     <TutorCard key={index} tutor={tutor} />
                   ))
                 )}
@@ -250,6 +348,8 @@ const TutorList = () => {
 };
 
 export default TutorList;
+
+// =======================Card and Loader Component===============================
 
 const BASE_URL = process.env.NEXT_PUBLIC_IMAGE_API_URL;
 

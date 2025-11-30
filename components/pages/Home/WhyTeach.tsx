@@ -1,39 +1,39 @@
 import BookIcon from "@/components/icons/BookIcon";
+import { BadgeDollarSign, Clock, ShieldCheck } from "lucide-react";
 
 const featureData = [
   {
     id: "expert-tutors",
     icon: <BookIcon className="text-white w-8 h-8" />,
-    title: "Expert Tutors",
-    description:
-      "Qualified educators with proven track records in their subjects",
+    title: "Earn teaching hours",
+    description: "Easily gain hours and have them automatically tracked",
     gradientStart: "#6366F1",
     gradientEnd: "#A855F7",
   },
   {
     id: "personalized-learning",
-    icon: <BookIcon className="text-white w-8 h-8" />,
-    title: "Personalized Learning",
-    description:
-      "Customized lesson plans tailored to each student's unique needs",
+    icon: <Clock className="text-white w-8 h-8" />,
+    title: "Flexible Scheduling",
+    description: "You decide when you work and how you choose",
     gradientStart: "#22C55E",
     gradientEnd: "#10B981",
   },
   {
     id: "flexible-scheduling",
-    icon: <BookIcon className="text-white w-8 h-8" />,
-    title: "Flexible Scheduling",
-    description: "Book sessions that fit your schedule, online or in-person",
+    icon: <BadgeDollarSign className="text-white w-8 h-8" />,
+    title: "Control your Pay",
+    description: "You decide how much you make with flexibility",
     gradientStart: "#EC4899",
     gradientEnd: "#F43F5E",
   },
   {
     id: "proven-results",
-    icon: <BookIcon className="text-white w-8 h-8" />,
-    title: "Proven Results",
-    description: "Track record of improved grades and student confidence",
-    gradientStart: "#A855F7",
-    gradientEnd: "#8B5CF6",
+    icon: <ShieldCheck className="text-white w-8 h-8" />,
+    title: "Improve Your Resume",
+    description: "Gain the in-demand skills employers are looking for.",
+   gradientStart: "#FACC15", // bright gold
+gradientEnd:   "#EAB308", // deep golden yellow
+
   },
 ];
 
@@ -59,7 +59,7 @@ export default function WhyTeach() {
             <span
               className="flex w-16 h-16 justify-center items-center shrink-0 rounded-xl mx-auto mb-4 font-arial"
               style={{
-                background: `linear-gradient(90deg, ${feature.gradientStart} 0%, ${feature.gradientEnd} 100%)`, 
+                background: `linear-gradient(90deg, ${feature.gradientStart} 0%, ${feature.gradientEnd} 100%)`,
               }}
             >
               {feature.icon}

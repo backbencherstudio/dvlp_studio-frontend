@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { FormValues } from "./ApplyMultiStep";
-import { TextInput } from "./InputHelpers";
+import { TextInput, TextInput2 } from "./InputHelpers";
 import AuthInput from "@/components/reusable/AuthInput";
 import EmailIcon from "@/components/icons/EmailIcon";
 import ErrorMessage from "@/components/reusable/ErrorMessage";
@@ -29,7 +29,6 @@ export default function Step1() {
         />
       </div>
 
-       
       <TextInput
         name="email"
         label="Email Address"
@@ -45,7 +44,18 @@ export default function Step1() {
         }}
       />
 
-      <TextInput
+      {/* <TextInput
+        name="phone"
+        label="Phone Number"
+        icon={<PhoneIcon />}
+        placeholder="Enter your phone"
+        rules={{
+          required: "Phone is required",
+          minLength: { value: 7, message: "Enter a valid phone" },
+        }}
+      /> */}
+
+      <TextInput2
         name="phone"
         label="Phone Number"
         icon={<PhoneIcon />}
@@ -56,31 +66,29 @@ export default function Step1() {
         }}
       />
 
-  
-  <TextInput
-    name="password"
-    label="Password"
-    icon={<LockIcon />}
-    type="password"
-    placeholder="Create a password"
-    rules={{
-      required: "Password is required",
-      minLength: { value: 6, message: "Minimum 6 characters" },
-    }}
-  />
-  <TextInput
-    name="confirmPassword"
-    label="Confirm Password"
-    icon={<LockIcon />}
-    type="password"
-    placeholder="Confirm your password"
-    rules={{
-      required: "Confirm your password",
-      validate: (v) =>
-        v === methods.getValues("password") || "Passwords do not match",
-    }}
-  />
-
+      <TextInput
+        name="password"
+        label="Password"
+        icon={<LockIcon />}
+        type="password"
+        placeholder="Create a password"
+        rules={{
+          required: "Password is required",
+          minLength: { value: 6, message: "Minimum 6 characters" },
+        }}
+      />
+      <TextInput
+        name="confirmPassword"
+        label="Confirm Password"
+        icon={<LockIcon />}
+        type="password"
+        placeholder="Confirm your password"
+        rules={{
+          required: "Confirm your password",
+          validate: (v) =>
+            v === methods.getValues("password") || "Passwords do not match",
+        }}
+      />
     </div>
   );
 }

@@ -10,7 +10,8 @@ import ProfileIcon from "../icons/ProfileIcon";
 const sidebarLinks = [
   {
     id: 1,
-    lable: "Calender Stats",
+    lable: "Calendar Stats",
+
     icon: <CalenderIcon />,
     slug: "/tutor-portal/calender-stats",
   },

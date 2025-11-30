@@ -33,6 +33,7 @@ export default function BookingModal({
           register={register}
           errors={formState.errors.name}
           required
+          readonly
         />
 
         <CustomSelectField
@@ -43,6 +44,7 @@ export default function BookingModal({
           options={subjects}
           onChange={(val: string) => setSelectedSubject(val)}
           required
+          
         />
 
         <CustomSelectField

@@ -37,8 +37,6 @@ const teamMembers = [
   },
 ];
 
-
-
 const fetchTeamMembers = async () => {
   const res = await publicAxios.get("/web-infro/public/teams");
   return res.data;
@@ -66,7 +64,7 @@ export default function OurTeam() {
 
   // console.log(formatedData);
 
-
+  const allMembers = formatedData || teamMembers;
 
   return (
     <section className="bg-white lg:py-[128px] md:py-25 sm:py-20 py-15 ">
@@ -92,21 +90,32 @@ export default function OurTeam() {
 
         {/* teams */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-[33.8px]">
-          {formatedData?.slice(0, 3)?.map((member: any) => (
+          {allMembers?.slice(0, 3)?.map((member: any) => (
             <div
               key={member?.id}
               className=" shrink-0 border border-gray-100 [background:#FFF] shadow-[0_1px_2px_0_rgba(0,0,0,0.05)] rounded-3xl border-solid"
             >
               {/* img */}
               <div className=" h-80 relative rounded-t-3xl overflow-hidden ">
-                <img
-                  className="w-full h-full object-cover "
-                  src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${member.imageUrl}`}
-                  alt={member.name}
-                  crossOrigin=""
-                  // width={382}
-                  // height={320}
-                />
+                {formatedData ? (
+                  <img
+                    className="w-full h-full object-cover "
+                    src={`${process.env.NEXT_PUBLIC_IMAGE_API_URL}${member.imageUrl}`}
+                    alt={member.name}
+                    crossOrigin=""
+                    // width={382}
+                    // height={320}
+                  />
+                ) : (
+                  <img
+                    className="w-full h-full object-cover "
+                    src={member.imageUrl}
+                    alt={member.name}
+                    // crossOrigin=""
+                    // width={382}
+                    // height={320}
+                  />
+                )}
                 <div
                   className=" absolute inset-0 [background:linear-gradient(0deg,rgba(0,0,0,0.60)_0%,rgba(0,0,0,0.00)_100%)] object-cover
                 "

@@ -122,7 +122,7 @@ const FeatureCard: React.FC<FeatureProps> = ({
         <p className=" md:text-lg font-normal leading-[29.25px] mb-[30px] text-[#4B5563]">
           {description}
         </p>
-        <a
+        {/* <a
           href={link}
           className="text-base text-[#003466] hover:text-blue-950 font-bold leading-6 flex items-center  gap-2 group"
         >
@@ -130,7 +130,7 @@ const FeatureCard: React.FC<FeatureProps> = ({
           <span>
             <ArrowIcon className=" -rotate-45 group-hover:rotate-0 transition-transform duration-200" />
           </span>
-        </a>
+        </a> */}
       </div>
     </div>
   );

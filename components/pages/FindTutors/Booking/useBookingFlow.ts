@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { useAuth } from "@/context/AuthContext";
@@ -36,6 +36,8 @@ export const useBookingFlow = (tutor: any) => {
   const { user } = useAuth();
   const router = useRouter();
 
+  console.log("User name", user?.name);
+
   const [step, setStep] = useState<"idle" | "booking" | "payment" | "success">(
     "idle"
   );
@@ -50,8 +52,19 @@ export const useBookingFlow = (tutor: any) => {
 
   // Booking form
   const bookingForm = useForm<BookingFormValues>({
-    defaultValues: { name: "", subject: "", slot: "" },
+    defaultValues: { name: user?.name, subject: "", slot: "" },
   });
+
+  // Update form when user loads
+  useEffect(() => {
+    if (user?.name) {
+      bookingForm.reset({
+        name: user.name,
+        subject: "",
+        slot: "",
+      });
+    }
+  }, [user]);
 
   // Payment form
   const paymentForm = useForm<PaymentFormValues>({
