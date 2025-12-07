@@ -17,7 +17,7 @@ const data = [
     value: "95%",
   },
   {
-    label: "Countries Served",
+    label: "Cities Served",
     value: "5+",
   },
 ];

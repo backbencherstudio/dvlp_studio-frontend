@@ -28,7 +28,7 @@ export default function RecentSessions() {
         <h2 className="text-lg font-semibold text-gray-900">Recent Sessions</h2>
       </div>
       <div className="space-y-4">
-        {recentFiveSessions.map((session, index) => (
+        {recentFiveSessions.length === 0 ? <p className="text-xs  text-gray-500">No Session Data available !</p> :recentFiveSessions.map((session, index) => (
           <div
             key={index}
             className="flex items-center justify-between py-3 px-4 border bg-gray-100/50 rounded-xl"
