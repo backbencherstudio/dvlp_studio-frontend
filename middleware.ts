@@ -14,6 +14,9 @@ const isMockAuth = process.env.NEXT_PUBLIC_MOCK_AUTH === "true";
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
+  // console.log("this is cookies",req.cookies.getAll());
+
+
   // 🔹 If in mock mode → just inject a fake role
   if (isMockAuth) {
     let mockRole: "admin" | "student" | "teacher" = "student"; // default

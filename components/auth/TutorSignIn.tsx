@@ -12,6 +12,7 @@ import ErrorMessage from "../reusable/ErrorMessage";
 import ArrowIcon from "../icons/ArrowIcon";
 import { useAuth } from "@/context/AuthContext";
 import { useSearchParams } from "next/navigation";
+import { publicAxios } from "@/lib/axios";
 
 type FormValues = {
   email: string;
@@ -48,6 +49,11 @@ export default function TutorSignIn() {
     const { email, password, remember } = data;
     await login(email, password, remember, callbackUrl, "teacher");
   };
+
+  // handle google sign in
+ const handleGoogleLogin = () => {
+  window.location.href = 'http://192.168.7.42:4002/api/auth/google';
+};
 
   return (
     <section className="border [background:rgba(255,255,255,0.10)] backdrop-blur-[5px] rounded-3xl border-solid border-[rgba(255,255,255,0.20)] mt-8 p-8 w-full">
@@ -127,8 +133,11 @@ export default function TutorSignIn() {
                 Remember me
               </p>
             </div>
-          
-             <Link className="text-[#C084FC] text-sm leading-5" href={"/auth/forgot-password?type=tutor"}>
+
+            <Link
+              className="text-[#C084FC] text-sm leading-5"
+              href={"/auth/forgot-password?type=tutor"}
+            >
               Forgot Password
             </Link>
           </div>
@@ -144,42 +153,9 @@ export default function TutorSignIn() {
           </button>
         </div>
 
-        {/* Social sign-in */}
-        <div>
-          {/* Divider with text */}
-          <div className="flex items-center justify-center gap-2 mt-8 mb-6">
-            <hr className="w-1/3 h-[0.67px] shrink-0 border-t border-t-[rgba(255,255,255,0.20)]" />
-            <p className="w-[120px] flex justify-center shrink-0 text-gray-300 text-center text-sm">
-              Or continue with
-            </p>
-            <hr className="w-1/3 h-[0.67px] shrink-0 border-t border-t-[rgba(255,255,255,0.20)]" />
-          </div>
 
-          {/* Social buttons */}
-          <div className="flex items-center justify-center gap-4">
-            <button
-              type="button"
-              className="w-1/2 flex items-center justify-center gap-2 bg-white/10 py-3 rounded-xl border border-white/20 text-sm text-white font-medium leading-5 hover:bg-white/20 transition"
-              onClick={() => console.log("Google sign-in")}
-            >
-              {/* <img
-        src="/icons/google.svg"
-        alt="Google"
-        className="w-5 h-5"
-      /> */}
-              Google
-            </button>
 
-            <button
-              type="button"
-              className="w-1/2 flex items-center justify-center gap-2 bg-white/10 py-3 rounded-xl border border-white/20 text-sm text-white font-medium leading-5 hover:bg-white/20 transition"
-              onClick={() => console.log("Facebook sign-in")}
-            >
-              
-              Facebook
-            </button>
-          </div>
-        </div>
+      
       </form>
 
       {error && (
@@ -193,3 +169,6 @@ export default function TutorSignIn() {
     </section>
   );
 }
+
+
+

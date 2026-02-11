@@ -55,11 +55,9 @@ export default function Sidebar({
             </NavLink>
           ))}
         </div>
-
       
       </nav>
 
-       
     </div>
   );
 }

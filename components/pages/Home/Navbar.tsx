@@ -23,6 +23,8 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, logout, loading } = useAuth();
 
+
+  console.log("🚀 ~ file: Navbar.tsx:17 ~ Navbar ~ user:", user);
   console.log(user?.type);
 
   // Optional: turn solid after scrolling past the hero (nice UX)
@@ -232,6 +234,13 @@ function renderUser(user: User | null) {
       return (
         <li className="transition hover:text-purple-400 text-lg text-gray-100">
           <Link href="/student-portal">Student Portal</Link>
+        </li>
+      );
+
+    case "user":
+      return (
+        <li className="transition hover:text-purple-400 text-lg text-gray-100">
+          <Link href="/student-portal">Dashboard</Link>
         </li>
       );
     default:

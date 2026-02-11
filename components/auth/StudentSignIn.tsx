@@ -33,8 +33,8 @@ export default function StudentSignIn() {
     watch,
   } = useForm<FormValues>({
     defaultValues: {
-      email: "",
-      password: "",
+      email: "lirohon367@homuno.com",
+      password: "12345678",
       rememberMe: false,
     },
   });
@@ -56,6 +56,13 @@ export default function StudentSignIn() {
     // console.log("🚀 StudentSignIn - redirectPath:", redirectPath);
     await login(email, password, rememberMe, redirectPath, "student");
   };
+
+
+    // handle google sign in
+  // handle google sign in
+ const handleGoogleLogin = () => {
+  window.location.href = 'https://backend.evolvetutoring.ai/api/auth/google/?type=student&callbackUrl=' + encodeURIComponent(redirectPath) ;
+};
 
   return (
     <section className="border [background:rgba(255,255,255,0.10)] backdrop-blur-[5px] rounded-3xl border-solid border-[rgba(255,255,255,0.20)] mt-8 p-8 w-full">
@@ -149,6 +156,45 @@ export default function StudentSignIn() {
             {isSubmitting ? <>{"Signing In..."}  <Loader className="w-5 h-5 animate-spin" /></> : <>{"Sign In"}  <ArrowIcon /></>}
 
           </button>
+
+
+           {/* Social sign-in */}
+        <div>
+          {/* Divider with text */}
+          <div className="flex items-center justify-center gap-2 mt-8 mb-6">
+            <hr className="w-1/3 h-[0.67px] shrink-0 border-t border-t-[rgba(255,255,255,0.20)]" />
+            <p className="w-[120px] flex justify-center shrink-0 text-gray-300 text-center text-sm">
+              Or continue with
+            </p>
+            <hr className="w-1/3 h-[0.67px] shrink-0 border-t border-t-[rgba(255,255,255,0.20)]" />
+          </div>
+
+          {/* Social buttons */}
+          <div className="flex items-center justify-center gap-4">
+            <button
+              type="button"
+              className="w-full cursor-pointer flex items-center justify-center gap-2 bg-white/10 py-3 rounded-xl border border-white/20 text-sm text-white font-medium leading-5 hover:bg-white/20 transition"
+              // onClick={() => console.log("Google sign-in")}
+              onClick={handleGoogleLogin}
+            >
+              {/* <img
+        src="/icons/google.svg"
+        alt="Google"
+        className="w-5 h-5"
+      /> */}
+              Google
+            </button>
+
+            {/* <button
+              type="button"
+              className="w-1/2 flex items-center justify-center gap-2 bg-white/10 py-3 rounded-xl border border-white/20 text-sm text-white font-medium leading-5 hover:bg-white/20 transition"
+              onClick={() => console.log("Facebook sign-in")}
+            >
+              
+              Facebook
+            </button> */}
+          </div>
+        </div>
         </div>
       </form>
       {error && (

@@ -34,7 +34,7 @@ type AuthContextType = {
     password: string,
     rememberMe: boolean,
     callbackUrl?: string,
-    expectedRole?: string
+    expectedRole?: string,
   ) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     password: string,
     rememberMe: boolean,
     callbackUrl?: string,
-    expectedRole?: string
+    expectedRole?: string,
   ) => {
     setLoading(true);
     setError(null);
@@ -103,8 +103,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             ? "teacher"
             : "student";
 
-
-       
         const mockUser = {
           id: "mock-id",
           email,
@@ -137,26 +135,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const res = await publicAxios.post("/auth/login", { email, password });
         const { access_token, refresh_token } = res.data.authorization;
 
-        const accessExpiry = rememberMe ? 7 : undefined; // 7 days 
+        const accessExpiry = rememberMe ? 7 : undefined; // 7 days
         const refreshExpiry = rememberMe ? 30 : undefined;
+
+        const isProd = process.env.NODE_ENV === "production";
 
         Cookies.set("access_token", access_token, {
           expires: accessExpiry,
-          secure: true,
-          sameSite: "strict",
+          secure: isProd, // only secure in production
+          sameSite: "lax", // strict breaks auth flows
         });
+
         Cookies.set("refresh_token", refresh_token, {
           expires: refreshExpiry,
-          secure: true,
-          sameSite: "strict",
+          secure: isProd,
+          sameSite: "lax",
         });
 
         await refreshUser();
         const userData = await privateAxios.get("/auth/me");
         const userType = userData.data.data.type;
 
-
-         // if an extepceted role is provided, validate it
+        // if an extepceted role is provided, validate it
         if (expectedRole && userType !== expectedRole) {
           Cookies.remove("access_token");
           Cookies.remove("refresh_token");
@@ -165,9 +165,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setLoading(false);
           return;
         }
-
-
-
 
         // Use callbackUrl if provided, otherwise redirect based on role
         if (callbackUrl) {
