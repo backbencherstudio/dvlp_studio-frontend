@@ -7,6 +7,7 @@ import RecentReviews from "@/components/pages/TutorPortal/RecentReviews";
 import RecentSessions from "./RecentSession";
 import PendingApplication from "./PendingApplication";
 import { useApplications } from "../Tutors/useApplication";
+
 const statsCards = [
   {
     title: "Total Tutor",
@@ -46,40 +47,18 @@ const statsCards = [
   },
 ];
 
-const recentSessions = [
-  {
-    student: "John Doe",
-    tutor: "Alice Brown",
-    date: "2025-08-25",
-    location: "Asia/Dhaka",
-  },
-  {
-    student: "John Doe",
-    tutor: "Alice Brown",
-    date: "2025-08-25",
-    location: "Asia/Dhaka",
-  },
-];
-
-
-
-const pendingApplications = [
-  { name: "Jane Smith", subject: "Physics", submitted: "2025-08-18" },
-  { name: "Jane Smith", subject: "Physics", submitted: "2025-08-18" },
-];
 
 export default function DashboardContent() {
+  const { data: apsData, isLoading, isError } = useApplications();
 
-  const {data:apsData, isLoading, isError } = useApplications();
+  if (isLoading) return <>Loading...</>;
+  if (isError) return <>Error loading applications</>;
 
-  if(isLoading) return <>Loading...</>;
-
-  // console.log(apsData.data);
+  console.log(apsData.data);
   const applicationsData = apsData?.data || [];
   
-  console.log(applicationsData);
-  const applications = getPendingApplications(applicationsData);
-  const firstFourApplications = applications.slice(0, 5);
+  // Get pending applications (one per teacher, not per subject)
+  const pendingApplications = getPendingApplications(applicationsData);
   
   return (
     <section>
@@ -87,35 +66,72 @@ export default function DashboardContent() {
       <div className="mb-6">
         <StatsCardSection data={statsCards} />
       </div>
+      
       {/* Recent session & Pending tutor */}
       <div className="flex gap-4 flex-col md:flex-row">
         <div className="w-full md:w-1/2">
-      
-          <RecentSessions  />
+          <RecentSessions />
         </div>
         <div className="w-full md:w-1/2">
-          <PendingApplication applications={firstFourApplications} />
-             </div>
+          <PendingApplication applications={pendingApplications} />
+        </div>
       </div>
     </section>
   );
 }
 
-
-
-export function getPendingApplications(teachers:any) {
-  return teachers.flatMap((teacher:any) => {
-    if (teacher.is_accepted !== "pending") return []; // ignore non-pending
-
-    // Clean subjects
-    const subjects = teacher.subjects_taught.map((s:any) => s.replace(/[\[\]"]+/g, '').trim());
-
-    // Map subjects to application objects
-    return subjects.map((subject:any) => ({
-      id: teacher.id,
-      name: teacher.name,
-      subject: subject,
-      submitted: new Date().toISOString().split('T')[0] // today's date
-    }));
-  });
+export function getPendingApplications(teachers: any) {
+  return teachers
+    .filter((teacher: any) => teacher.is_accepted === "pending")
+    .map((teacher: any) => {
+      // Clean subjects array - remove brackets and quotes
+      const subjects = teacher.subjects_taught.map((s: string) => 
+        s.replace(/[\[\]"]+/g, '').trim()
+      );
+      
+      // Format subjects for display
+      const formattedSubjects = subjects.join(', ');
+      
+      return {
+        id: teacher.id,
+        name: teacher.name,
+        subjects: formattedSubjects, // Now this will be "Math, Test Prep, Languages, English, History, Science"
+        subjectCount: subjects.length,
+        submitted: new Date().toISOString().split('T')[0], // today's date
+        email: teacher.email,
+        hourly_rate: teacher.hourly_rate,
+        city: teacher.city
+      };
+    });
 }
+
+// If your PendingApplication component expects a single subject per application,
+// you'll need to update it to handle multiple subjects. Here's an example of how
+// to modify the PendingApplication component:
+
+/*
+export default function PendingApplication({ applications }: { applications: any[] }) {
+  return (
+    <div className="bg-white rounded-lg shadow p-4">
+      <h3 className="text-lg font-semibold mb-4">Pending Applications ({applications.length})</h3>
+      <div className="space-y-3">
+        {applications.map((app) => (
+          <div key={app.id} className="border-b pb-3">
+            <div className="flex justify-between">
+              <div>
+                <p className="font-medium">{app.name}</p>
+                <p className="text-sm text-gray-600">Subjects: {app.subjects}</p>
+                <p className="text-xs text-gray-500">Submitted: {app.submitted}</p>
+              </div>
+              <div className="flex gap-2">
+                <button className="text-xs bg-green-500 text-white px-2 py-1 rounded">Accept</button>
+                <button className="text-xs bg-red-500 text-white px-2 py-1 rounded">Reject</button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+*/

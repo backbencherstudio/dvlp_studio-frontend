@@ -30,9 +30,13 @@ const SessionTable = () => {
   >(null);
   const [selectedData, setSelectedData] = useState<any>(null);
 
+  console.log("Selected Data", selectedData);
+
   const { data: sessionDetails, isLoading: loadingDetails } = useSessionDetails(
     modalAction === "view" ? selectedData?.id : undefined
   );
+
+  console.log("Session Details", sessionDetails);
   const { deleteMut, restrictMut, unRestrictMut } = useSessionMutations();
 
   const handleActionClick = (
@@ -208,7 +212,7 @@ const SessionTable = () => {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         actionType={modalAction}
-        data={modalAction === "view" ? sessionDetails : selectedData}
+        data={modalAction === "view" ? selectedData : selectedData}
         onConfirm={handleConfirm}
         loading={loadingDetails || deleteMut.isPending || restrictMut.isPending}
         isDetailsLoading={loadingDetails}

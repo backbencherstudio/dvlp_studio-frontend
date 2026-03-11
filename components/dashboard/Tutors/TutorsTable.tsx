@@ -28,6 +28,8 @@ const TutorTable = () => {
   const { data: tData, isError, isLoading } = useTeachers();
   const { deleteMut, restrictMut } = useTeachersMutations();
 
+  console.log("Raw API Data", tData);
+
   const tutorData = transformApiData(tData?.data || []);
 
   const handleRestrictClick = (row: any) => {
@@ -67,7 +69,23 @@ const TutorTable = () => {
     { id: "name", label: "NAME" },
     { id: "subject", label: "SUBJECT" },
     { id: "hourly_rate", label: "HOURLY RATE" },
-    { id: "status", label: "STATUS" },
+    {
+  id: "status",
+  label: "STATUS",
+  renderRow: (row:any) => (
+    <td>
+      <span
+        className={`px-3 py-1 rounded-full text-sm ${
+          row.status === "Active"
+            ? "bg-green-100 text-green-800"
+            : "bg-red-100 text-red-800"
+        }`}
+      >
+        {row.status}
+      </span>
+    </td>
+  )
+},
     { id: "location", label: "LOCATION" },
     {
       id: "action2",

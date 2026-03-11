@@ -47,6 +47,7 @@ const ActionModal: React.FC<ActionModalProps> = ({
   isDetailsLoading = false,
 }) => {
   if (!actionType) return null;
+  console.log("Modal Data", data);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

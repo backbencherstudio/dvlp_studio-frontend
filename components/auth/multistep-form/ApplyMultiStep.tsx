@@ -73,7 +73,14 @@ export default function ApplyMultiStep() {
       educationLevel: "",
       gradeLevel: "",
       experience: "",
-      subjects: [],
+      subjects:  [
+        "Mathematics",
+        "English",
+        "Test Prep",
+        "History",
+        "Languages",
+        "Science",
+      ],
       hourlyRate: "",
       location: "",
       // step 3

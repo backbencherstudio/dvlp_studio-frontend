@@ -112,7 +112,7 @@ const TutorProfile = () => {
                 </span>
               </p>
               <p className="text-gray-500 text-sm sm:text-base">
-                Ratting:{" "}
+                Rating:{" "}
                 <span className="text-gray-800 font-medium">
                   {/* {profile.rating} */}
                 </span>

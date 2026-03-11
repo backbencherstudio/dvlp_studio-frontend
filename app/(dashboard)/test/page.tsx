@@ -328,7 +328,7 @@ const Dashboard = () => {
                 </div>
                 <div className="p-6">
                   <div className="space-y-4">
-                    {pendingApplications.map((application, index) => (
+                    {pendingApplications?.map((application, index) => (
                       <div
                         key={index}
                         className="py-3 border-b border-gray-100 last:border-b-0"

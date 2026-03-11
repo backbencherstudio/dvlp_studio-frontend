@@ -16,6 +16,8 @@ type ProfileFormValues = {
   city: string;
   about: string;
   sessionGrade: string;
+
+  
 };
 
 export const EditStudentProfile = ({

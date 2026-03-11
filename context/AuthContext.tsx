@@ -23,6 +23,11 @@ export type User = {
   created_at: string;
   avatar_url: string | null;
   // add more fields if your /me endpoint returns
+  first_name?: string;
+  last_name?: string;
+  city?: string;
+  country?: string;
+  about_me?: string;
 } | null;
 
 type AuthContextType = {

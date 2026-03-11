@@ -16,8 +16,10 @@ import LoadingState from "@/components/common/LoadingState";
 
 
 
-const formatTutorApplications = (apiData: any[] = []) => {
-  return apiData?.map((item: any) => ({
+const formatTutorApplications = (apiData: any) => {
+  if (!Array.isArray(apiData)) return [];
+
+  return apiData.map((item: any) => ({
     application_id: item.id,
     name: item.name || "N/A",
     subject: Array.isArray(item.subjects_taught)
@@ -41,13 +43,17 @@ const statusStyles: Record<string, string> = {
 const TutorApplicationTable = () => {
   const { data: tData, isLoading, isError } = useApplications();
   const { approveMutation, rejectMutation } = useTutorApplicationActions();
+    // store which row popover is open
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+
+
+  
 
   const formattedData = formatTutorApplications(tData?.data || []);
   console.log("Formatted Data", formattedData);
 
 
-  // store which row popover is open
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const handleActionClick = (action: string, rowData: any) => {
     console.log(action, rowData);

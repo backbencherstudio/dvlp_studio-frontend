@@ -93,7 +93,7 @@ export default function Footer() {
               At Evolve, we believe that learning isn’t just a process – it’s a
               transformation. that’s why we’re committed to creating an
               environment where every student can grow with confidence, clarity,
-              and purpose.
+              and purpose..
               {/* <Link
                 href="#"
                 className="underline underline-offset-2 hover:text-white"
@@ -102,8 +102,8 @@ export default function Footer() {
               </Link> */}
               .
               <br />
-              *Purchasing gift cards or digital items does not count toward the
-              $100 for Free Shipping or other promotions.
+              {/* *Purchasing gift cards or digital items does not count toward the
+              $100 for Free Shipping or other promotions. */}
             </p>
           </div>
 

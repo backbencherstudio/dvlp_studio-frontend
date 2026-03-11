@@ -18,6 +18,14 @@ import ErrorState from "@/components/common/ErrorState";
 import BookingFlow2 from "./Booking/BookingFlow";
 import { useSearchParams } from "next/navigation";
 
+import { Info } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 // Define the Tutor type
 interface TutorProps {
   userid: string;
@@ -86,7 +94,7 @@ const TutorList = ({ search }: any) => {
       if (term) {
         const matchesName = tutor.username.toLowerCase().includes(term);
         const matchesSubject = tutor.subjects.some((s) =>
-          s.toLowerCase().includes(term)
+          s.toLowerCase().includes(term),
         );
         // const matchesKeyword = tutor.keywords?.some((k) =>
         //   k.toLowerCase().includes(term)
@@ -102,7 +110,7 @@ const TutorList = ({ search }: any) => {
         const selected = filters.subject.toLowerCase();
 
         const match = tutor.subjects.some(
-          (sub) => sub.toLowerCase() === selected
+          (sub) => sub.toLowerCase() === selected,
         );
 
         if (!match) return false;
@@ -323,7 +331,7 @@ const TutorList = ({ search }: any) => {
 
             {/* all tutors */}
             {filteredTutors?.length === 0 ? (
-              <div>There is no Tutor availbe</div>
+             <div>There is no tutor available!</div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:gap-8 gap-4  p-4">
                 {isPending ? (
@@ -361,7 +369,7 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
         <div className="flex justify-between items-start mb-6">
           {/* Info */}
           <div className="flex">
-            <div className="bg-gray-300 rounded-2xl w-16 h-16 md:w-20 md:h-20 mr-5 shrink-0 overflow-hidden">
+            <div className="bg-gray-300 rounded-2xl w-16 h-16 md:w-12 md:h-12 mr-4 shrink-0 overflow-hidden">
               <img
                 className="w-full h-full object-cover"
                 src={
@@ -376,7 +384,7 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
               />
             </div>
             <div>
-              <h2 className="text-xl font-bold mb-2">{tutor.username}</h2>
+              <h2 className="text-lg font-bold mb-2">{tutor.username}</h2>
               <div className="text-sm text-yellow-500 mt-1">
                 <span>★</span>{" "}
                 <span className="text-black font-medium text-sm leading-5">
@@ -393,9 +401,20 @@ const TutorCard = ({ tutor }: { tutor: TutorProps }) => {
           </div>
 
           {/* Hourly Rate */}
-          <h3 className="text-xl font-bold leading-7 text-[#6366F1] text-nowrap">
+          <div className="flex items-center gap-2 text-[#6366F1] font-bold text-lg text-nowrap">
             ${tutor.priceRange}/hr
-          </h3>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-pointer" />
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[220px] text-sm">
+                  You will not be charged until the tutoring session is
+                  completed.
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
 
         {/* Subjects */}

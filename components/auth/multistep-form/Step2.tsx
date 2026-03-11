@@ -22,7 +22,7 @@ export function Step2() {
   };
 
   const SUBJECT_OPTIONS: string[] = [
-    "Math",
+    "Mathematics",
     "English",
     "Test Prep",
     "History",

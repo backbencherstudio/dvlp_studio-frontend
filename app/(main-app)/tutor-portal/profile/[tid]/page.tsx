@@ -36,7 +36,7 @@ export default function Page({ params }: Props) {
 
   console.log(profile)
   if (loading) return <div>Loading...</div>;
-  if (!profile) return <div>Failed to load tutor profile.</div>;
+  if (!profile) return <div>Failed to load tutor profileeee.</div>;
 
   const initialFormData = {
     firstName: profile.first_name,

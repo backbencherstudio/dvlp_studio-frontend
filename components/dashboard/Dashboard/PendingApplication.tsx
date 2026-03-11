@@ -2,6 +2,7 @@ import Link from "next/link";
 import React from "react";
 
 export default function PendingApplication({ applications }: any) {
+  console.log("Pending Applications", applications);
   return (
     <div>
       <div className="bg-white rounded-lg  border border-gray-200 p-4">

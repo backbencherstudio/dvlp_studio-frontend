@@ -1,64 +1,102 @@
+"use client";
+
 import { privateAxios } from "@/lib/axios";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
-// server side data fetching
-
-async function getTutorData(tid: string) {
-  try {
-    const res = await privateAxios.get(`/teacher/get/${tid}`);
-    return res.data;
-  } catch (error) {
-    console.log("Error fetching tutor data", error);
-    return null;
-  }
-}
-
-async function getTutorStats(tid: string) {
-  try {
-    const res = await privateAxios.get(`/teacher/get/${tid}`);
-    return res.data;
-  } catch (error) {
-    console.log("Error fetching tutor data", error);
-    return null;
-  }
-}
-
-export default async function page({ params }: { params: { tid: string } }) {
+export default function TutorDetailsPage() {
+  const params = useParams();
   const { tid } = params;
 
-  // fetch tutor data
-  const tutorData = await getTutorData(tid);
-  console.log(tutorData);
+  const [tutorData, setTutorData] = useState<any>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTutorData = async () => {
+      if (!tid) return;
+
+      try {
+        setLoading(true);
+        // Fetch tutor data
+        const tutorRes = await privateAxios.get(`/teacher/get/${tid}`);
+        setTutorData(tutorRes.data);
+
+        // If you need stats separately, you can fetch them here too
+        // const statsRes = await privateAxios.get(`/teacher/stats/${tid}`);
+        // setTutorStats(statsRes.data);
+
+        setError(null);
+      } catch (error) {
+        console.log("Error fetching tutor data", error);
+        setError("Failed to fetch tutor data");
+        setTutorData(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTutorData();
+  }, [tid]);
+
+  if (loading) {
+    return (
+      <section className="md:p-6">
+        <div className="p-6 border rounded-lg">
+          <p>Loading tutor data...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="md:p-6">
+        <div className="p-6 border rounded-lg">
+          <p className="text-red-500">Error: {error}</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="md:p-6">
-      <p className="mb-4 flex">
-        <Link href={"/admin-dashboard/tutors/"}>Tutors</Link> <ChevronRight />
+      <p className="mb-4 flex items-center">
+        <Link href="/admin-dashboard/tutors/" className="hover:underline">
+          Tutors
+        </Link>
+        <ChevronRight className="mx-2 h-4 w-4" />
         <span className="text-gray-500">Tutors Details</span>
       </p>
+
       <div className="p-4 rounded-md">
-        <h3 className=" text-black [font-family:Inter] text-xl font-medium leading-[160%] tracking-[0.1px] mb-4">
-          {/* Tutor Details: {params.tid} */}
+        <h3 className="text-black font-inter text-xl font-medium leading-[160%] tracking-[0.1px] mb-4">
+          Tutor Details: {tid}
         </h3>
 
         <div className="p-6 border rounded-lg">
           {tutorData ? (
-            // <pre>{JSON.stringify(tutorData, null, 2)}</pre>
-            <TutorDetails data={tutorData.data} />
+            <>
+              <pre className="whitespace-pre-wrap overflow-auto">
+                {/* {JSON.stringify(tutorData, null, 2)} */}
+              </pre>
+              <TutorDetails data={tutorData?.data} />
+            </>
           ) : (
-            <p>No data found for this tutor.</p>
+            <p className="text-gray-500">No data found for this tutor.</p>
           )}
         </div>
       </div>
     </section>
   );
 }
-
 import { User } from "lucide-react";
 import TutorDetailStats from "./TutorDetailStats";
 import { TutorSessionTable } from "./TutorSessionTable";
+import { useQuery } from "@tanstack/react-query";
+import { id } from "date-fns/locale";
 
 type Tutor = {
   id: string;

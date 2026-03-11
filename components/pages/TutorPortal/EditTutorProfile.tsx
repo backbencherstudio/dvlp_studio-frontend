@@ -7,9 +7,7 @@ import {
   Upload,
   Plus,
   X,
-  FileText,
-  Image,
-  File,
+ 
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";

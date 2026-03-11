@@ -6,6 +6,7 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import QueryClientWrapper from "@/context/queryClientProvider";
 import { Toaster } from "sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,7 +37,6 @@ export const metadata: Metadata = {
   ],
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -46,7 +46,9 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${arial.variable}`}>
       <body className={`$ ${inter.className} antialiased`}>
         <QueryClientWrapper>
-          <AuthProvider>{children}</AuthProvider>
+          <TooltipProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </TooltipProvider>
           <Toaster richColors />
         </QueryClientWrapper>
       </body>

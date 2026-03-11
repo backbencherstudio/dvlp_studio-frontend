@@ -82,13 +82,15 @@ export const useTeachersMutations = () => {
 };
 
 //---------------- Helper function---------------
-export const transformApiData = (apiData: any): any[] => {
-  return apiData.map((item: any, index: number) => ({
-    tutor_id: item.User_Id, // optional: assign a numeric session_id for popover logic
-    name: item.NAME,
-    subject: item.SUBJECT,
-    hourly_rate: `$${item.HOURLY_RATE}`,
-    status: item.STATUS,
-    location: item.LOCATION,
+export const transformApiData = (apiData: any[] = []) => {
+  if (!Array.isArray(apiData)) return [];
+
+  return apiData.map((item) => ({
+    tutor_id: item.id,
+    name: item.name || "N/A",
+    subject: item.subject || "N/A", // API doesn't send this
+    hourly_rate: item.hourly_rate ? `$${item.hourly_rate}` : "N/A",
+    status: item.status === 1 ? "Active" : "Restricted",
+    location: item.city || "N/A",
   }));
 };

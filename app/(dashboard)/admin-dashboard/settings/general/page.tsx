@@ -1,6 +1,8 @@
 "use client";
 
 import FormField from "@/components/reusable/AdminFormField";
+import PasswordUpdate from "@/components/reusable/PasswordUpdate";
+import ProfileUpdate from "@/components/reusable/ProfileUpdate";
 import { Input } from "@/components/ui/input";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -14,12 +16,17 @@ type AdminInfoFormData = {
 export default function page() {
   return (
     <div className="max-w-[928px] space-y-5">
+
+
+     <ProfileUpdate/>
+     <PasswordUpdate/>
+
       {/* Edit admin info */}
-      <EditAdminInfo />
+      {/* <EditAdminInfo /> */}
       {/* contact info */}
-      <ContactInfo />
+      {/* <ContactInfo /> */}
       {/* Password update */}
-      <PasswordInfo/>
+      {/* <PasswordInfo/> */}
     </div>
   );
 }
