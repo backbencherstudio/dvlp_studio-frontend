@@ -51,7 +51,7 @@ function TextInput({
 
 // select input
 type SelectInputProps = {
-  name: keyof FormValues;
+  name: keyof FormValues ;
   label: string;
   placeholder?: string;
   rules?: RegisterOptions<FormValues, keyof FormValues>;

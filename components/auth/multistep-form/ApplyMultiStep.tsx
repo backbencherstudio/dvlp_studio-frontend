@@ -36,6 +36,9 @@ export type FormValues = {
   documents?: FileList; // file upload
   consentBackground: boolean;
   agreeTerms: boolean;
+
+  city: string;      // V2 UI field
+  state: string;     // V2 UI field
 };
 
 const STEP_FIELDS: (keyof FormValues)[][] = [
