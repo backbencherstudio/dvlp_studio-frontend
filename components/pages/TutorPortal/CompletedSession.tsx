@@ -96,7 +96,7 @@ export default function CompletedSessions({
         )}
       </div>
 
-      {completed.length > 0 ? (
+      {completed?.length > 0 ? (
         completed.map((session: any) => (
           <CompletedSessionCard
             key={session.id}

@@ -24,8 +24,8 @@ export default function Navbar() {
   const { user, logout, loading } = useAuth();
 
 
-  console.log("🚀 ~ file: Navbar.tsx:17 ~ Navbar ~ user:", user);
-  console.log(user?.type);
+  // console.log("🚀 ~ file: Navbar.tsx:17 ~ Navbar ~ user:", user);
+  // console.log(user?.type);
 
   // Optional: turn solid after scrolling past the hero (nice UX)
   useEffect(() => {

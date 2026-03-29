@@ -33,13 +33,13 @@ export default function BookingFlow2({ tutor }: any) {
         />
       )}
 
-      {flow.step === "payment" && (
+      {flow.step === "payment" && flow.sessionId && flow.createdBooking?.id && (
         <PaymentModal
           open
           onClose={() => flow.setStep("idle")}
           onPaymentSuccess={() => flow.setStep("success")}
-          sessionId={flow.sessionId || ""}
-          bookingId={flow.createdBooking?.id || ""}
+          sessionId={flow.sessionId}
+          bookingId={flow.createdBooking.id}
         />
       )}
 

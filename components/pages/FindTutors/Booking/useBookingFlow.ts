@@ -137,7 +137,12 @@ export const useBookingFlow = (tutor: any) => {
         toast.error(res.data.message);
       } else {
       }
-      setCreatedBooking({ id: res.data.id || res.data._id });
+      // ensure we actually received an identifier from the server
+      const newId = res.data.bookedSession.id || res.data.bookedSession._id;
+      if (!newId) {
+        throw new Error("Booking response did not include an id");
+      }
+      setCreatedBooking({ id: newId });
       setSessionId(session.id);
       setStep("payment");
     } catch (err: any) {

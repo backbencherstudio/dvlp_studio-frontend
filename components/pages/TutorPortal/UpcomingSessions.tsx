@@ -80,7 +80,6 @@ interface SessionData {
   session_type: string;
   // sessionStarted: boolean;
   is_started: any;
-
 }
 
 interface SessionCardProps {
@@ -93,7 +92,7 @@ const useStartSession = () => {
   return useMutation({
     mutationFn: async (sessionId: string) => {
       const res = await privateAxios.patch(
-        `/teacher/start-session/${sessionId}`
+        `/teacher/start-session/${sessionId}`,
       );
       return res.data;
     },
@@ -103,7 +102,7 @@ const useStartSession = () => {
         toast.success("Session Started Successfully");
 
         // refresh sessions list
-        // queryClient.invalidateQueries({ queryKey: ["studentSessions"] });
+        queryClient.invalidateQueries({ queryKey: ["sessions"] });
       } else {
         toast.error(data?.message || "Failed to start session.");
       }
@@ -122,6 +121,7 @@ function SessionCard({ session }: SessionCardProps) {
 
   const handleStartSession = (id: string) => {
     startSession(id);
+    
   };
 
   const handleEdit = (session: SessionData) => {
@@ -187,30 +187,35 @@ function SessionCard({ session }: SessionCardProps) {
               ))}
             </span>
           </div>
+
+         
         </div>
       </div>
 
       {/* Right Side */}
       <div>
-        {
-          session?.is_started ? <div className="bg-green-100 text-green-500 rounded-md px-4 py-2 font-semibold text-sm">Session Started</div> :  <div className="space-x-3 flex flex-wrap gap-4 justify-center sm:justify-end">
-          <button
-            disabled={isPending}
-            onClick={() => handleStartSession(session.id)}
-            className="bg-gradient-to-r from-[#6366F1] to-[#A855F7] px-5 py-3 text-center rounded-xl text-white cursor-pointer"
-          >
-            Start Session
-          </button>
+        {session?.is_started ? (
+          <div className="bg-green-100 text-green-500 rounded-md px-4 py-2 font-semibold text-sm">
+            Session Started
+          </div>
+        ) : (
+          <div className="space-x-3 flex flex-wrap gap-4 justify-center sm:justify-end">
+            <button
+              disabled={isPending}
+              onClick={() => handleStartSession(session.id)}
+              className="bg-gradient-to-r from-[#6366F1] to-[#A855F7] px-5 py-3 text-center rounded-xl text-white cursor-pointer"
+            >
+              Start Session
+            </button>
 
-          <button
-            onClick={() => handleEdit(session)}
-            className="px-5 py-[10px] border-gray-300 rounded-xl text-slate-800 border cursor-pointer"
-          >
-            Edit
-          </button>
-        </div>
-        }
-       
+            <button
+              onClick={() => handleEdit(session)}
+              className="px-5 py-[10px] border-gray-300 rounded-xl text-slate-800 border cursor-pointer"
+            >
+              Edit
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Edit Modal */}

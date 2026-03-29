@@ -2,6 +2,7 @@
 import ErrorState from "@/components/common/ErrorState";
 import LoadingState from "@/components/common/LoadingState";
 import StarIcon from "@/components/icons/StarIcon";
+import { useAuth } from "@/context/AuthContext";
 import { privateAxios } from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
@@ -45,6 +46,12 @@ const fetchRecentReviews = async () => {
 };
 
 export default function RecentReviews() {
+
+  const user = useAuth();
+
+  console.log("userssssssssss", user)
+  
+
   const {
     data: recentReviews,
     isFetching,
@@ -59,6 +66,8 @@ export default function RecentReviews() {
   ----------------------------- */
   if (isFetching) return <LoadingState height="500px" />;
   if (isError) return <ErrorState height="400px" />;
+
+  console.log("this is recent reviews", recentReviews)
 
   // main component
 

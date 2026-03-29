@@ -28,6 +28,12 @@ function PaymentForm({
   sessionId: string;
   bookingId: string;
 }) {
+
+
+  // debug only when we actually have data
+  if (sessionId) console.log("sessionId", sessionId);
+  if (bookingId) console.log("bookingId", bookingId);
+
   const stripe = useStripe();
   const elements = useElements();
   const [cardName, setCardName] = useState("");

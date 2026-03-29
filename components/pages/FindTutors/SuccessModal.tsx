@@ -1,6 +1,7 @@
 import CustomDialog from "@/components/reusable/CustomDialog";
-import { Link } from "lucide-react";
+
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const PaymentSuccessModal = ({ isSuccessModalOpen, setIsSuccessModalOpen }: any) => {
@@ -26,9 +27,9 @@ const PaymentSuccessModal = ({ isSuccessModalOpen, setIsSuccessModalOpen }: any)
           Your session with Dr. Jessica Miller has been successfully booked.
         </p>
         <div className="mt-4 flex justify-center">
-          <Link className="text-[#A855F7] underline" href={"/"}>
+          <Link className="text-[#A855F7] underline" href={"/student-portal/bookings"}>
             {" "}
-            Back to Home{" "}
+            Back to bookings{" "}
           </Link>
         </div>
       </div>
